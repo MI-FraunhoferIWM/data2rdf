@@ -1,0 +1,27 @@
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+
+<http://www.test2.de/metadata-1> owl:sameAs <http://tensile-test-method.org#ProjectNumber> .
+
+<http://www.test2.de/metadata-14> owl:sameAs <http://tensile-test-method.org#SpecimenThickness> .
+
+<http://www.test2.de/metadata-15> owl:sameAs <http://tensile-test-method.org#SpecimenWidth> .
+
+<http://www.test2.de/metadata-17> owl:sameAs <http://tensile-test-method.org#Preload> .
+
+<http://www.test2.de/metadata-18> owl:sameAs <http://tensile-test-method.org#Temperature> .
+
+<http://www.test2.de/metadata-19> owl:sameAs <http://tensile-test-method.org#Remark> .
+
+<http://www.test2.de/metadata-2> owl:sameAs <http://tensile-test-method.org#ProjectName> .
+
+<http://www.test2.de/metadata-3> owl:sameAs <http://tensile-test-method.org#TimeStamp> .
+
+<http://www.test2.de/metadata-4> owl:sameAs <http://tensile-test-method.org#MachineData> .
+
+<http://www.test2.de/metadata-5> owl:sameAs <http://tensile-test-method.org#ForceMeasuringDevice> .
+
+<http://www.test2.de/metadata-6> owl:sameAs <http://tensile-test-method.org#DisplacementTransducer> .
+
+<http://www.test2.de/metadata-8> owl:sameAs <http://tensile-test-method.org#Material> .
+
+<http://www.test2.de/metadata-9> owl:sameAs <http://tensile-test-method.org#SpecimenType> .

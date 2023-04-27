@@ -1,0 +1,344 @@
+@prefix dc: <http://purl.org/dc/elements/1.1/> .
+@prefix emmo: <http://emmo.info/emmo#> .
+@prefix holistic: <http://emmo.info/emmo/middle/holistic#> .
+@prefix isq: <http://emmo.info/emmo/middle/isq#> .
+@prefix manufacturing: <http://emmo.info/emmo/middle/manufacturing#> .
+@prefix mero: <http://emmo.info/emmo/top/mereotopology#> .
+@prefix method: <http://tensile-test-method.org#> .
+@prefix metrology: <http://emmo.info/emmo/middle/metrology#> .
+@prefix mt: <http://emmo.info/emmo/domain/mechanical-testing#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix perceptual: <http://www.owl-ontologies.com/perceptual#> .
+@prefix phys: <http://emmo.info/emmo/middle/physicalistic#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix sd: <http://www.semanticweb.org/stahl-digital#> .
+@prefix semiotics: <http://emmo.info/emmo/middle/semiotics#> .
+
+emmo:hasProperty a owl:ObjectProperty ;
+    rdfs:label "has property" .
+
+mt: a owl:Ontology ;
+    dc:creator "creator_1" ;
+    dc:description "Ontology code created by Chowlk" ;
+    dc:title "EMMO ABox minimal" ;
+    owl:versionInfo "0.0.1" .
+
+mt:Individual a owl:DatatypeProperty ;
+    rdfs:label "individual>" ;
+    rdfs:domain mt:ClassName .
+
+mt:Load a owl:Class ;
+    rdfs:label "Load" .
+
+mt:Thickness a owl:Class ;
+    rdfs:label "Thickness" .
+
+mt:Width a owl:Class ;
+    rdfs:label "Width" .
+
+mt:hasInput a owl:ObjectProperty ;
+    rdfs:label "has input" .
+
+mt:hasOutput a owl:ObjectProperty ;
+    rdfs:label "has output" .
+
+holistic:hasParticipant a owl:ObjectProperty ;
+    rdfs:label "has participant" .
+
+isq:ISQDerivedQuantity a owl:Class ;
+    rdfs:label "I S Q Derived Quantity" .
+
+metrology:CategorizedPhysicalQuantity a owl:Class ;
+    rdfs:label "Categorized Physical Quantity" .
+
+phys:Material a owl:Class ;
+    rdfs:label "Material" .
+
+semiotics:hasSign a owl:ObjectProperty ;
+    rdfs:label "has sign" .
+
+mero:hasPart a owl:ObjectProperty ;
+    rdfs:label "has part" ;
+    rdfs:domain emmo:Matrix,
+        mt:DataSet .
+
+method:ColumnData a owl:DatatypeProperty ;
+    rdfs:label "column data" ;
+    rdfs:domain emmo:Matrix .
+
+method:DataSet a owl:DatatypeProperty ;
+    rdfs:label "data set" ;
+    rdfs:domain mt:DataSet .
+
+method:PercentageElongation a sd:PercentageElongation,
+        owl:NamedIndividual ;
+    rdfs:label "PercentageElongation" .
+
+method:Preload a sd:Preload,
+        owl:NamedIndividual ;
+    rdfs:label "Preload" ;
+    mt:hasInput method:TensileTestingMachine .
+
+method:SpecimenID a mt:SpecimenID,
+        owl:NamedIndividual ;
+    rdfs:label "SpecimenID" .
+
+method:TensileTestExperiment a mt:TensileTestMeasurement,
+        owl:NamedIndividual ;
+    rdfs:label "TensileTestExperiment" ;
+    emmo:hasProperty method:ProjectName,
+        method:ProjectNumber,
+        method:Remark,
+        method:Temperature,
+        method:TestStandard,
+        method:TimeStamp ;
+    mt:hasInput method:TensileTestSpecimen ;
+    holistic:hasParticipant method:TensileTestingMachine,
+        method:Tester,
+        method:TestingFacility .
+
+method:TestTime a sd:TestTime,
+        owl:NamedIndividual ;
+    rdfs:label "TestTime" .
+
+method:TestingRate a sd:TestingRate,
+        owl:NamedIndividual ;
+    rdfs:label "TestingRate" ;
+    mt:hasInput method:TensileTestingMachine .
+
+method:WidthChange a sd:WidthChange,
+        owl:NamedIndividual ;
+    rdfs:label "WidthChange" .
+
+mt:ClassName a owl:Class ;
+    rdfs:label "Class Name>" .
+
+mt:Extension a owl:Class ;
+    rdfs:label "Extension" .
+
+mt:Specimen a owl:Class ;
+    rdfs:label "Specimen" .
+
+mt:SpecimenID a owl:Class ;
+    rdfs:label "Specimen I D" .
+
+mt:SpecimenWidth a owl:Class ;
+    rdfs:label "Specimen Width" .
+
+mt:SpecimentThickness a owl:Class ;
+    rdfs:label "Speciment Thickness" .
+
+mt:TensileTestMeasurement a owl:Class ;
+    rdfs:label "Tensile Test Measurement" .
+
+mt:TensileTestSpecimen a owl:Class ;
+    rdfs:label "Tensile Test Specimen" ;
+    rdfs:subClassOf mt:Specimen .
+
+mt:TensileTestingMachine a owl:Class ;
+    rdfs:label "Tensile Testing Machine" .
+
+isq:Force a owl:Class ;
+    rdfs:label "Force" .
+
+method:AbsoluteCrossheadTravel a sd:AbsoluteCrossheadTravel,
+        owl:NamedIndividual ;
+    rdfs:label "AbsoluteCrossheadTravel" .
+
+method:DisplacementTransducer a sd:DisplacementTransducer,
+        owl:NamedIndividual ;
+    rdfs:label "DisplacementTransducer" ;
+    mt:hasInput method:OriginalGaugeLength ;
+    mt:hasOutput method:Extension .
+
+method:Extension a mt:Extension,
+        owl:NamedIndividual ;
+    rdfs:label "Extension" .
+
+method:ForceMeasuringDevice a sd:ForceMeasuringDevice,
+        owl:NamedIndividual ;
+    rdfs:label "ForceMeasuringDevice" ;
+    mt:hasOutput method:StandardForce .
+
+method:MachineData a sd:MachineData,
+        owl:NamedIndividual ;
+    rdfs:label "MachineData" .
+
+method:Material a sd:SpecimenMaterial,
+        owl:NamedIndividual ;
+    rdfs:label "Material" .
+
+method:OriginalGaugeLength a sd:OriginalGaugeLength,
+        owl:NamedIndividual ;
+    rdfs:label "OriginalGaugeLength" .
+
+method:ParallelLength a sd:ParallelLength,
+        owl:NamedIndividual ;
+    rdfs:label "ParallelLength" .
+
+method:ProjectName a sd:ProjectName,
+        owl:NamedIndividual ;
+    rdfs:label "ProjectName" .
+
+method:ProjectNumber a sd:ProjectNumber,
+        owl:NamedIndividual ;
+    rdfs:label "ProjectNumber" .
+
+method:Remark a sd:Remark,
+        owl:NamedIndividual ;
+    rdfs:label "Remark" .
+
+method:SpecimenThickness a mt:SpecimentThickness,
+        owl:NamedIndividual ;
+    rdfs:label "SpecimenThickness" .
+
+method:SpecimenType a sd:SpecimenType,
+        owl:NamedIndividual ;
+    rdfs:label "SpecimenType" .
+
+method:SpecimenWidth a mt:SpecimenWidth,
+        owl:NamedIndividual ;
+    rdfs:label "SpecimenWidth" .
+
+method:StandardForce a sd:StandardForce,
+        owl:NamedIndividual ;
+    rdfs:label "StandardForce" .
+
+method:Temperature a sd:Temperature,
+        owl:NamedIndividual ;
+    rdfs:label "Temperature" .
+
+method:TensileTestSpecimen a mt:TensileTestSpecimen,
+        owl:NamedIndividual ;
+    rdfs:label "TensileTestSpecimen" ;
+    emmo:hasProperty method:ParallelLength,
+        method:SpecimenThickness,
+        method:SpecimenType,
+        method:SpecimenWidth ;
+    mero:hasPart method:Material .
+
+method:TestStandard a sd:TestStandard,
+        owl:NamedIndividual ;
+    rdfs:label "TestStandard" .
+
+method:TestingFacility a sd:TestingFacility,
+        owl:NamedIndividual ;
+    rdfs:label "TestingFacility" ;
+    mero:hasPart method:Tester .
+
+method:TimeStamp a sd:TimeStamp,
+        owl:NamedIndividual ;
+    rdfs:label "TimeStamp" .
+
+sd:AbsoluteCrossheadTravel a owl:Class ;
+    rdfs:label "Absolute Crosshead Travel" ;
+    rdfs:subClassOf isq:Length .
+
+sd:DisplacementTransducer a owl:Class ;
+    rdfs:label "Displacement Transducer" ;
+    rdfs:subClassOf manufacturing:Device .
+
+sd:ForceMeasuringDevice a owl:Class ;
+    rdfs:label "Force Measuring Device" ;
+    rdfs:subClassOf manufacturing:Device .
+
+sd:MachineData a owl:Class ;
+    rdfs:label "Machine Data" ;
+    rdfs:subClassOf mt:Identifier .
+
+sd:OriginalGaugeLength a owl:Class ;
+    rdfs:label "Original Gauge Length" ;
+    rdfs:subClassOf isq:Length .
+
+sd:ParallelLength a owl:Class ;
+    rdfs:label "Parallel Length" .
+
+sd:PercentageElongation a owl:Class ;
+    rdfs:label "Percentage Elongation" ;
+    rdfs:subClassOf isq:Length .
+
+sd:Preload a owl:Class ;
+    rdfs:label "Preload" .
+
+sd:ProjectName a owl:Class ;
+    rdfs:label "Project Name" .
+
+sd:ProjectNumber a owl:Class ;
+    rdfs:label "Project Number" ;
+    rdfs:subClassOf mt:Identifier .
+
+sd:Remark a owl:Class ;
+    rdfs:label "Remark" .
+
+sd:SpecimenMaterial a owl:Class ;
+    rdfs:label "Specimen Material" .
+
+sd:SpecimenType a owl:Class ;
+    rdfs:label "Specimen Type" ;
+    rdfs:subClassOf mt:Identifier .
+
+sd:StandardForce a owl:Class ;
+    rdfs:label "Standard Force" ;
+    rdfs:subClassOf isq:Force .
+
+sd:Temperature a owl:Class ;
+    rdfs:label "Temperature" .
+
+sd:TestStandard a owl:Class ;
+    rdfs:label "Test Standard" .
+
+sd:TestTime a owl:Class ;
+    rdfs:label "Test Time" ;
+    rdfs:subClassOf isq:Time .
+
+sd:Tester a owl:Class ;
+    rdfs:label "Tester" ;
+    rdfs:subClassOf perceptual:Symbolic .
+
+sd:TestingFacility a owl:Class ;
+    rdfs:label "Testing Facility" ;
+    rdfs:subClassOf perceptual:Symbolic .
+
+sd:TestingRate a owl:Class ;
+    rdfs:label "Testing Rate" .
+
+sd:TimeStamp a owl:Class ;
+    rdfs:label "Time Stamp" ;
+    rdfs:subClassOf isq:Time .
+
+sd:WidthChange a owl:Class ;
+    rdfs:label "Width Change" ;
+    rdfs:subClassOf isq:Length .
+
+emmo:Matrix a owl:Class ;
+    rdfs:label "Matrix" .
+
+mt:DataSet a owl:Class ;
+    rdfs:label "Data Set" .
+
+isq:Time a owl:Class ;
+    rdfs:label "Time" .
+
+manufacturing:Device a owl:Class ;
+    rdfs:label "Device" .
+
+method:Tester a sd:Tester,
+        owl:NamedIndividual ;
+    rdfs:label "Tester" .
+
+perceptual:Symbolic a owl:Class ;
+    rdfs:label "Symbolic" .
+
+mt:Identifier a owl:Class ;
+    rdfs:label "Identifier" .
+
+method:TensileTestingMachine a mt:TensileTestingMachine,
+        owl:NamedIndividual ;
+    rdfs:label "TensileTestingMachine" ;
+    mt:hasOutput method:AbsoluteCrossheadTravel ;
+    semiotics:hasSign method:MachineData ;
+    mero:hasPart method:DisplacementTransducer,
+        method:ForceMeasuringDevice .
+
+isq:Length a owl:Class ;
+    rdfs:label "Length" .
