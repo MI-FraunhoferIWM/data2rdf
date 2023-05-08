@@ -37,10 +37,11 @@ extensions = [
     "nbsphinx",  # Jupyter
     "IPython.sphinxext.ipython_console_highlighting",  # nb syntax highlight
     "sphinx.ext.autosectionlabel",  # Auto-generate section labels.
-    "sphinx_panels",  # Create panels in a grid layout or as drop-downs
+    "sphinx_design",  # Create panels in a grid layout or as drop-downs
     "sphinxcontrib.redoc",  # Render OpenAPI with redoc
 ]
 
+myst_enable_extensions = ["colon_fence"]
 master_doc = "index"
 
 # List of patterns, relative to source directory, that match files and

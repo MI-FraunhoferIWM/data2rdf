@@ -2,49 +2,27 @@
 
 A pipeline that allows for the conversion of various data formats into RDF.
 
-````{panels}
-   :body: text-center
+::::{grid}
+:::{grid-item-card} Introduction
+:link: intro.html
+Get started!
+:::
 
-   ---
-   **Introduction**
+:::{grid-item-card} Workflow
+:link: workflow.html
+Follow the workflow of the pipeline
+:::
 
-   Introduction to the Data2RDF module
+:::{grid-item-card} DSMS integration
+:link: dsms-integration.html
+How to integrate an annotation pipeline into the DSMS
+:::
 
-   ```{link-button} intro.html
-      :text: Get started!
-      :classes: btn-outline-primary stretched-link
-
-   ---
-
-   **Workflow**
-
-   Workflow of graph generation using Data2RDF
-
-   ```{link-button} workflow.html
-      :text: Follow the workflow of the pipeline
-      :classes: btn-outline-primary stretched-link
-
-   ---
-
-   **DSMS integration**
-
-   How to integrate a annotation pipeline into the DSMS
-
-   ```{link-button} dsms-integration.html
-      :text: DSMS integration
-      :classes: btn-outline-primary stretched-link
-
-   ---
-
-   **Examples**
-
-   Example notebooks
-
-   ```{link-button} examples.html
-      :text: Examples
-      :classes: btn-outline-primary stretched-link
-
-````
+:::{grid-item-card} Examples
+:link: examples.html
+Sample notebooks
+:::
+::::
 
 ```{toctree}
 :hidden: true
