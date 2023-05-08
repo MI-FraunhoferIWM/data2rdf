@@ -13,14 +13,9 @@ Get started!
 Follow the workflow of the pipeline
 :::
 
-:::{grid-item-card} DSMS integration
-:link: dsms-integration.html
-How to integrate an annotation pipeline into the DSMS
-:::
-
 :::{grid-item-card} Examples
 :link: examples.html
-Sample notebooks
+Sample notebooks and tutorials
 :::
 ::::
 
@@ -38,14 +33,6 @@ intro
 :maxdepth: 2
 
 workflow
-```
-
-```{toctree}
-:hidden: true
-:caption: DSMS integration
-:maxdepth: 2
-
-dsms-integration
 ```
 
 ```{toctree}
