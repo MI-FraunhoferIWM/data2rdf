@@ -74,7 +74,7 @@ latex_documents = [
         "false",
     )
 ]
-latex_logo = "assets/img/logo_dark.png"
+latex_logo = "assets/img/logo.png"
 latex_elements = {"figure_align": "H"}
 
 nbsphinx_allow_errors = True
