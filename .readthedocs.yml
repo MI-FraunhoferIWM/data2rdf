@@ -14,10 +14,11 @@ formats:
 build:
   os: ubuntu-22.04
   tools:
-    python:
-      version: "3.11"
-      install:
-        - method: pip
-          path: .
-          extra_requirements:
-            - docs
+    python: "3.11"
+
+python:
+  install:
+    - method: pip
+      path: .
+      extra_requirements:
+        - docs
