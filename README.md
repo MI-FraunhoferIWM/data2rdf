@@ -31,6 +31,13 @@ In windows it might be necessary to install curses manually. This can be done wi
 pip install windows-curses
 ```
 
+Another **critical** dependency is the Python-binary for `magic` under Windows:
+
+```
+pip install python-magic-bin
+```
+
+
 ## Debug a Chowlk XML File
 
 In some cases when the syntax of the draw.io file is not correct (e.g.: missing label on arrow, bracket in class file) chowlk crashes. The only (pretty annoying but working) way to find the wrong syntax is to execute chowlk with the command line for that file and inclemently remove elements from the draw.io diagram. This way you can find the wrong syntax by process of elimination.

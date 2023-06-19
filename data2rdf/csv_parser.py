@@ -73,9 +73,8 @@ class CSVParser:
         Get file encoding
         """
         rawdata = open(self.f_path, "rb").read()
-        buffered = magic.open(magic.MAGIC_MIME_ENCODING)
-        buffered.load()
-        self.encoding = buffered.buffer(rawdata)
+        buffered = magic.Magic(mime_encoding=True)
+        self.encoding = buffered.from_buffer(rawdata)
 
     def load_file(self):
         self.file = open(self.f_path, encoding=self.encoding).read()
