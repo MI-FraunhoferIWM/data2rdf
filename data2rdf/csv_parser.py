@@ -1,7 +1,7 @@
 import uuid
 import magic
 import pandas as pd
-
+import io
 
 class CSVParser:
 

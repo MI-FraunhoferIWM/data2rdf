@@ -2,6 +2,7 @@ import uuid
 
 import pandas as pd
 from openpyxl import load_workbook
+import io
 
 
 class ExcelParser:
