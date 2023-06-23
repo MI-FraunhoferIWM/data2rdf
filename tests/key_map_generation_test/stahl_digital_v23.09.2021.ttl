@@ -1,0 +1,1131 @@
+@prefix ns1: <http://www.w3.org/2004/02/skos/core#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix sdi: <http://www.semanticweb.org/stahl-digital#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+sdi: a <http://www.w3.org/2002/07/owl#Ontology> .
+
+sdi:AbsoluteCrossheadTravel a <http://www.w3.org/2002/07/owl#Class> ;
+    sdi:defaultUnit "mm"@en ;
+    sdi:norm "standard definition"@en ;
+    rdfs:comment "Absolute position der Traverse"@de ;
+    rdfs:isDefinedBy "Author"@de ;
+    rdfs:subClassOf sdi:Column-Data,
+        sdi:TimeSeriesData ;
+    ns1:example "1158.37"@en ;
+    ns1:prefLabel "Traversenweg absolut"@de,
+        "Absolute crosshead travel"@en .
+
+sdi:CoefficientOfCorrelation a <http://www.w3.org/2002/07/owl#Class> ;
+    sdi:defaultUnit "-"@en ;
+    sdi:norm "DIN EN ISO 6892-1"@en ;
+    sdi:symbol "R2"@en,
+        "R^2"@latex ;
+    rdfs:isDefinedBy "DIN EN ISO 6892-1, 3.15"@de,
+        "DIN EN ISO 6892-1, 3.15"@en ;
+    rdfs:subClassOf sdi:Basic-Term,
+        sdi:QuantityMetaData ;
+    ns1:prefLabel "Bestimmtheitsmaß"@de,
+        "coefficient of correlation"@en .
+
+sdi:Computer-controlledTensileTestingMachine a <http://www.w3.org/2002/07/owl#Class> ;
+    sdi:norm "DIN EN ISO 6892-1"@en ;
+    rdfs:isDefinedBy "DIN EN ISO 6892-1, 3.12"@de,
+        "DIN EN ISO 6892-1, 3.12"@en ;
+    rdfs:subClassOf sdi:Basic-Term,
+        sdi:IdentifierMetaData ;
+    ns1:prefLabel "rechnergestützte Zugprüfmaschine"@de,
+        "computer-controlled tensile testing machine"@en .
+
+sdi:CrossheadDisplacement a <http://www.w3.org/2002/07/owl#Class> ;
+    sdi:defaultUnit "mm"@en ;
+    sdi:norm "DIN EN ISO 6892-1 (engl. version 2017)"@en ;
+    rdfs:subClassOf sdi:Column-Data,
+        sdi:TimeSeriesData ;
+    ns1:example 14786 ;
+    ns1:prefLabel "Maschine"@de,
+        "Crosshead displacement"@en .
+
+sdi:CrossheadSeparationRate a <http://www.w3.org/2002/07/owl#Class> ;
+    sdi:defaultUnit "mm s −1"@en,
+        "mm/s"@en ;
+    sdi:norm "DIN EN ISO 6892-1"@en,
+        "DIN EN ISO 6892-1 (engl. version 2017)"@en ;
+    sdi:symbol "vc"@en,
+        "\\nu_c"@latex ;
+    rdfs:isDefinedBy "DIN EN ISO 6892-1, 3.7.3"@de,
+        "DIN EN ISO 6892-1, 3.7.3"@en ;
+    rdfs:subClassOf sdi:Basic-Term,
+        sdi:Meta-Data,
+        sdi:QuantityMetaData ;
+    ns1:example "0.02"@en ;
+    ns1:prefLabel "Prüfgeschwindigkeit"@de,
+        "Traversengeschwindigkeit"@de,
+        "Crosshead separation rate vc"@en,
+        "crosshead separation rate"@en .
+
+sdi:Crosssection a <http://www.w3.org/2002/07/owl#Class> ;
+    sdi:defaultUnit "mm2"@en ;
+    sdi:norm "standard definition"@en ;
+    rdfs:subClassOf sdi:Meta-Data-Computed,
+        sdi:QuantityMetaData ;
+    ns1:prefLabel "Querschnitt"@de,
+        "Crosssection"@en .
+
+sdi:DataSamplingFrequency a <http://www.w3.org/2002/07/owl#Class> ;
+    sdi:norm "DIN EN ISO 6892-1"@en ;
+    rdfs:comment "Die Frequenz-Bandweite jedes Messkanals sowie die Messwerterfassungsfrequenz sollten ausreichend hoch sein, damit die zu bestimmenden Werkstoffkenngrößen aufgezeichnet werden können. So kann z. B. bei Ermittlung von ReH die Gleichung (A.1) zur Bestimmung der in 1/Sekunde angegebenen Mindestmesswert-erfassungsgrenze fmin verwendet werden:"@de ;
+    rdfs:isDefinedBy "DIN EN ISO 6892-1"@de ;
+    rdfs:subClassOf sdi:IdentifierMetaData,
+        sdi:Meta-Data ;
+    ns1:prefLabel "Messwerterfassungsfrequenz"@de,
+        "Data sampling frequency"@en .
+
+sdi:DefaultValue a <http://www.w3.org/2002/07/owl#Class> ;
+    sdi:norm "DIN EN ISO 6892-1"@en ;
+    rdfs:isDefinedBy "DIN EN ISO 6892-1, 3.14"@de,
+        "DIN EN ISO 6892-1, 3.14"@en ;
+    rdfs:subClassOf sdi:Basic-Term,
+        sdi:IdentifierMetaData ;
+    ns1:prefLabel "Vorgabewert"@de,
+        "default value"@en .
+
+sdi:Diameter a <http://www.w3.org/2002/07/owl#Class> ;
+    sdi:defaultUnit "mm"@en ;
+    sdi:norm "DIN EN ISO 6892-1 (engl. version 2017)"@en ;
+    rdfs:subClassOf sdi:Meta-Data,
+        sdi:QuantityMetaData ;
+    ns1:prefLabel "Probendurchmesser d0"@de,
+        "Diameter"@en .
+
+sdi:DiameterAfterFracture_1 a <http://www.w3.org/2002/07/owl#Class> ;
+    sdi:defaultUnit "mm"@en ;
+    sdi:norm "standard definition specific"@en ;
+    rdfs:subClassOf sdi:Meta-Data,
+        sdi:QuantityMetaData ;
+    ns1:prefLabel "Probendurchmesser nach Bruch D1"@de,
+        "Diameter D1 after fracture"@en .
+
+sdi:DiameterAfterFracture_2 a <http://www.w3.org/2002/07/owl#Class> ;
+    sdi:defaultUnit "mm"@en ;
+    sdi:norm "standard definition specific"@en ;
+    rdfs:subClassOf sdi:Meta-Data,
+        sdi:QuantityMetaData ;
+    ns1:prefLabel "Probendurchmesser nach Bruch D2"@de,
+        "Diameter D2 after fracture"@en .
+
+sdi:DisplacementTransducer a <http://www.w3.org/2002/07/owl#Class> ;
+    sdi:norm "DIN EN ISO 6892-1"@en,
+        "DIN EN ISO 6892-1 (engl. version 2017)"@en,
+        "standard definition"@en ;
+    rdfs:comment "Dehnungsaufnehmers (Extensometer)"@de ;
+    rdfs:subClassOf sdi:Equipment,
+        sdi:IdentifierMetaData,
+        sdi:Meta-Data ;
+    ns1:example "Clip gauge"@en,
+        "makroXtens"@en ;
+    ns1:prefLabel "Dehnungsaufnehmer"@de,
+        "Wegaufnehmer"@de,
+        "Displacement transducer"@en,
+        "extensometer system"@en .
+
+sdi:Elongation a <http://www.w3.org/2002/07/owl#Class> ;
+    sdi:defaultUnit 1 ;
+    sdi:norm "DIN EN ISO 6892-1"@en ;
+    rdfs:comment "Zunahme der Anfangsmesslänge (3.1.1) zu einem beliebigen Zeitpunkt während des Versuchs"@de ;
+    rdfs:isDefinedBy "DIN EN ISO 6892-1, 3.3"@de,
+        "DIN EN ISO 6892-1, 3.3"@en ;
+    rdfs:subClassOf sdi:Basic-Term,
+        sdi:QuantityMetaData ;
+    ns1:prefLabel "Verlängerung"@de,
+        "elongation"@en .
+
+sdi:EngineeringStress a <http://www.w3.org/2002/07/owl#Class> ;
+    sdi:defaultUnit "MPa"@en ;
+    sdi:norm "standard definition specific"@en ;
+    sdi:symbol "Sig-technisch"@en,
+        "Sig-technisch"@latex ;
+    rdfs:subClassOf sdi:Column-Data-Computed,
+        sdi:TimeSeriesData ;
+    ns1:prefLabel "Sigma-technisch"@de,
+        "engineering stress"@en .
+
+sdi:EstimatedStrainRateOverTheParallelLength a <http://www.w3.org/2002/07/owl#Class> ;
+    sdi:defaultUnit "s-1"@en ;
+    sdi:norm "DIN EN ISO 6892-1"@en ;
+    sdi:symbol "eLc"@en,
+        "\\dot{e}_{L_c}"@latex ;
+    rdfs:isDefinedBy "DIN EN ISO 6892-1, 3.7.2"@de,
+        "DIN EN ISO 6892-1, 3.7.2"@en ;
+    rdfs:subClassOf sdi:Basic-Term,
+        sdi:QuantityMetaData ;
+    ns1:prefLabel "abgeschätzte Dehngeschwindigkeit über die parallele Länge"@de,
+        "estimated strain rate over the parallel length"@en .
+
+sdi:ExperimentIdentifier a <http://www.w3.org/2002/07/owl#Class> ;
+    sdi:norm "user defined"@en ;
+    rdfs:subClassOf sdi:IdentifierMetaData,
+        sdi:Meta-Data ;
+    ns1:prefLabel "Proben-ID"@de,
+        "Identifier based on Label-System"@en .
+
+sdi:Extension a <http://www.w3.org/2002/07/owl#Class> ;
+    sdi:defaultUnit "mm"@en,
+        "mm "@en ;
+    sdi:norm "DIN EN ISO 6892-1"@en,
+        "DIN EN ISO 6892-1 (engl. version 2017)"@en ;
+    sdi:symbol "dL"@latex ;
+    rdfs:isDefinedBy "DIN EN ISO 6892-1, 3.6"@de,
+        "DIN EN ISO 6892-1, 3.6"@en ;
+    rdfs:subClassOf sdi:Basic-Term,
+        sdi:Column-Data,
+        sdi:QuantityMetaData,
+        sdi:TimeSeriesData ;
+    ns1:example "-3.93633e-05"@en,
+        "0.001"@en ;
+    ns1:prefLabel "Standardweg"@de,
+        "Verlängerung (der Extensometer-Messlänge)"@de,
+        "dL"@de,
+        "Extension"@en,
+        "Standard travel"@en,
+        "extension"@en .
+
+sdi:ExtensionAtFracture a <http://www.w3.org/2002/07/owl#Class> ;
+    sdi:defaultUnit "mm"@en ;
+    sdi:norm "standard definition specific"@en ;
+    sdi:symbol "dLBruch"@latex ;
+    rdfs:subClassOf sdi:Meta-Data,
+        sdi:QuantityMetaData ;
+    ns1:prefLabel "Bruchverlängerung"@de,
+        "Extension at fracture"@en .
+
+sdi:ExtensometerGaugeLength a <http://www.w3.org/2002/07/owl#Class> ;
+    sdi:defaultUnit "mm"@en ;
+    sdi:norm "DIN EN ISO 6892-1"@en,
+        "DIN EN ISO 6892-1 (engl. version 2017)"@en ;
+    sdi:symbol "Le"@en,
+        "L_e"@latex ;
+    rdfs:isDefinedBy "DIN EN ISO 6892-1, 3.5"@de,
+        "DIN EN ISO 6892-1, 3.5"@en ;
+    rdfs:subClassOf sdi:Basic-Term,
+        sdi:Meta-Data,
+        sdi:QuantityMetaData ;
+    ns1:example 20 ;
+    ns1:prefLabel "Extensometer-Messlänge"@de,
+        "Messlänge Lo"@de,
+        "Extensometer gauge length "@en,
+        "extensometer gauge length"@en .
+
+sdi:FinalGaugeLengthAfterFracture a <http://www.w3.org/2002/07/owl#Class> ;
+    sdi:defaultUnit "mm"@en ;
+    sdi:norm "DIN EN ISO 6892-1"@en ;
+    sdi:symbol "Lu"@en,
+        "L_u"@latex ;
+    rdfs:comment "Länge zwischen den Marken zur Kennzeichnung der Messlänge (3.1) auf der Probe, die nach dem Bruch bei Raumtemperatur gemessen wird, nachdem die beiden Probenbruchstücke sorgfältig so zusammengefügt wurden, dass ihre Achsen in einer Geraden liegen"@de ;
+    rdfs:isDefinedBy "DIN EN ISO 6892-1, 3.1.2"@de,
+        "DIN EN ISO 6892-1, 3.1.2"@en ;
+    rdfs:subClassOf sdi:Basic-Term,
+        sdi:QuantityMetaData ;
+    ns1:prefLabel "Messlänge nach dem Bruch"@de,
+        "final gauge length after fracture"@en .
+
+sdi:Force a <http://www.w3.org/2002/07/owl#Class> ;
+    sdi:defaultUnit "kN"@en ;
+    sdi:norm "DIN EN ISO 6892-1 und DIN EN ISO 6892-2"@en ;
+    rdfs:subClassOf sdi:Column-Data,
+        sdi:TimeSeriesData ;
+    ns1:example "0.105"@en ;
+    ns1:prefLabel "F"@de,
+        "Force-measuring device"@en .
+
+sdi:ForceMeasuringDevice a <http://www.w3.org/2002/07/owl#Class> ;
+    sdi:norm "DIN EN ISO 6892-1"@en,
+        "DIN EN ISO 6892-1 (engl. version 2017)"@en ;
+    rdfs:comment "Die Kraftmesseinrichtung der Zugprüfmaschine muss im relevanten Bereich mindestens der Klasse 1 nach ISO 7500-1 entsprechen."@de,
+        "Genauigkeit der Prüfeinrichtungen: Die Kraftmesseinrichtung der Prüfmaschine muss mindestens der Klasse 1 nach ISO 7500-1 entsprechen."@de,
+        """
+The force-measuring system of the testing machine shall be in accordance with ISO 7500-1, class 1,
+or better."""@en ;
+    rdfs:isDefinedBy "DIN EN ISO 6892-1"@de,
+        "DIN EN ISO 6892-1, 9"@de,
+        "DIN EN ISO 6892-1, 9"@en ;
+    rdfs:subClassOf sdi:IdentifierMetaData,
+        sdi:Meta-Data ;
+    ns1:example "xForce K"@en ;
+    ns1:prefLabel "Kraftaufnehmer"@de,
+        "Kraftmesseinrichtung"@de,
+        "Kraftmesseinrichtungen"@de,
+        "Force transducer"@en,
+        "Force-measuring device"@en,
+        "Force-measuring system"@en,
+        "force-measuring device"@en .
+
+sdi:Fracture a <http://www.w3.org/2002/07/owl#Class> ;
+    sdi:norm "DIN EN ISO 6892-1"@en ;
+    rdfs:isDefinedBy "DIN EN ISO 6892-1, 3.11"@de,
+        "DIN EN ISO 6892-1, 3.11"@en ;
+    rdfs:subClassOf sdi:Basic-Term,
+        sdi:IdentifierMetaData ;
+    ns1:prefLabel "Bruch"@de,
+        "fracture"@en .
+
+sdi:GaugeLength a <http://www.w3.org/2002/07/owl#Class> ;
+    sdi:defaultUnit "mm"@en ;
+    sdi:norm "DIN EN ISO 6892-1"@en ;
+    sdi:symbol "L"@en,
+        "L"@latex ;
+    rdfs:comment "Länge des parallelen Teils der Probe, an dem zu einem beliebigen Zeitpunkt während des Versuchs die Verlängerung gemessen wird"@de ;
+    rdfs:isDefinedBy "DIN EN ISO 6892-1, 3.1"@de,
+        "DIN EN ISO 6892-1, 3.1"@en ;
+    rdfs:subClassOf sdi:Basic-Term,
+        sdi:QuantityMetaData ;
+    ns1:prefLabel "Messlänge"@de,
+        "gauge length"@en .
+
+sdi:LowerYieldStrength a <http://www.w3.org/2002/07/owl#Class> ;
+    sdi:defaultUnit "MPa"@en ;
+    sdi:norm "DIN EN ISO 6892-1"@en,
+        "DIN EN ISO 6892-1 (engl. version 2017)"@en ;
+    sdi:symbol "ReL"@en,
+        "R_{eL}"@latex ;
+    rdfs:isDefinedBy "DIN EN ISO 6892-1, 3.10.2.2"@de,
+        "DIN EN ISO 6892-1, 3.10.2.2"@en ;
+    rdfs:subClassOf sdi:Basic-Term,
+        sdi:Meta-Data-Computed,
+        sdi:QuantityMetaData ;
+    ns1:prefLabel "Dehngrenze ReL"@de,
+        "untere Streckgrenze"@de,
+        "lower yield strength"@en .
+
+sdi:Machine a <http://www.w3.org/2002/07/owl#Class> ;
+    sdi:norm "DIN EN ISO 6892-1"@en,
+        "DIN EN ISO 6892-1 (engl. version 2017)"@en ;
+    rdfs:comment "Die Prüfmaschine sollte mit einer analogen Messwertausgabe, die nicht durch die Software beeinflusst wird, ausgerüstet sein. Ist eine solche Ausgabe nicht vorgesehen, sollten digitale Rohdaten ausgegeben werden können. Der Prüfmaschinenhersteller sollte Auskunft über die Erzeugung der digitalen Rohdaten und ihre Verarbeitung durch die Software geben. Die Rohdaten sollten in SI-Einheiten angegeben werden und sich auf die Kraft, die Verlängerung (der Extensometer-Messlänge), den Traversenweg, die Zeit und die Probenmaße beziehen. Ein Beispiel eines geeigneten Datenformats ist in Bild A.1 dargestellt."@de ;
+    rdfs:isDefinedBy "DIN EN ISO 6892-1"@de ;
+    rdfs:subClassOf sdi:IdentifierMetaData,
+        sdi:Meta-Data ;
+    ns1:example "Instron 5985"@en,
+        "ZwickRoell Kappa50DS"@en ;
+    ns1:prefLabel "Maschinendaten"@de,
+        "Prüfmaschine"@de,
+        "Zugprüfmaschine"@de,
+        "Machine"@en,
+        "Machine data"@en .
+
+sdi:Material a <http://www.w3.org/2002/07/owl#Class> ;
+    sdi:norm "standard definition specific"@en ;
+    rdfs:subClassOf sdi:IdentifierMetaData,
+        sdi:Meta-Data ;
+    ns1:example "DX56D"@en,
+        "HX340LAD"@en ;
+    ns1:prefLabel "Werkstoff"@de,
+        "Material"@en .
+
+sdi:MaximumForce a <http://www.w3.org/2002/07/owl#Class> ;
+    sdi:defaultUnit "kN"@en ;
+    sdi:norm "DIN EN ISO 6892-1 (engl. version 2017)"@en ;
+    sdi:symbol "Fm"@latex ;
+    rdfs:subClassOf sdi:Meta-Data,
+        sdi:QuantityMetaData ;
+    ns1:example 7008 ;
+    ns1:prefLabel "Höchstzugkraft Fm"@de,
+        "maximum force"@en .
+
+sdi:MaximumForceDiscontinousYielding a <http://www.w3.org/2002/07/owl#Class> ;
+    sdi:defaultUnit "N"@en ;
+    sdi:norm "DIN EN ISO 6892-1"@en ;
+    sdi:symbol "Fm"@en,
+        "F_m"@latex ;
+    rdfs:isDefinedBy "DIN EN ISO 6892-1, 3.9.2"@de,
+        "DIN EN ISO 6892-1, 3.9.2"@en ;
+    rdfs:subClassOf sdi:Basic-Term,
+        sdi:QuantityMetaData ;
+    ns1:prefLabel "Höchstkraft"@de,
+        "maximum force \"discontinous yielding\""@en .
+
+sdi:MaximumForceNoDiscontinousYielding a <http://www.w3.org/2002/07/owl#Class> ;
+    sdi:defaultUnit "N"@en ;
+    sdi:norm "DIN EN ISO 6892-1"@en ;
+    sdi:symbol "Fm"@en,
+        "F_m"@latex ;
+    rdfs:isDefinedBy "DIN EN ISO 6892-1, 3.9.1"@de,
+        "DIN EN ISO 6892-1, 3.9.1"@en ;
+    rdfs:subClassOf sdi:Basic-Term,
+        sdi:QuantityMetaData ;
+    ns1:prefLabel "Höchstkraft"@de,
+        "maximum force \"no discontinous yielding\""@en .
+
+sdi:MinimumCrosssectionAfterFracture a <http://www.w3.org/2002/07/owl#Class> ;
+    sdi:defaultUnit "mm2"@en ;
+    sdi:norm "DIN EN ISO 6892-1 (engl. version 2017)"@en ;
+    sdi:symbol "Su"@en,
+        "S_{u}"@latex ;
+    rdfs:subClassOf sdi:Meta-Data-Computed,
+        sdi:QuantityMetaData ;
+    ns1:example 4879 ;
+    ns1:prefLabel "Su"@de,
+        "Minimum cross-sectional area after fracture"@en .
+
+sdi:ModulusOfElasticity a <http://www.w3.org/2002/07/owl#Class> ;
+    sdi:defaultUnit "GPa"@en,
+        "MPa"@en ;
+    sdi:norm "DIN EN ISO 6892-1"@en,
+        "DIN EN ISO 6892-1 (engl. version 2017)"@en ;
+    sdi:symbol "E"@en,
+        "E"@latex ;
+    rdfs:isDefinedBy "DIN EN ISO 6892-1, 3.13"@de,
+        "DIN EN ISO 6892-1, 3.13"@en ;
+    rdfs:subClassOf sdi:Basic-Term,
+        sdi:Meta-Data-Computed,
+        sdi:QuantityMetaData ;
+    ns1:example 187170,
+        187171 ;
+    ns1:prefLabel "EModul"@de,
+        "Elastizitätsmodul"@de,
+        "modulus of elasticity"@en .
+
+sdi:OriginalCrosssection a <http://www.w3.org/2002/07/owl#Class> ;
+    sdi:defaultUnit "mm2"@en ;
+    sdi:norm "DIN EN ISO 6892-1"@en ;
+    sdi:symbol "S0"@en,
+        "S_{0}"@latex ;
+    rdfs:subClassOf sdi:Meta-Data-Computed,
+        sdi:QuantityMetaData ;
+    ns1:example "14.98"@en ;
+    ns1:prefLabel "Anfangsquerschnitt So"@de,
+        "So"@de,
+        "original cross-sectional area of the parallel length"@en .
+
+sdi:OriginalGaugeLength a <http://www.w3.org/2002/07/owl#Class> ;
+    sdi:defaultUnit "mm"@en ;
+    sdi:norm "DIN EN ISO 6892-1"@en,
+        "DIN EN ISO 6892-1 (engl. version 2017)"@en ;
+    sdi:symbol "L0"@en,
+        "Lo"@en,
+        "L_0"@latex,
+        "L_o"@latex ;
+    rdfs:comment "Länge zwischen den Marken zur Kennzeichnung der Messlänge (3.1) auf der Probe, die vor dem Versuch bei Raumtemperatur gemessen wird"@de ;
+    rdfs:isDefinedBy "DIN EN ISO 6892-1, 3.1.1"@de,
+        "DIN EN ISO 6892-1, 3.1.1"@en ;
+    rdfs:subClassOf sdi:Meta-Data,
+        sdi:QuantityMetaData ;
+    ns1:example 20,
+        80 ;
+    ns1:prefLabel "Anfangsmesslänge"@de,
+        "Messlänge Lo"@de,
+        "Messlänge Standardweg"@de,
+        "Initial measuring length"@en,
+        "Original gauge length "@en,
+        "original gauge length"@en .
+
+sdi:OriginalThickness a <http://www.w3.org/2002/07/owl#Class> ;
+    sdi:defaultUnit "mm"@en ;
+    sdi:norm "DIN EN ISO 6892-1 (engl. version 2017)"@en ;
+    rdfs:subClassOf sdi:Meta-Data,
+        sdi:QuantityMetaData ;
+    ns1:example 1490 ;
+    ns1:prefLabel "Probendicke a"@de,
+        "Original thickness of a flat test piece"@en .
+
+sdi:ParallelLength a <http://www.w3.org/2002/07/owl#Class> ;
+    sdi:defaultUnit "mm"@en ;
+    sdi:norm "DIN EN ISO 6892-1"@en,
+        "DIN EN ISO 6892-1 (engl. version 2017)"@en ;
+    sdi:symbol "Lc"@en,
+        "L_c"@latex ;
+    rdfs:comment "Länge des parallelen reduzierten Querschnitts der Probe"@de ;
+    rdfs:isDefinedBy "DIN EN ISO 6892-1, 3.2"@de,
+        "DIN EN ISO 6892-1, 3.2"@en ;
+    rdfs:subClassOf sdi:Meta-Data,
+        sdi:QuantityMetaData ;
+    ns1:example 25,
+        120 ;
+    ns1:prefLabel "Messlänge Lc"@de,
+        "Versuchslänge"@de,
+        "parallele Länge"@de,
+        "Parallel length"@en,
+        "Test length"@en,
+        "parallel length"@en .
+
+sdi:PercentageElongation a <http://www.w3.org/2002/07/owl#Class> ;
+    sdi:defaultUnit "%"@en,
+        "mm"@en ;
+    sdi:norm "DIN EN ISO 6892-1"@en ;
+    rdfs:comment "Verlängerung (3.3), angegeben in Prozent, bezogen auf die Anfangsmesslänge (3.1.1)"@de ;
+    rdfs:isDefinedBy "DIN EN ISO 6892-1, 3.4"@de,
+        "DIN EN ISO 6892-1, 3.4"@en ;
+    rdfs:subClassOf sdi:Basic-Term,
+        sdi:Column-Data,
+        sdi:QuantityMetaData,
+        sdi:TimeSeriesData ;
+    ns1:example "-3.93633e-05"@en ;
+    ns1:prefLabel "Dehnung"@de,
+        "Elongation"@en,
+        "percentage elongation"@en .
+
+sdi:PercentageElongationAfterFracture a <http://www.w3.org/2002/07/owl#Class> ;
+    sdi:defaultUnit "%"@en ;
+    sdi:norm "DIN EN ISO 6892-1"@en,
+        "DIN EN ISO 6892-1 (engl. version 2017)"@en ;
+    sdi:symbol "A"@en,
+        "A20mm"@en,
+        "A"@latex,
+        "A_{20mm}"@latex ;
+    rdfs:comment "bleibende Verlängerung (3.3) der Messlänge nach dem Bruch (Lu − Lo), angegeben in Prozent, bezogen auf die Anfangsmesslänge (3.1.1)"@de ;
+    rdfs:isDefinedBy "DIN EN ISO 6892-1, 3.4.2"@de,
+        "DIN EN ISO 6892-1, 3.4.2"@en ;
+    rdfs:subClassOf sdi:Basic-Term,
+        sdi:Meta-Data-Computed,
+        sdi:QuantityMetaData ;
+    ns1:example "35.6"@en,
+        "35.7"@en ;
+    ns1:prefLabel "A"@de,
+        "Bruchdehnung"@de,
+        "Bruchdehnung A20mm"@de,
+        "percentage elongation after fracture"@en .
+
+sdi:PercentageExtension a <http://www.w3.org/2002/07/owl#Class> ;
+    sdi:defaultUnit 1 ;
+    sdi:norm "DIN EN ISO 6892-1 (engl. version 2017)"@en ;
+    sdi:symbol "eps-technisch"@en,
+        "eps-technisch"@latex ;
+    rdfs:subClassOf sdi:Column-Data-Computed,
+        sdi:TimeSeriesData ;
+    ns1:example "0.002"@en ;
+    ns1:prefLabel "eps-technisch"@de,
+        "engineering strain"@en,
+        "percentage extension"@en .
+
+sdi:PercentagePermanentElongation a <http://www.w3.org/2002/07/owl#Class> ;
+    sdi:defaultUnit "%"@en ;
+    sdi:norm "DIN EN ISO 6892-1"@en ;
+    rdfs:comment "Zunahme der Anfangsmesslänge (3.1.1) einer Probe nach Entfernen einer festgelegten Zugspannung, angegeben in Prozent, bezogen auf die Anfangsmesslänge (3.1.1)"@de ;
+    rdfs:isDefinedBy "DIN EN ISO 6892-1, 3.4.1"@de,
+        "DIN EN ISO 6892-1, 3.4.1"@en ;
+    rdfs:subClassOf sdi:Basic-Term,
+        sdi:QuantityMetaData ;
+    ns1:prefLabel "bleibende Dehnung"@de,
+        "percentage permanent elongation"@en .
+
+sdi:PercentagePermanentExtension a <http://www.w3.org/2002/07/owl#Class> ;
+    sdi:defaultUnit 1,
+        "%"@en ;
+    sdi:norm "DIN EN ISO 6892-1"@en,
+        "DIN EN ISO 6892-1 (engl. version 2017)"@en ;
+    sdi:symbol "eps-plast"@en,
+        "eps-plast"@latex ;
+    rdfs:isDefinedBy "DIN EN ISO 6892-1, 3.6.2"@de,
+        "DIN EN ISO 6892-1, 3.6.2"@en ;
+    rdfs:subClassOf sdi:Basic-Term,
+        sdi:Column-Data-Computed,
+        sdi:QuantityMetaData,
+        sdi:TimeSeriesData ;
+    ns1:example "0.001"@en ;
+    ns1:prefLabel "bleibende Extensometer-Dehnung"@de,
+        "eps-plast"@de,
+        "percentage permanent extension"@en,
+        "percentage permanent extension "@en .
+
+sdi:PercentagePlasticExtensionAtMaximumForce a <http://www.w3.org/2002/07/owl#Class> ;
+    sdi:defaultUnit "%"@en ;
+    sdi:norm "DIN EN ISO 6892-1"@en,
+        "DIN EN ISO 6892-1 (engl. version 2017)"@en ;
+    sdi:symbol "Ag"@en,
+        "A_g"@latex,
+        "A_{g}"@latex ;
+    rdfs:isDefinedBy "DIN EN ISO 6892-1, 3.6.5"@de,
+        "DIN EN ISO 6892-1, 3.6.5"@en ;
+    rdfs:subClassOf sdi:Basic-Term,
+        sdi:Meta-Data-Computed,
+        sdi:QuantityMetaData ;
+    ns1:example "16.34"@en ;
+    ns1:prefLabel "Dehnung bei Höchstkraft Ag"@de,
+        "plastische Extensometer-Dehnung bei Höchstkraft"@de,
+        "percentage plastic extension at maximum force"@en .
+
+sdi:PercentageReductionOfArea a <http://www.w3.org/2002/07/owl#Class> ;
+    sdi:defaultUnit "%"@en ;
+    sdi:norm "DIN EN ISO 6892-1"@en,
+        "DIN EN ISO 6892-1 (engl. version 2017)"@en ;
+    sdi:symbol "Z"@en,
+        "Z"@latex ;
+    rdfs:isDefinedBy "DIN EN ISO 6892-1, 3.8"@de,
+        "DIN EN ISO 6892-1, 3.8"@en ;
+    rdfs:subClassOf sdi:Basic-Term,
+        sdi:Meta-Data-Computed,
+        sdi:QuantityMetaData ;
+    ns1:example "67.42"@en ;
+    ns1:prefLabel "Brucheinschnürung"@de,
+        "Brucheinschnürung Z"@de,
+        "Z"@de,
+        "percentage reduction of area"@en .
+
+sdi:PercentageTotalExtensionAtFracture a <http://www.w3.org/2002/07/owl#Class> ;
+    sdi:defaultUnit "%"@en ;
+    sdi:norm "DIN EN ISO 6892-1"@en ;
+    sdi:symbol "At"@en,
+        "A_t"@latex ;
+    rdfs:isDefinedBy "DIN EN ISO 6892-1, 3.6.6"@de,
+        "DIN EN ISO 6892-1, 3.6.6"@en ;
+    rdfs:subClassOf sdi:Basic-Term,
+        sdi:QuantityMetaData ;
+    ns1:prefLabel "gesamte Extensometer-Dehnung beim Bruch"@de,
+        "percentage total extension at fracture"@en .
+
+sdi:PercentageTotalExtensionAtMaximumForce a <http://www.w3.org/2002/07/owl#Class> ;
+    sdi:defaultUnit "%"@en ;
+    sdi:norm "DIN EN ISO 6892-1"@en ;
+    sdi:symbol "Agt"@en,
+        "A_{gt}"@latex ;
+    rdfs:isDefinedBy "DIN EN ISO 6892-1, 3.6.4"@de,
+        "DIN EN ISO 6892-1, 3.6.4"@en ;
+    rdfs:subClassOf sdi:Basic-Term,
+        sdi:QuantityMetaData ;
+    ns1:prefLabel "gesamte Extensometer-Dehnung bei Höchstkraft"@de,
+        "percentage total extension at maximum force"@en .
+
+sdi:PercentageYieldPointExtension a <http://www.w3.org/2002/07/owl#Class> ;
+    sdi:defaultUnit "%"@en ;
+    sdi:norm "DIN EN ISO 6892-1"@en ;
+    sdi:symbol "Ae"@en,
+        "A_e"@latex ;
+    rdfs:isDefinedBy "DIN EN ISO 6892-1, 3.6.3"@de,
+        "DIN EN ISO 6892-1, 3.6.3"@en ;
+    rdfs:subClassOf sdi:Basic-Term,
+        sdi:QuantityMetaData ;
+    ns1:prefLabel "Streckgrenzen-Extensometer-Dehnung"@de,
+        "percentage yield point extension"@en .
+
+sdi:PermanentSetStrength a <http://www.w3.org/2002/07/owl#Class> ;
+    sdi:defaultUnit "MPa"@en ;
+    sdi:norm "DIN EN ISO 6892-1"@en ;
+    sdi:symbol "Rr"@en,
+        "R_{r}"@latex ;
+    rdfs:isDefinedBy "DIN EN ISO 6892-1, 3.10.5"@de,
+        "DIN EN ISO 6892-1, 3.10.5"@en ;
+    rdfs:subClassOf sdi:Basic-Term,
+        sdi:QuantityMetaData ;
+    ns1:prefLabel "Grenzwert der Spannung für eine vorgegebene bleibende Dehnung"@de,
+        "permanent set strength"@en .
+
+sdi:PoissonsRatio a <http://www.w3.org/2002/07/owl#Class> ;
+    sdi:defaultUnit 1 ;
+    sdi:norm "standard definition specific"@en ;
+    sdi:symbol "nue"@en,
+        "nue"@latex ;
+    rdfs:subClassOf sdi:Column-Data-Computed,
+        sdi:TimeSeriesData ;
+    ns1:prefLabel "Querkontraktion"@de,
+        "poisson`s ratio"@en .
+
+sdi:PreliminaryForce a <http://www.w3.org/2002/07/owl#Class> ;
+    sdi:defaultUnit "MPa"@en,
+        "kN"@en ;
+    sdi:norm "DIN EN ISO 6892-1"@en,
+        "DIN EN ISO 6892-1 (engl. version 2017)"@en ;
+    rdfs:comment "Um ein Ausrichten der Probe in der Einspannvorrichtung zu erreichen, darf eine Vorkraft aufgebracht werden, die 5 % des spezifizierten oder zu erwartenden Streckgrenzenwertes nicht überschreitet. Eine Korrektur der Dehnung sollte unter Berücksichtigung der Vorkraft vorgenommen werden."@de ;
+    rdfs:isDefinedBy "DIN EN ISO 6892-1"@de ;
+    rdfs:subClassOf sdi:Meta-Data,
+        sdi:QuantityMetaData ;
+    ns1:example 2,
+        "0.105"@en ;
+    ns1:prefLabel "Vorkraft"@de,
+        "Vorlast"@de,
+        "Preliminary force"@en,
+        "PreliminaryForce"@en,
+        "Preload"@en .
+
+sdi:ProjectName a <http://www.w3.org/2002/07/owl#Class> ;
+    sdi:norm "standard definition specific"@en ;
+    rdfs:subClassOf sdi:IdentifierMetaData,
+        sdi:Meta-Data ;
+    ns1:example "3D-Blechmodelle2"@en,
+        "Instabilität"@en ;
+    ns1:prefLabel "Projekt"@de,
+        "Projektname"@de,
+        "Project"@en,
+        "Project name"@en .
+
+sdi:ProjectNumber a <http://www.w3.org/2002/07/owl#Class> ;
+    sdi:norm "standard definition"@en ;
+    rdfs:subClassOf sdi:IdentifierMetaData,
+        sdi:Meta-Data ;
+    ns1:example 142003 ;
+    ns1:prefLabel "Projektnummer"@de,
+        "Project number"@en .
+
+<http://www.semanticweb.org/stahl-digital#ProofStrength,PlasticExtension> a <http://www.w3.org/2002/07/owl#Class> ;
+    sdi:defaultUnit "MPa"@en ;
+    sdi:norm "DIN EN ISO 6892-1"@en ;
+    sdi:symbol "Rp"@en,
+        "R_{p}"@latex ;
+    rdfs:isDefinedBy "DIN EN ISO 6892-1, 3.10.3"@de,
+        "DIN EN ISO 6892-1, 3.10.3"@en ;
+    rdfs:subClassOf sdi:Basic-Term,
+        sdi:QuantityMetaData ;
+    ns1:prefLabel "Dehngrenze bei plastischer Extensometer-Dehnung"@de,
+        "proof strength, plastic extension"@en .
+
+<http://www.semanticweb.org/stahl-digital#ProofStrength,TotalExtension> a <http://www.w3.org/2002/07/owl#Class> ;
+    sdi:defaultUnit "MPa"@en ;
+    sdi:norm "DIN EN ISO 6892-1"@en ;
+    sdi:symbol "Rt"@en,
+        "R_{t}"@latex ;
+    rdfs:isDefinedBy "DIN EN ISO 6892-1, 3.10.4"@de,
+        "DIN EN ISO 6892-1, 3.10.4"@en ;
+    rdfs:subClassOf sdi:Basic-Term,
+        sdi:QuantityMetaData ;
+    ns1:prefLabel "Dehngrenze bei gesamter Extensometer-Dehnung"@de,
+        "proof strength, total extension"@en .
+
+sdi:ProofStrength_0.2Percentage a <http://www.w3.org/2002/07/owl#Class> ;
+    sdi:defaultUnit "MPa"@en ;
+    sdi:norm "DIN EN ISO 6892-1 (engl. version 2017)"@en ;
+    sdi:symbol "Rp02"@en,
+        "R_{p02}"@latex ;
+    rdfs:subClassOf sdi:Meta-Data-Computed,
+        sdi:QuantityMetaData ;
+    ns1:example 397 ;
+    ns1:prefLabel "Rp0.2"@de,
+        "proof strength, 0.2 %"@en .
+
+sdi:ProofStrength_1Percentage a <http://www.w3.org/2002/07/owl#Class> ;
+    sdi:defaultUnit "MPa"@en ;
+    sdi:norm "DIN EN ISO 6892-1 (engl. version 2017)"@en ;
+    sdi:symbol "Rp1"@en,
+        "R_{p1}"@latex ;
+    rdfs:subClassOf sdi:Meta-Data-Computed,
+        sdi:QuantityMetaData ;
+    ns1:prefLabel "Rp1"@de,
+        "proof strength, 1 %"@en .
+
+sdi:RValue a <http://www.w3.org/2002/07/owl#Class> ;
+    sdi:defaultUnit 1 ;
+    sdi:norm "standard definition specific"@en ;
+    sdi:symbol "r-ges"@en,
+        "r-ges"@latex ;
+    rdfs:subClassOf sdi:Column-Data-Computed,
+        sdi:TimeSeriesData ;
+    ns1:prefLabel "r"@de,
+        "r-value"@en .
+
+sdi:RelativeStandardDeviationOfTheSlope a <http://www.w3.org/2002/07/owl#Class> ;
+    sdi:defaultUnit "%"@en ;
+    sdi:norm "DIN EN ISO 6892-1"@en ;
+    sdi:symbol "Sm(rel)"@en,
+        "S_m(rel)"@latex ;
+    rdfs:isDefinedBy "DIN EN ISO 6892-1, 3.17"@de,
+        "DIN EN ISO 6892-1, 3.17"@en ;
+    rdfs:subClassOf sdi:Basic-Term,
+        sdi:QuantityMetaData ;
+    ns1:prefLabel "relative Standardabweichung der Steigung"@de,
+        "relative standard deviation of the slope"@en .
+
+sdi:Remark a <http://www.w3.org/2002/07/owl#Class> ;
+    sdi:norm "standard definition specific"@en ;
+    rdfs:subClassOf sdi:IdentifierMetaData,
+        sdi:Meta-Data ;
+    ns1:prefLabel "Bemerkung"@de,
+        "Bemerkungen"@de,
+        "Remark"@en .
+
+sdi:SampleCode a <http://www.w3.org/2002/07/owl#Class> ;
+    rdfs:subClassOf sdi:IdentifierMetaData,
+        sdi:Meta-Data ;
+    ns1:prefLabel "QR-Code"@de,
+        "QR-Code from Label System"@en .
+
+sdi:SampleIdentifier a <http://www.w3.org/2002/07/owl#Class> ;
+    sdi:norm "user defined"@en ;
+    rdfs:subClassOf sdi:IdentifierMetaData,
+        sdi:Meta-Data ;
+    ns1:example "AFZ1-Fz-101Q"@en ;
+    ns1:prefLabel "Probennummer"@de,
+        "Sample identifier"@en .
+
+sdi:SampleIdentifier-2 a <http://www.w3.org/2002/07/owl#Class> ;
+    sdi:norm "user defined"@en ;
+    rdfs:subClassOf sdi:IdentifierMetaData,
+        sdi:Meta-Data ;
+    ns1:example "DX56_D_FZ2_WR00_43"@en ;
+    ns1:prefLabel "Probenkennung 2"@de,
+        "Sample identifier 2"@en .
+
+sdi:SpecimenThickness a <http://www.w3.org/2002/07/owl#Class> ;
+    sdi:defaultUnit "mm"@en ;
+    sdi:norm "standard definition"@en ;
+    rdfs:subClassOf sdi:Meta-Data,
+        sdi:QuantityMetaData ;
+    ns1:example "1.55"@en ;
+    ns1:prefLabel "Probendicke"@de,
+        "Specimen thickness"@en .
+
+sdi:SpecimenType a <http://www.w3.org/2002/07/owl#Class> ;
+    sdi:norm "standard definition specific"@en ;
+    rdfs:subClassOf sdi:IdentifierMetaData,
+        sdi:Meta-Data ;
+    ns1:example "FZ2 (L0=80_b0=20_R20)"@en,
+        "FzA20"@en ;
+    ns1:prefLabel "Probenform"@de,
+        "Probentyp"@de,
+        "Specimen type"@en .
+
+sdi:SpecimenWidth a <http://www.w3.org/2002/07/owl#Class> ;
+    sdi:defaultUnit "mm"@en ;
+    sdi:norm "standard definition"@en ;
+    rdfs:subClassOf sdi:Meta-Data,
+        sdi:QuantityMetaData ;
+    ns1:example "20.04"@en ;
+    ns1:prefLabel "Probenbreite"@de,
+        "Specimen width"@en .
+
+sdi:StandardDeviationOfTheSlope a <http://www.w3.org/2002/07/owl#Class> ;
+    sdi:defaultUnit "MPa"@en ;
+    sdi:norm "DIN EN ISO 6892-1"@en ;
+    sdi:symbol "Sm"@en,
+        "S_m"@latex ;
+    rdfs:isDefinedBy "DIN EN ISO 6892-1, 3.16"@de,
+        "DIN EN ISO 6892-1, 3.16"@en ;
+    rdfs:subClassOf sdi:Basic-Term,
+        sdi:QuantityMetaData ;
+    ns1:prefLabel "Standardabweichung der Steigung"@de,
+        "standard deviation of the slope"@en .
+
+sdi:StandardForce a <http://www.w3.org/2002/07/owl#Class> ;
+    sdi:defaultUnit "N"@en ;
+    sdi:norm "standard definition"@en ;
+    rdfs:subClassOf sdi:Column-Data,
+        sdi:TimeSeriesData ;
+    ns1:example "82.0348"@en ;
+    ns1:prefLabel "Standardkraft"@de,
+        "Standard force"@en .
+
+sdi:Strain a <http://www.w3.org/2002/07/owl#Class> ;
+    sdi:defaultUnit "%"@en ;
+    sdi:norm "DIN EN ISO 6892-1"@en ;
+    sdi:symbol "e"@en,
+        "e"@latex ;
+    rdfs:comment "technische Dehnung bezogen auf die Extensometermesslänge"@de,
+        "engineering strain"@en ;
+    rdfs:isDefinedBy "DIN EN ISO 6892-1, 3.6.1"@de,
+        "DIN EN ISO 6892-1, 3.6.1"@en ;
+    rdfs:subClassOf sdi:Column-Header,
+        sdi:TimeSeriesData ;
+    ns1:prefLabel "Extensometer-Dehnung"@de,
+        "percentage extension “strain”"@en .
+
+sdi:StrainRate a <http://www.w3.org/2002/07/owl#Class> ;
+    sdi:defaultUnit "s-1"@en ;
+    sdi:norm "DIN EN ISO 6892-1"@en ;
+    sdi:symbol "eLe"@en,
+        "\\dot{e}_{L_e}"@latex ;
+    rdfs:isDefinedBy "DIN EN ISO 6892-1, 3.7.1"@de,
+        "DIN EN ISO 6892-1, 3.7.1"@en ;
+    rdfs:subClassOf sdi:Basic-Term,
+        sdi:QuantityMetaData ;
+    ns1:example "0.001"@en ;
+    ns1:prefLabel "Dehngeschwindigkeit"@de,
+        "Strain Rate"@en,
+        "strain rate"@en .
+
+sdi:Stress a <http://www.w3.org/2002/07/owl#Class> ;
+    sdi:defaultUnit "MPa"@en ;
+    sdi:norm "DIN EN ISO 6892-1"@en ;
+    sdi:symbol "R"@en,
+        "R"@latex ;
+    rdfs:isDefinedBy "DIN EN ISO 6892-1, 3.10"@de,
+        "DIN EN ISO 6892-1, 3.10"@en ;
+    rdfs:subClassOf sdi:Column-Header,
+        sdi:TimeSeriesData ;
+    ns1:prefLabel "Spannung"@de,
+        "stress"@en .
+
+sdi:StressRate a <http://www.w3.org/2002/07/owl#Class> ;
+    sdi:defaultUnit "MPa s −1"@en,
+        "MPa/s"@en ;
+    sdi:norm "DIN EN ISO 6892-1"@en,
+        "DIN EN ISO 6892-1 (engl. version 2017)"@en ;
+    sdi:symbol "R"@en,
+        "dSig/dt"@en,
+        "\\dot{R}"@latex,
+        "dSig/dt"@latex ;
+    rdfs:isDefinedBy "DIN EN ISO 6892-1, 3.7.4"@de,
+        "DIN EN ISO 6892-1, 3.7.4"@en ;
+    rdfs:subClassOf sdi:Basic-Term,
+        sdi:Meta-Data-Computed,
+        sdi:QuantityMetaData ;
+    ns1:example "19.63"@en ;
+    ns1:prefLabel "Geschw."@de,
+        "Spannungsgeschwindigkeit"@de,
+        "stress rate"@en .
+
+sdi:Temperature a <http://www.w3.org/2002/07/owl#Class> ;
+    sdi:defaultUnit "°C"@en ;
+    sdi:norm "DIN EN ISO 6892-1"@en ;
+    rdfs:comment "Versuche unter kontrollierten Bedingungen müssen bei einer Temperatur von (23 ± 5) °C durchgeführt werden."@de ;
+    rdfs:isDefinedBy "DIN EN ISO 6892-1"@de ;
+    rdfs:subClassOf sdi:Meta-Data,
+        sdi:QuantityMetaData ;
+    ns1:example 22,
+        25 ;
+    ns1:prefLabel "Temperatur"@de,
+        "Temperature"@en .
+
+sdi:TensileStrength a <http://www.w3.org/2002/07/owl#Class> ;
+    sdi:defaultUnit "MPa"@en ;
+    sdi:norm "DIN EN ISO 6892-1"@en,
+        "DIN EN ISO 6892-1 (engl. version 2017)"@en ;
+    sdi:symbol "Rm"@en,
+        "R_m"@latex,
+        "R_{m}"@latex ;
+    rdfs:isDefinedBy "DIN EN ISO 6892-1, 3.10.1"@de,
+        "DIN EN ISO 6892-1, 3.10.1"@en ;
+    rdfs:subClassOf sdi:Basic-Term,
+        sdi:Meta-Data-Computed,
+        sdi:QuantityMetaData ;
+    ns1:example 468 ;
+    ns1:prefLabel "Zugfestigkeit"@de,
+        "Zugfestigkeit Rm"@de,
+        "tensile strength"@en .
+
+sdi:TestPieceWidth a <http://www.w3.org/2002/07/owl#Class> ;
+    sdi:defaultUnit "mm"@en ;
+    sdi:norm "DIN EN ISO 6892-1 (engl. version 2017)"@en ;
+    rdfs:subClassOf sdi:Meta-Data,
+        sdi:QuantityMetaData ;
+    ns1:example 10054 ;
+    ns1:prefLabel "Probenbreite b"@de,
+        "Test piece width"@en .
+
+sdi:TestStandard a <http://www.w3.org/2002/07/owl#Class> ;
+    sdi:norm "DIN EN ISO 6892-1"@en,
+        "DIN EN ISO 6892-1 (engl. version 2017)"@en ;
+    rdfs:subClassOf sdi:IdentifierMetaData,
+        sdi:Meta-Data ;
+    ns1:example "DIN EN ISO 6892-1"@en ;
+    ns1:prefLabel "Prüfnorm"@de,
+        "Test standard"@en .
+
+sdi:TestTemperature a <http://www.w3.org/2002/07/owl#Class> ;
+    sdi:defaultUnit "°C"@en ;
+    sdi:norm "DIN EN ISO 6892-1 und DIN EN ISO 6892-2"@en ;
+    rdfs:subClassOf sdi:Meta-Data,
+        sdi:QuantityMetaData ;
+    ns1:example 25 ;
+    ns1:prefLabel "Prüftemperatur"@de,
+        "Test temperature"@en .
+
+sdi:TestTime a <http://www.w3.org/2002/07/owl#Class> ;
+    sdi:defaultUnit "s"@en ;
+    sdi:norm "standard definition"@en ;
+    rdfs:subClassOf sdi:Column-Data,
+        sdi:TimeSeriesData ;
+    ns1:example "0.05"@en ;
+    ns1:prefLabel "Prüfzeit"@de,
+        "Test time"@en .
+
+sdi:Tester a <http://www.w3.org/2002/07/owl#Class> ;
+    sdi:norm "standard definition specific"@en ;
+    rdfs:subClassOf sdi:IdentifierMetaData,
+        sdi:Meta-Data ;
+    ns1:example "Kürzel"@en,
+        "Name, ID"@en ;
+    ns1:prefLabel "Prüfer"@de,
+        "Tester"@en .
+
+sdi:TestingFacility a <http://www.w3.org/2002/07/owl#Class> ;
+    sdi:norm "standard definition specific"@en ;
+    rdfs:subClassOf sdi:IdentifierMetaData,
+        sdi:Meta-Data ;
+    ns1:example "Fraunhofer IWM"@en ;
+    ns1:prefLabel "Prüfinstitut"@de,
+        "Testing facility"@en .
+
+sdi:TestingRate a <http://www.w3.org/2002/07/owl#Class> ;
+    sdi:defaultUnit "mm/s"@en,
+        "s-1"@en ;
+    sdi:norm "DIN EN ISO 6892-1"@en ;
+    rdfs:comment "während des Versuchs verwendete Geschwindigkeit(en) als Oberbegriff"@de ;
+    rdfs:isDefinedBy "DIN EN ISO 6892-1, 3.7"@de,
+        "DIN EN ISO 6892-1, 3.7"@en ;
+    rdfs:subClassOf sdi:Meta-Data,
+        sdi:QuantityMetaData ;
+    ns1:example "0.1"@en ;
+    ns1:prefLabel "Prüfgeschwindigkeit"@de,
+        "Test speed"@en,
+        "Testing rate"@en .
+
+sdi:ThicknessAfterFracture_1 a <http://www.w3.org/2002/07/owl#Class> ;
+    sdi:defaultUnit "mm"@en ;
+    sdi:norm "standard definition specific"@en ;
+    rdfs:subClassOf sdi:Meta-Data,
+        sdi:QuantityMetaData ;
+    ns1:prefLabel "Probendicke A1 nach Bruch"@de,
+        "Thickness A1 after fracture"@en .
+
+sdi:ThicknessAfterFracture_2 a <http://www.w3.org/2002/07/owl#Class> ;
+    sdi:defaultUnit "mm"@en ;
+    sdi:norm "standard definition specific"@en ;
+    rdfs:subClassOf sdi:Meta-Data,
+        sdi:QuantityMetaData ;
+    ns1:prefLabel "Probendicke A2 nach Bruch"@de,
+        "Thickness A2 after fracture"@en .
+
+sdi:Time a <http://www.w3.org/2002/07/owl#Class> ;
+    sdi:defaultUnit "s"@en ;
+    sdi:norm "DIN EN ISO 6892-1 (engl. version 2017)"@en ;
+    rdfs:subClassOf sdi:Column-Data,
+        sdi:TimeSeriesData ;
+    ns1:example "0.694"@en ;
+    ns1:prefLabel "Zeit"@de,
+        "Time"@en .
+
+sdi:TimeStamp a <http://www.w3.org/2002/07/owl#Class> ;
+    sdi:norm "standard definition specific"@en ;
+    rdfs:subClassOf sdi:IdentifierMetaData,
+        sdi:Meta-Data ;
+    ns1:example "2016-10-11T00:00:00"^^xsd:dateTime,
+        "44335.4"@en ;
+    ns1:prefLabel "Datum"@de,
+        "Datum/Uhrzeit"@de,
+        "Date"@en,
+        "Date/Time"@en .
+
+sdi:TrueStrain a <http://www.w3.org/2002/07/owl#Class> ;
+    sdi:defaultUnit 1 ;
+    sdi:norm "standard definition specific"@en ;
+    sdi:symbol "epsw(dL)"@en,
+        "epsw(dL)"@latex ;
+    rdfs:subClassOf sdi:Column-Data-Computed,
+        sdi:TimeSeriesData ;
+    ns1:example "0.004"@en ;
+    ns1:prefLabel "epsw(dL)"@de,
+        "true strain"@en .
+
+sdi:TrueStress a <http://www.w3.org/2002/07/owl#Class> ;
+    sdi:defaultUnit "MPa"@en ;
+    sdi:norm "standard definition specific"@en ;
+    sdi:symbol "Sigw"@en,
+        "Sig{w}"@latex ;
+    rdfs:subClassOf sdi:Column-Data-Computed,
+        sdi:TimeSeriesData ;
+    ns1:prefLabel "Sigw(dL)"@de,
+        "true stress"@en .
+
+sdi:UpperYieldStrength a <http://www.w3.org/2002/07/owl#Class> ;
+    sdi:defaultUnit "MPa"@en ;
+    sdi:norm "DIN EN ISO 6892-1"@en ;
+    sdi:symbol "ReH"@en,
+        "R_{eH}"@latex ;
+    rdfs:isDefinedBy "DIN EN ISO 6892-1, 3.10.2.1"@de,
+        "DIN EN ISO 6892-1, 3.10.2.1"@en ;
+    rdfs:subClassOf sdi:Basic-Term,
+        sdi:QuantityMetaData ;
+    ns1:prefLabel "obere Streckgrenze"@de,
+        "upper yield strength"@en .
+
+sdi:Width a <http://www.w3.org/2002/07/owl#Class> ;
+    sdi:defaultUnit "mm"@en ;
+    sdi:norm "standard definition specific"@en ;
+    sdi:symbol "B"@en,
+        "B"@latex ;
+    rdfs:subClassOf sdi:Column-Data,
+        sdi:TimeSeriesData ;
+    ns1:example 4647 ;
+    ns1:prefLabel "Breite, B"@de,
+        "Width"@en .
+
+sdi:WidthAfterFracture_1 a <http://www.w3.org/2002/07/owl#Class> ;
+    sdi:defaultUnit "mm"@en ;
+    sdi:norm "standard definition specific"@en ;
+    rdfs:subClassOf sdi:Meta-Data,
+        sdi:QuantityMetaData ;
+    ns1:prefLabel "Probenbreite B1 nach Bruch"@de,
+        "Width B1 after fracture"@en .
+
+sdi:WidthAfterFracture_2 a <http://www.w3.org/2002/07/owl#Class> ;
+    sdi:defaultUnit "mm"@en ;
+    sdi:norm "standard definition specific"@en ;
+    rdfs:subClassOf sdi:Meta-Data,
+        sdi:QuantityMetaData ;
+    ns1:prefLabel "Probenbreite B2 nach Bruch"@de,
+        "Width B2 after fracture"@en .
+
+sdi:WidthChange a <http://www.w3.org/2002/07/owl#Class> ;
+    sdi:defaultUnit "mm"@en ;
+    sdi:norm "DIN ISO 10113"@en,
+        "standard definition"@en ;
+    rdfs:subClassOf sdi:Column-Data,
+        sdi:TimeSeriesData ;
+    ns1:example "0.001"@en,
+        "1.14004e-06"@en ;
+    ns1:prefLabel "Breitenänderung"@de,
+        "dB"@de,
+        "Width change"@en .
+
+sdi:WidthStrain a <http://www.w3.org/2002/07/owl#Class> ;
+    sdi:defaultUnit 1 ;
+    sdi:norm "standard definition specific"@en ;
+    sdi:symbol "eps-Breite"@en,
+        "eps-Breite"@latex ;
+    rdfs:subClassOf sdi:Column-Data-Computed,
+        sdi:TimeSeriesData ;
+    ns1:example "0.003"@en ;
+    ns1:prefLabel "eps-Breite"@de,
+        "engineering width strain"@en .
+
+sdi:YieldForce_0.2Percentage a <http://www.w3.org/2002/07/owl#Class> ;
+    sdi:defaultUnit "kN"@en ;
+    sdi:norm "standard definition specific"@en ;
+    sdi:symbol "Fp02"@en,
+        "F_{p02}"@latex ;
+    rdfs:subClassOf sdi:Meta-Data-Computed,
+        sdi:QuantityMetaData ;
+    ns1:example 5947 ;
+    ns1:prefLabel "Fp0.2"@de,
+        "yield force, 0.2%"@en .
+
+sdi:YieldStrength a <http://www.w3.org/2002/07/owl#Class> ;
+    sdi:defaultUnit "MPa"@en ;
+    sdi:norm "DIN EN ISO 6892-1"@en ;
+    rdfs:isDefinedBy "DIN EN ISO 6892-1, 3.10.2"@de,
+        "DIN EN ISO 6892-1, 3.10.2"@en ;
+    rdfs:subClassOf sdi:Basic-Term,
+        sdi:QuantityMetaData ;
+    ns1:prefLabel "Streckgrenze"@de,
+        "yield strength"@en .
+
+sdi:defaultUnit a <http://www.w3.org/2002/07/owl#AnnotationProperty> ;
+    rdfs:comment "The unit that is most commonly used for this concept. Idealy the unit defined in the norm."@en .
+
+sdi:hasA a <http://www.w3.org/2002/07/owl#ObjectProperty> .
+
+sdi:hasColumnID a <http://www.w3.org/2002/07/owl#DatatypeProperty> .
+
+sdi:hasColumnIDEnd a <http://www.w3.org/2002/07/owl#DatatypeProperty> .
+
+sdi:hasColumnIDStart a <http://www.w3.org/2002/07/owl#DatatypeProperty> .
+
+sdi:hasData a <http://www.w3.org/2002/07/owl#DatatypeProperty> .
+
+sdi:hasExcelSheet a <http://www.w3.org/2002/07/owl#DatatypeProperty> .
+
+sdi:hasFile a <http://www.w3.org/2002/07/owl#ObjectProperty> .
+
+sdi:hasFilePath a <http://www.w3.org/2002/07/owl#DatatypeProperty> .
+
+sdi:hasHeaderRows a <http://www.w3.org/2002/07/owl#DatatypeProperty> .
+
+sdi:hasUnit a <http://www.w3.org/2002/07/owl#DatatypeProperty> .
+
+sdi:norm a <http://www.w3.org/2002/07/owl#AnnotationProperty> ;
+    rdfs:comment "The norm where this concept is defined."@en .
+
+sdi:symbol a <http://www.w3.org/2002/07/owl#AnnotationProperty> ;
+    rdfs:comment "The symbol used for this concept."@en .
+
+sdi:IdentifierMetaData a <http://www.w3.org/2002/07/owl#Class> .
+
+sdi:TimeSeriesData a <http://www.w3.org/2002/07/owl#Class> .
+
+sdi:QuantityMetaData a <http://www.w3.org/2002/07/owl#Class> .

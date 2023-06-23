@@ -1,0 +1,50 @@
+,Data Label Match,Method Label Match,Data Mapping-DB Match,Method Mapping-DB Match,Data Score,Method Score
+0,A,AbsoluteCrossheadTravel,A,AbsoluteCrossheadTravel,1.0,1.0
+5,DB,WidthChange,dB,WidthChange,1.0,1.0
+6,DL,Extension,dL,Extension,1.0,1.0
+7,Datum,TimeStamp,Datum,TimeStamp,1.0,1.0
+16,Messlänge Lo,OriginalGaugeLength,Messlänge Lo,OriginalGaugeLength,1.0,1.0
+20,Probendicke A1 nach Bruch,ThicknessAfterFracture_1,Probendicke A1 nach Bruch,ThicknessAfterFracture_1,1.0,1.0
+23,Probenform,SpecimenType,Probenform,SpecimenType,1.0,1.0
+24,Probennummer,SampleIdentifier,Probennummer,SampleIdentifier,1.0,1.0
+25,Probentyp,SpecimenType,Probentyp,SpecimenType,1.0,1.0
+26,Projekt,ProjectName,Projekt,ProjectName,1.0,1.0
+27,Prüfer,Tester,Prüfer,Tester,1.0,1.0
+28,Prüfgeschwindigkeit,TestingRate,Prüfgeschwindigkeit,TestingRate,1.0,1.0
+34,Werkstoff,Material,Werkstoff,Material,1.0,1.0
+1,B,WidthChange,dB,WidthChange,0.6666666666666666,1.0
+21,Probendicke A2 nach Bruch,ThicknessAfterFracture_1,Probendicke A2 nach Bruch,ThicknessAfterFracture_2,1.0,0.9583333333333334
+30,Prüftemperatur,Temperature,Prüftemperatur,TestTemperature,1.0,0.8461538461538461
+29,Prüfmaschine,MachineData,Prüfmaschine,Machine,1.0,0.7777777777777778
+17,Probenbreite B1 nach Bruch,ThicknessAfterFracture_1,Probenbreite B1 nach Bruch,WidthAfterFracture_1,1.0,0.7727272727272727
+40,e-technisch,PercentageElongation,eps-technisch,PercentageExtension,0.9166666666666666,0.7692307692307693
+45,s-technisch,PercentageElongation,eps-technisch,PercentageExtension,0.9166666666666666,0.7692307692307693
+2,Bruchdehnung A20mm,PercentageElongation,Bruchdehnung A20mm,PercentageElongationAfterFracture,1.0,0.7547169811320755
+19,Probenbreite b,SpecimenWidth,Probenbreite b,TestPieceWidth,1.0,0.7407407407407407
+18,Probenbreite B2 nach Bruch,ThicknessAfterFracture_1,Probenbreite B2 nach Bruch,WidthAfterFracture_2,1.0,0.7272727272727273
+37,Zugfestigkeit Rm,TensileTestExperiment,Zugfestigkeit Rm,TensileStrength,1.0,0.7222222222222222
+3,Brucheinschnürung Z,PercentageElongation,Brucheinschnürung Z,PercentageReductionOfArea,1.0,0.6666666666666666
+35,Z,PercentageElongation,Z,PercentageReductionOfArea,1.0,0.6666666666666666
+36,Zeit,TestTime,Zeit,Time,1.0,0.6666666666666666
+39,e-plast,PercentageElongation,eps-plast,PercentagePermanentExtension,0.875,0.6666666666666666
+22,Probendicke a,SpecimenThickness,Probendicke a,OriginalThickness,1.0,0.6470588235294118
+4,Bruchverlängerung,Extension,Bruchverlängerung,ExtensionAtFracture,1.0,0.6428571428571429
+38,e-Breite,WidthChange,eps-Breite,WidthStrain,0.8888888888888888,0.6363636363636364
+43,ew-Rm,WidthChange,eps-Breite,WidthStrain,0.4,0.6363636363636364
+48,sw-Rm,WidthChange,eps-Breite,WidthStrain,0.4,0.6363636363636364
+42,ew-Bruch,Temperature,Bruch,Fracture,0.7692307692307693,0.631578947368421
+47,sw-Bruch,Temperature,Bruch,Fracture,0.7692307692307693,0.631578947368421
+41,ew (DL),Tester,epsw(dL),TrueStrain,0.8,0.625
+46,sw (DL),Tester,epsw(dL),TrueStrain,0.8,0.625
+33,Su,ThicknessAfterFracture_1,Su,MinimumCrosssectionAfterFracture,1.0,0.6071428571428571
+32,S0,ThicknessAfterFracture_1,Su,MinimumCrosssectionAfterFracture,0.5,0.6071428571428571
+14,Geschw.,Temperature,Geschw.,StressRate,1.0,0.5714285714285714
+12,F,StandardForce,F,Force,1.0,0.5555555555555556
+9,Dehnung bei Höchstkraft Ag,PercentageElongation,Dehnung bei Höchstkraft Ag,PercentagePlasticExtensionAtMaximumForce,1.0,0.5333333333333333
+8,Dehngrenze ReL,ParallelLength,Dehngrenze ReL,LowerYieldStrength,1.0,0.5
+15,Höchstzugkraft Fm,StandardForce,Höchstzugkraft Fm,MaximumForce,1.0,0.48
+10,EModul,TestingFacility,EModul,ModulusOfElasticity,1.0,0.47058823529411764
+11,Elastizitätsmodul,TestingFacility,Elastizitätsmodul,ModulusOfElasticity,1.0,0.47058823529411764
+44,r,Temperature,r,RValue,1.0,0.47058823529411764
+13,"Fp0,2",PercentageElongation,Fp0.2,YieldForce_0.2Percentage,0.8,0.45454545454545453
+31,"Rp0,2",PercentageElongation,Rp0.2,ProofStrength_0.2Percentage,0.8,0.425531914893617
