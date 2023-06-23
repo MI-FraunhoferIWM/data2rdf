@@ -1,17 +1,7 @@
-import hashlib
+import uuid
 
 import pandas as pd
 from openpyxl import load_workbook
-
-
-def sha256sum(filename):
-    h = hashlib.sha256()
-    b = bytearray(128 * 1024)
-    mv = memoryview(b)
-    with open(filename, "rb", buffering=0) as f:
-        for n in iter(lambda: f.readinto(mv), 0):
-            h.update(mv[:n])
-    return h.hexdigest()
 
 
 class ExcelParser:
@@ -236,8 +226,7 @@ class ExcelParser:
     def generate_file_uuid(self):
         # add file_uuid using unique hashsum of the file
         # with open(f_path, 'r', encoding=encoding) as file:
-
-        self.id_hash = sha256sum(self.f_path)
+        self.id_uuid = str(uuid.uuid4())
 
     def generate_file_meta_df(self):
         self.file_meta_df = pd.Series()
@@ -248,7 +237,7 @@ class ExcelParser:
         self.file_meta_df["file_path"] = self.f_path
         self.file_meta_df["server_file_path"] = self.server_f_path
         self.file_meta_df["namespace"] = self.namespace
-        self.file_meta_df["uuid"] = self.id_hash
+        self.file_meta_df["uuid"] = self.id_uuid
 
         self.file_meta_df = pd.DataFrame(self.file_meta_df)
         self.file_meta_df.columns = ["value"]
