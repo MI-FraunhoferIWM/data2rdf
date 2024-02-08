@@ -1,5 +1,5 @@
-import hashlib
 import io
+import uuid
 
 import magic
 import pandas as pd
@@ -138,10 +138,7 @@ class CSVParser:
         self.column_df.index.name = "index"
 
     def generate_file_uuid(self):
-        # add file_uuid using unique hashsum of the file
-        # with open(f_path, 'r', encoding=encoding) as file:
-        text = self.file.encode()
-        self.id_hash = hashlib.md5(text).hexdigest()
+        self.id_uuid = str(uuid.uuid4())
 
     def generate_file_meta_df(self):
         self.file_meta_df = pd.Series()
@@ -152,7 +149,7 @@ class CSVParser:
         self.file_meta_df["file_path"] = self.f_path
         self.file_meta_df["server_file_path"] = self.server_f_path
         self.file_meta_df["namespace"] = self.namespace
-        self.file_meta_df["uuid"] = self.id_hash
+        self.file_meta_df["uuid"] = self.id_uuid
 
         self.file_meta_df = pd.DataFrame(self.file_meta_df)
         self.file_meta_df.columns = ["value"]
