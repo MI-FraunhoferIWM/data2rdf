@@ -219,7 +219,7 @@ class AnnotationPipeline:
         Can be used e.g. to load the data into a triple store using rdflib.
         """
 
-        g = Graph()
+        g = Graph(identifier=self.base_iri)
         g.parse(self.unique_abox_template, format="ttl")
         g.parse(self.mapping_ttl, format="ttl")
         g.parse(self.data_graph, format="ttl")
