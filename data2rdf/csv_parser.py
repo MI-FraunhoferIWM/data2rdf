@@ -1,11 +1,13 @@
 import io
-import uuid
+
+# import uuid
+from parser import DataParser
 
 import magic
 import pandas as pd
 
 
-class CSVParser:
+class CSVParser(DataParser):
 
     """
     Generates the excel input sheet that can be used
@@ -40,27 +42,34 @@ class CSVParser:
         data_storage_group_name="df",
         namespace="http://www.test.de",
     ):
-        if not server_f_path:
-            server_f_path = f_path
+        super.__init__(
+            f_path,
+            server_f_path,
+            data_storage_path,
+            data_storage_group_name,
+            namespace,
+        )
+        # if not server_f_path:
+        #     server_f_path = f_path
 
-        if not data_storage_path:
-            data_storage_path = f"{f_path}.datastorage.hdf5"
+        # if not data_storage_path:
+        #     data_storage_path = f"{f_path}.datastorage.hdf5"
 
-        self.f_path = f_path
-        self.server_f_path = server_f_path
+        # self.f_path = f_path
+        # self.server_f_path = server_f_path
 
-        self.data_storage_path = data_storage_path
-        self.data_storage_group_name = data_storage_group_name
+        # self.data_storage_path = data_storage_path
+        # self.data_storage_group_name = data_storage_group_name
 
         self.header_sep = header_sep
         self.column_sep = column_sep
         self.header_length = header_length
-        self.namespace = namespace
+        # self.namespace = namespace
 
     def parser_data(self):
         self.get_file_encoding()
         self.load_file()
-        self.generate_file_uuid()
+        # self.generate_file_uuid()
         self.parse_meta_data()
         self.split_meta_df()
         self.parse_table()
@@ -137,8 +146,8 @@ class CSVParser:
         self.column_df["titles"] = self.column_df.index
         self.column_df.index.name = "index"
 
-    def generate_file_uuid(self):
-        self.id_uuid = str(uuid.uuid4())
+    # def generate_file_uuid(self):
+    #     self.id_uuid = str(uuid.uuid4())
 
     def generate_file_meta_df(self):
         self.file_meta_df = pd.Series()

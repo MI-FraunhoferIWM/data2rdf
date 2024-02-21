@@ -1,10 +1,11 @@
-import uuid
+# import uuid
+from parser import DataParser
 
 import pandas as pd
 from openpyxl import load_workbook
 
 
-class ExcelParser:
+class ExcelParser(DataParser):
 
     """
     Generates the excel input sheet that can be used
@@ -13,7 +14,8 @@ class ExcelParser:
     Attributes:
         f_path (str): The file path for the csv file used as input for the parser. This path gets also stored as dcat:downloadURL attribute for the created dcat:Dataset individual by the rdf_generation class.
         location_mapping_f_path (str): Path to the excel file, that holds the location of the meta data and column data cells that should be extracted.
-        server_f_path (str): By default the file path for the csv file (f_path) gets used as dcat:downloadURL attribute for the created dcat:Dataset individual. On a server the actual download url of the file should be used (e.g. on the DSMS https://127.0.0.1/api/knowledge/data-files/764f6e51-a244-42f9-a754-c3e2861f63e4/raw_data/excel_file.xlsx).
+        server_f_path (str): By default the file path for the csv file (f_path) gets used as dcat:downloadURL attribute for the created dcat:Dataset individual. On a server the actual download url of the file should be used
+        (e.g. on the DSMS https://127.0.0.1/api/knowledge/data-files/764f6e51-a244-42f9-a754-c3e2861f63e4/raw_data/excel_file.xlsx).
         data_storage_path (str): Optional different storage location for the hdf5 file holding the data. Default is the same location as the input file.
         data_storage_group_name (str): Name of the group in the hdf5 to store the data. Using the data_storage_path and the data_storage_group_name multiple datasets can be stored in the same hdf5 file.
         namespace (str): The namespace that will be used by the rdf_generation class to construct the abox individuals.
@@ -34,24 +36,32 @@ class ExcelParser:
         data_storage_group_name="df",
         namespace="http://www.test.de",
     ):
-        if not server_f_path:
-            server_f_path = f_path
+        super.__init__(
+            f_path,
+            server_f_path,
+            data_storage_path,
+            data_storage_group_name,
+            namespace,
+        )
 
-        if not data_storage_path:
-            data_storage_path = f"{f_path}.datastorage.hdf5"
+        # if not server_f_path:
+        #     server_f_path = f_path
+
+        # if not data_storage_path:
+        #     data_storage_path = f"{f_path}.datastorage.hdf5"
 
         self.location_mapping_f_path = location_mapping_f_path
-        self.f_path = f_path
-        self.server_f_path = server_f_path
+        # self.f_path = f_path
+        # self.server_f_path = server_f_path
 
-        self.data_storage_path = data_storage_path
-        self.data_storage_group_name = data_storage_group_name
+        # self.data_storage_path = data_storage_path
+        # self.data_storage_group_name = data_storage_group_name
 
-        self.namespace = namespace
+        # self.namespace = namespace
 
     def parser_data(self):
         self.load_file()
-        self.generate_file_uuid()
+        # self.generate_file_uuid()
         self.load_mapping_file()
         self.parse_meta_data()
         self.generate_column_df()
@@ -223,10 +233,10 @@ class ExcelParser:
         self.column_df = pd.DataFrame(column_data)
         # print(self.column_df)
 
-    def generate_file_uuid(self):
-        # add file_uuid using unique hashsum of the file
-        # with open(f_path, 'r', encoding=encoding) as file:
-        self.id_uuid = str(uuid.uuid4())
+    # def generate_file_uuid(self):
+    #     # add file_uuid using unique hashsum of the file
+    #     # with open(f_path, 'r', encoding=encoding) as file:
+    #     self.id_uuid = str(uuid.uuid4())
 
     def generate_file_meta_df(self):
         self.file_meta_df = pd.Series()
