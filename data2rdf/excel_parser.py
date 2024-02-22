@@ -35,7 +35,7 @@ class ExcelParser(DataParser):
         data_storage_group_name="df",
         namespace="http://www.test.de",
     ):
-        super.__init__(
+        super().__init__(
             f_path,
             server_f_path,
             data_storage_path,
@@ -237,20 +237,20 @@ class ExcelParser(DataParser):
     #     # with open(f_path, 'r', encoding=encoding) as file:
     #     self.id_uuid = str(uuid.uuid4())
 
-    # def generate_file_meta_df(self):
-    #     self.file_meta_df = pd.Series()
-    #     # self.file_meta_df["encoding"] = self.encoding
-    #     # self.file_meta_df["headerRowCount"] = self.header_length
-    #     # self.file_meta_df["delimiter"] = self.column_sep
-    #     # self.file_meta_df["skipRows"] = 1
-    #     self.file_meta_df["file_path"] = self.f_path
-    #     self.file_meta_df["server_file_path"] = self.server_f_path
-    #     self.file_meta_df["namespace"] = self.namespace
-    #     self.file_meta_df["uuid"] = self.id_uuid
+    def generate_file_meta_df(self):
+        self.file_meta_df = pd.Series()
+        # self.file_meta_df["encoding"] = self.encoding
+        # self.file_meta_df["headerRowCount"] = self.header_length
+        # self.file_meta_df["delimiter"] = self.column_sep
+        # self.file_meta_df["skipRows"] = 1
+        self.file_meta_df["file_path"] = self.f_path
+        self.file_meta_df["server_file_path"] = self.server_f_path
+        self.file_meta_df["namespace"] = self.namespace
+        self.file_meta_df["uuid"] = self.id_uuid
 
-    #     self.file_meta_df = pd.DataFrame(self.file_meta_df)
-    #     self.file_meta_df.columns = ["value"]
-    #     self.file_meta_df.index.name = "index"
+        self.file_meta_df = pd.DataFrame(self.file_meta_df)
+        self.file_meta_df.columns = ["value"]
+        self.file_meta_df.index.name = "index"
 
     # def clean_table_df(self):
     #    self.df_table = self.df_table.iloc[1:,:]
