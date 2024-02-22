@@ -6,8 +6,7 @@ import pandas as pd
 
 class DataParser(ABC):
     """
-    generic parser abstract class with common parser attrubutes
-    and functionalities
+    generic parser abstract class with common parser attrubutes and functionalities
     Attributes:
         f_path (str): The file path for the csv file used as input for the
         server_f_path (str): By default the file path for the csv file (f_path) gets used as
@@ -58,6 +57,9 @@ class DataParser(ABC):
             index=["file_path", "server_file_path", "name_space", "uuid"],
         )
         self.file_meta_df.index.name = "index"
+
+    def generate_file_uuid(self):
+        self.id_uuid = str(uuid.uuid4())
 
     def generate_data_storage(self):
         pass
