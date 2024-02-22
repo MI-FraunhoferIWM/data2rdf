@@ -42,7 +42,7 @@ class CSVParser(DataParser):
         data_storage_group_name="df",
         namespace="http://www.test.de",
     ):
-        super.__init__(
+        super().__init__(
             f_path,
             server_f_path,
             data_storage_path,
@@ -87,7 +87,9 @@ class CSVParser(DataParser):
         self.encoding = buffered.buffer(rawdata)
 
     def load_file(self):
-        self.file = open(self.f_path, encoding=self.encoding).read()
+        with open(self.f_path, encoding=self.encoding) as file:
+            self.file = file.read()
+        # self.file = open(self.f_path, encoding=self.encoding).read()
 
     def parse_meta_data(self):
         """
