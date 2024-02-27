@@ -5,8 +5,6 @@ import pandas as pd
 
 from data2rdf.parser import DataParser
 
-# import uuid
-
 
 class CSVParser(DataParser):
     """
@@ -49,22 +47,10 @@ class CSVParser(DataParser):
             data_storage_group_name,
             namespace,
         )
-        # if not server_f_path:
-        #     server_f_path = f_path
-
-        # if not data_storage_path:
-        #     data_storage_path = f"{f_path}.datastorage.hdf5"
-
-        # self.f_path = f_path
-        # self.server_f_path = server_f_path
-
-        # self.data_storage_path = data_storage_path
-        # self.data_storage_group_name = data_storage_group_name
 
         self.header_sep = header_sep
         self.column_sep = column_sep
         self.header_length = header_length
-        # self.namespace = namespace
 
     def parser_data(self):
         self.get_file_encoding()
@@ -89,7 +75,6 @@ class CSVParser(DataParser):
     def load_file(self):
         with open(self.f_path, encoding=self.encoding) as file:
             self.file = file.read()
-        # self.file = open(self.f_path, encoding=self.encoding).read()
 
     def parse_meta_data(self):
         """
@@ -147,9 +132,6 @@ class CSVParser(DataParser):
         self.column_df.columns = ["unit"]
         self.column_df["titles"] = self.column_df.index
         self.column_df.index.name = "index"
-
-    # def generate_file_uuid(self):
-    #     self.id_uuid = str(uuid.uuid4())
 
     def generate_file_meta_df(self):
         self.file_meta_df = pd.Series()

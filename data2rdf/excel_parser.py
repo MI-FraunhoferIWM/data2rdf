@@ -1,4 +1,3 @@
-# import uuid
 import pandas as pd
 from openpyxl import load_workbook
 
@@ -43,20 +42,7 @@ class ExcelParser(DataParser):
             namespace,
         )
 
-        # if not server_f_path:
-        #     server_f_path = f_path
-
-        # if not data_storage_path:
-        #     data_storage_path = f"{f_path}.datastorage.hdf5"
-
         self.location_mapping_f_path = location_mapping_f_path
-        # self.f_path = f_path
-        # self.server_f_path = server_f_path
-
-        # self.data_storage_path = data_storage_path
-        # self.data_storage_group_name = data_storage_group_name
-
-        # self.namespace = namespace
 
     def parser_data(self):
         self.load_file()
@@ -231,11 +217,6 @@ class ExcelParser(DataParser):
 
         self.column_df = pd.DataFrame(column_data)
         # print(self.column_df)
-
-    # def generate_file_uuid(self):
-    #     # add file_uuid using unique hashsum of the file
-    #     # with open(f_path, 'r', encoding=encoding) as file:
-    #     self.id_uuid = str(uuid.uuid4())
 
     def generate_file_meta_df(self):
         self.file_meta_df = pd.Series()
