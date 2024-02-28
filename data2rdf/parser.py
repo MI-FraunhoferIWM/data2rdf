@@ -36,6 +36,38 @@ class DataParser(ABC):
         self.namespace = namespace
         self.id_uuid = str(uuid.uuid4())
 
+    def generate_file_uuid(self):
+        self.id_uuid = str(uuid.uuid4())
+
+    def generate_file_meta_df(self):
+        self.file_meta_df = pd.DataFrame(
+            {
+                "value": [
+                    self.f_path,
+                    self.server_f_path,
+                    self.namespace,
+                    self.id_uuid,
+                ]
+            },
+            index=["file_path", "server_file_path", "namespace", "uuid"],
+        )
+        self.file_meta_df.index.name = "index"
+
+    # def generate_file_meta_df(self):
+    #     self.file_meta_df = pd.Series()
+    #     # self.file_meta_df["encoding"] = self.encoding
+    #     # self.file_meta_df["headerRowCount"] = self.header_length
+    #     # self.file_meta_df["delimiter"] = self.column_sep
+    #     # self.file_meta_df["skipRows"] = 1
+    #     self.file_meta_df["file_path"] = self.f_path
+    #     self.file_meta_df["server_file_path"] = self.server_f_path
+    #     self.file_meta_df["namespace"] = self.namespace
+    #     self.file_meta_df["uuid"] = self.id_uuid
+
+    #     self.file_meta_df = pd.DataFrame(self.file_meta_df)
+    #     self.file_meta_df.columns = ["value"]
+    #     self.file_meta_df.index.name = "index"
+
     @abstractmethod
     def load_file(self):
         pass
@@ -44,24 +76,6 @@ class DataParser(ABC):
     def parse_meta_data(self):
         pass
 
-    def generate_file_meta_df(self):
-        self.file_meta_df = pd.Series()
-        # self.file_meta_df["encoding"] = self.encoding
-        # self.file_meta_df["headerRowCount"] = self.header_length
-        # self.file_meta_df["delimiter"] = self.column_sep
-        # self.file_meta_df["skipRows"] = 1
-        self.file_meta_df["file_path"] = self.f_path
-        self.file_meta_df["server_file_path"] = self.server_f_path
-        self.file_meta_df["namespace"] = self.namespace
-        self.file_meta_df["uuid"] = self.id_uuid
-
-        self.file_meta_df = pd.DataFrame(self.file_meta_df)
-        self.file_meta_df.columns = ["value"]
-        self.file_meta_df.index.name = "index"
-
     @abstractmethod
     def generate_data_storage(self):
         pass
-
-    def generate_file_uuid(self):
-        self.id_uuid = str(uuid.uuid4())
