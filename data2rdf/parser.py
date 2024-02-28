@@ -1,6 +1,8 @@
 import uuid
 from abc import ABC, abstractmethod
 
+import pandas as pd
+
 
 class DataParser(ABC):
     """
@@ -42,23 +44,20 @@ class DataParser(ABC):
     def parse_meta_data(self):
         pass
 
-    # def generate_file_meta_df(self):
-    #     self.file_meta_df = pd.DataFrame(
-    #         {
-    #             "value": [
-    #                 self.f_path,
-    #                 self.server_f_path,
-    #                 self.namespace,
-    #                 self.id_uuid,
-    #             ]
-    #         },
-    #         index=["file_path", "server_file_path", "name_space", "uuid"],
-    #     )
-    #     self.file_meta_df.index.name = "index"
-
-    @abstractmethod
     def generate_file_meta_df(self):
-        pass
+        self.file_meta_df = pd.Series()
+        # self.file_meta_df["encoding"] = self.encoding
+        # self.file_meta_df["headerRowCount"] = self.header_length
+        # self.file_meta_df["delimiter"] = self.column_sep
+        # self.file_meta_df["skipRows"] = 1
+        self.file_meta_df["file_path"] = self.f_path
+        self.file_meta_df["server_file_path"] = self.server_f_path
+        self.file_meta_df["namespace"] = self.namespace
+        self.file_meta_df["uuid"] = self.id_uuid
+
+        self.file_meta_df = pd.DataFrame(self.file_meta_df)
+        self.file_meta_df.columns = ["value"]
+        self.file_meta_df.index.name = "index"
 
     @abstractmethod
     def generate_data_storage(self):
