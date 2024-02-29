@@ -137,7 +137,7 @@ class AnnotationPipeline:
         )
 
         self.file_uri = (
-            writer.generate_file_json()
+            self.writer.generate_file_json()
         )  # store the file uri and use for the abox
         self.writer.generate_meta_json()
         self.writer.generate_column_json()
@@ -180,7 +180,9 @@ class AnnotationPipeline:
         self.mapper.update_mapping_template()
 
         if self.mapping_db:
-            self.mapper.predict_mapping(self.mapping_prediction, self.mapping_db)
+            self.mapper.predict_mapping(
+                self.mapping_prediction, self.mapping_db
+            )
 
     def create_mapping(self):
         """
