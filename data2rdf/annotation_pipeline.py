@@ -112,15 +112,15 @@ class AnnotationPipeline:
         extract the data from the HDF5 file.
         """
 
-        parser = self.parser(
+        self.parser = self.parser(
             self.input_file,
             data_storage_path=self.data_storage_path,
             **self.parser_args,
         )
 
-        parser.parser_data()
-        parser.generate_excel_spreadsheet(self.generic_output)
-        parser.generate_data_storage()
+        self.parser.parser_data()
+        self.parser.generate_excel_spreadsheet(self.generic_output)
+        self.parser.generate_data_storage()
 
     def write_rdf(self):
         """
@@ -132,17 +132,17 @@ class AnnotationPipeline:
         individuals of the process graph (created with the abox template).
         """
 
-        writer = RDFGenerator(
+        self.writer = RDFGenerator(
             self.generic_output, self.only_use_base_iri, self.data_download_iri
         )
 
         self.file_uri = (
             writer.generate_file_json()
         )  # store the file uri and use for the abox
-        writer.generate_meta_json()
-        writer.generate_column_json()
+        self.writer.generate_meta_json()
+        self.writer.generate_column_json()
 
-        writer.to_ttl(self.data_graph)
+        self.writer.to_ttl(self.data_graph)
 
     def convert_abox_template(self):
         """
@@ -174,13 +174,13 @@ class AnnotationPipeline:
         The user can use the predicted mapping as a guide to create the new one.
         """
 
-        mapper = Mapper(
+        self.mapper = Mapper(
             self.data_graph, self.unique_abox_template, self.mapping_file
         )
-        mapper.update_mapping_template()
+        self.mapper.update_mapping_template()
 
         if self.mapping_db:
-            mapper.predict_mapping(self.mapping_prediction, self.mapping_db)
+            self.mapper.predict_mapping(self.mapping_prediction, self.mapping_db)
 
     def create_mapping(self):
         """
@@ -194,12 +194,12 @@ class AnnotationPipeline:
         as well as a .ttl file, that exports the mapping as a RDF graph.
         """
 
-        mapper = Mapper(
+        self.mapper = Mapper(
             self.data_graph, self.unique_abox_template, self.mapping_file
         )
-        mapper.map_data_and_abox(worksheet="sameas")
-        mapper.export_merged_mapping_table(self.mapping_table)
-        mapper.export_mapping_as_ttl(self.mapping_ttl)
+        self.mapper.map_data_and_abox(worksheet="sameas")
+        self.mapper.export_merged_mapping_table(self.mapping_table)
+        self.mapper.export_mapping_as_ttl(self.mapping_ttl)
 
     def run_pipeline(self):
         """
