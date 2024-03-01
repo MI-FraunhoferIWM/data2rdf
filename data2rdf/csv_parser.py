@@ -1,12 +1,12 @@
 import io
-import uuid
 
 import magic
 import pandas as pd
 
+from data2rdf.parser import DataParser
 
-class CSVParser:
 
+class CSVParser(DataParser):
     """
     Generates the excel input sheet that can be used
     as input for abox skeleton files.
@@ -40,22 +40,17 @@ class CSVParser:
         data_storage_group_name="df",
         namespace="http://www.test.de",
     ):
-        if not server_f_path:
-            server_f_path = f_path
-
-        if not data_storage_path:
-            data_storage_path = f"{f_path}.datastorage.hdf5"
-
-        self.f_path = f_path
-        self.server_f_path = server_f_path
-
-        self.data_storage_path = data_storage_path
-        self.data_storage_group_name = data_storage_group_name
+        super().__init__(
+            f_path,
+            server_f_path,
+            data_storage_path,
+            data_storage_group_name,
+            namespace,
+        )
 
         self.header_sep = header_sep
         self.column_sep = column_sep
         self.header_length = header_length
-        self.namespace = namespace
 
     def parser_data(self):
         self.get_file_encoding()
@@ -78,7 +73,8 @@ class CSVParser:
         self.encoding = buffered.buffer(rawdata)
 
     def load_file(self):
-        self.file = open(self.f_path, encoding=self.encoding).read()
+        with open(self.f_path, encoding=self.encoding) as file:
+            self.file = file.read()
 
     def parse_meta_data(self):
         """
@@ -136,24 +132,6 @@ class CSVParser:
         self.column_df.columns = ["unit"]
         self.column_df["titles"] = self.column_df.index
         self.column_df.index.name = "index"
-
-    def generate_file_uuid(self):
-        self.id_uuid = str(uuid.uuid4())
-
-    def generate_file_meta_df(self):
-        self.file_meta_df = pd.Series()
-        # self.file_meta_df["encoding"] = self.encoding
-        # self.file_meta_df["headerRowCount"] = self.header_length
-        # self.file_meta_df["delimiter"] = self.column_sep
-        # self.file_meta_df["skipRows"] = 1
-        self.file_meta_df["file_path"] = self.f_path
-        self.file_meta_df["server_file_path"] = self.server_f_path
-        self.file_meta_df["namespace"] = self.namespace
-        self.file_meta_df["uuid"] = self.id_uuid
-
-        self.file_meta_df = pd.DataFrame(self.file_meta_df)
-        self.file_meta_df.columns = ["value"]
-        self.file_meta_df.index.name = "index"
 
     def clean_table_df(self):
         self.df_table = self.df_table.iloc[1:, :]
