@@ -1,8 +1,9 @@
-import os
+# import os
 from string import Template
 
 import pandas as pd
-from openpyxl.styles import Font
+
+# from openpyxl.styles import Font
 from rdflib import Graph, URIRef
 from rdflib.namespace import OWL, RDFS, SKOS
 
@@ -268,88 +269,88 @@ def convert_mapping2graph(merged_mapping, mapping_output_file):
     mapping_graph.serialize(mapping_output_file, format="ttl")
 
 
-def create_mapping_template(
-    data_graph_file, method_graph_file, mapping_output, worksheet="sameas"
-):
-    data_graph = Graph()
-    data_graph.parse(data_graph_file, format="ttl")
+# def create_mapping_template(
+#     data_graph_file, method_graph_file, mapping_output, worksheet="sameas"
+# ):
+#     data_graph = Graph()
+#     data_graph.parse(data_graph_file, format="ttl")
 
-    method_graph = Graph()
-    method_graph.parse(method_graph_file, format="ttl")
+#     method_graph = Graph()
+#     method_graph.parse(method_graph_file, format="ttl")
 
-    # from the data we take only meta_data and column_data
-    data_label_query_template = Template(
-        """
-    PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-    PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-    PREFIX csvw: <http://www.w3.org/ns/csvw#>
+#     # from the data we take only meta_data and column_data
+#     data_label_query_template = Template(
+#         """
+#     PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+#     PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+#     PREFIX csvw: <http://www.w3.org/ns/csvw#>
 
-    SELECT distinct ?label
-    WHERE {
-    {?ind rdf:type <$meta>} UNION {?ind rdf:type <$column>} .
-    ?ind rdfs:label ?label
-    }
-    """
-    )
+#     SELECT distinct ?label
+#     WHERE {
+#     {?ind rdf:type <$meta>} UNION {?ind rdf:type <$column>} .
+#     ?ind rdfs:label ?label
+#     }
+#     """
+#     )
 
-    data_label_query = data_label_query_template.substitute(
-        column=annotations["column_class"], meta=annotations["meta_data_type"]
-    )
+#     data_label_query = data_label_query_template.substitute(
+#         column=annotations["column_class"], meta=annotations["meta_data_type"]
+#     )
 
-    # from the method we take all named individuals
-    method_class_query = """
-    PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-    PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-    PREFIX csvw: <http://www.w3.org/ns/csvw#>
+#     # from the method we take all named individuals
+#     method_class_query = """
+#     PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+#     PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+#     PREFIX csvw: <http://www.w3.org/ns/csvw#>
 
-    SELECT distinct ?label
-    WHERE {
-    ?ind rdf:type <http://www.w3.org/2002/07/owl#NamedIndividual> .
-    ?ind rdfs:label ?label .
-    filter(?ind != <http://www.w3.org/2002/07/owl#NamedIndividual>)
-    }
-    """
+#     SELECT distinct ?label
+#     WHERE {
+#     ?ind rdf:type <http://www.w3.org/2002/07/owl#NamedIndividual> .
+#     ?ind rdfs:label ?label .
+#     filter(?ind != <http://www.w3.org/2002/07/owl#NamedIndividual>)
+#     }
+#     """
 
-    # convert method query to df
-    qres = method_graph.query(method_class_query)
-    method_ind_df = pd.DataFrame(qres, columns=["Method Labels"])
-    method_ind_df = method_ind_df.astype(str)
-    # literals can not be matched using pandas merge
-    # method_ind_df.sort_values(by = "Method Labels", inplace=True)
-    # convert the data individuals and their labels to df
-    qres = data_graph.query(data_label_query)
-    data_ind_df = pd.DataFrame(qres, columns=["Data Labels"])
-    data_ind_df = data_ind_df.astype(
-        str
-    )  # literals can not be matched using pandas merge
-    # data_ind_df.sort_values(by = "Data Labels", inplace=True)
+#     # convert method query to df
+#     qres = method_graph.query(method_class_query)
+#     method_ind_df = pd.DataFrame(qres, columns=["Method Labels"])
+#     method_ind_df = method_ind_df.astype(str)
+#     # literals can not be matched using pandas merge
+#     # method_ind_df.sort_values(by = "Method Labels", inplace=True)
+#     # convert the data individuals and their labels to df
+#     qres = data_graph.query(data_label_query)
+#     data_ind_df = pd.DataFrame(qres, columns=["Data Labels"])
+#     data_ind_df = data_ind_df.astype(
+#         str
+#     )  # literals can not be matched using pandas merge
+#     # data_ind_df.sort_values(by = "Data Labels", inplace=True)
 
-    # merge options and choices
-    match_table_df = pd.concat([method_ind_df, data_ind_df], axis=1)
-    match_table_df.columns = ["Method Label Choice", "Data Label Choice"]
-    # match_table_df.sort_values(by = ["Method Label Choice","Data Label Choice"], inplace=True)
-    # print(match_table_df)
+#     # merge options and choices
+#     match_table_df = pd.concat([method_ind_df, data_ind_df], axis=1)
+#     match_table_df.columns = ["Method Label Choice", "Data Label Choice"]
+#     # match_table_df.sort_values(by = ["Method Label Choice","Data Label Choice"], inplace=True)
+#     # print(match_table_df)
 
-    for col in match_table_df:
-        match_table_df[col] = match_table_df[col].sort_values(
-            ignore_index=True
-        )
+#     for col in match_table_df:
+#         match_table_df[col] = match_table_df[col].sort_values(
+#             ignore_index=True
+#         )
 
-    with pd.ExcelWriter(mapping_output, engine="openpyxl") as writer:
-        match_table_df.to_excel(writer, sheet_name=worksheet, index=False)
+#     with pd.ExcelWriter(mapping_output, engine="openpyxl") as writer:
+#         match_table_df.to_excel(writer, sheet_name=worksheet, index=False)
 
-        sheet = writer.sheets[worksheet]
+#         sheet = writer.sheets[worksheet]
 
-        # add column header
-        sheet["D1"] = "Data Label Match"
-        sheet["D1"].font = Font(bold=True)
-        sheet["C1"] = "Method Label Match"
-        sheet["C1"].font = Font(bold=True)
+#         # add column header
+#         sheet["D1"] = "Data Label Match"
+#         sheet["D1"].font = Font(bold=True)
+#         sheet["C1"] = "Method Label Match"
+#         sheet["C1"].font = Font(bold=True)
 
-        # end_choice = len(match_table_df.index) + 2
+#         # end_choice = len(match_table_df.index) + 2
 
-        for col in "ABCD":
-            sheet.column_dimensions[col].width = 30
+#         for col in "ABCD":
+#             sheet.column_dimensions[col].width = 30
 
 
 # FOLDER_PATH = os.path.dirname(os.path.abspath(__file__))
@@ -395,24 +396,24 @@ class Mapper:
         self.method_graph_path = method_graph_path
         self.mapping_path = mapping_path
 
-    def create_mapping_template(self, worksheet="sameas"):
-        if os.path.isfile(self.mapping_path):
-            raise FileExistsError(
-                "Mapping file exists, use update_mapping_template to update the choices but keep matches"
-            )
+    # def create_mapping_template(self, worksheet="sameas"):
+    #     if os.path.isfile(self.mapping_path):
+    #         raise FileExistsError(
+    #             "Mapping file exists, use update_mapping_template to update the choices but keep matches"
+    #         )
 
-        create_mapping_template(
-            self.data_graph_path,
-            self.method_graph_path,
-            self.mapping_path,
-            worksheet,
-        )
+    #     create_mapping_template(
+    #         self.data_graph_path,
+    #         self.method_graph_path,
+    #         self.mapping_path,
+    #         worksheet,
+    #     )
 
     def update_mapping_template(self, worksheet="sameas"):
         # if the mapping does not exist create it
-        if not os.path.isfile(self.mapping_path):
-            self.create_mapping_template()
-            return True
+        # if not os.path.isfile(self.mapping_path):
+        #     self.create_mapping_template()
+        #     return True
 
         mappings_to_keep = pd.read_excel(
             self.mapping_path,
@@ -420,12 +421,12 @@ class Mapper:
             engine="openpyxl",
         )
 
-        create_mapping_template(
-            self.data_graph_path,
-            self.method_graph_path,
-            self.mapping_path,
-            worksheet,
-        )
+        # create_mapping_template(
+        #     self.data_graph_path,
+        #     self.method_graph_path,
+        #     self.mapping_path,
+        #     worksheet,
+        # )
         # self.create_mapping_template()
 
         mappings_to_change = pd.read_excel(
