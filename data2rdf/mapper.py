@@ -339,23 +339,21 @@ def create_mapping_template(
             ignore_index=True
         )
 
-    writer = pd.ExcelWriter(mapping_output, engine="openpyxl")
-    match_table_df.to_excel(writer, sheet_name=worksheet, index=False)
+    with pd.ExcelWriter(mapping_output, engine="openpyxl") as writer:
+        match_table_df.to_excel(writer, sheet_name=worksheet, index=False)
 
-    sheet = writer.sheets[worksheet]
+        sheet = writer.sheets[worksheet]
 
-    # add column header
-    sheet["D1"] = "Data Label Match"
-    sheet["D1"].font = Font(bold=True)
-    sheet["C1"] = "Method Label Match"
-    sheet["C1"].font = Font(bold=True)
+        # add column header
+        sheet["D1"] = "Data Label Match"
+        sheet["D1"].font = Font(bold=True)
+        sheet["C1"] = "Method Label Match"
+        sheet["C1"].font = Font(bold=True)
 
-    # end_choice = len(match_table_df.index) + 2
+        # end_choice = len(match_table_df.index) + 2
 
-    for col in "ABCD":
-        sheet.column_dimensions[col].width = 30
-
-    writer.save()
+        for col in "ABCD":
+            sheet.column_dimensions[col].width = 30
 
 
 # FOLDER_PATH = os.path.dirname(os.path.abspath(__file__))
@@ -421,7 +419,7 @@ class Mapper:
             return True
 
         mappings_to_keep = pd.read_excel(
-            open(self.mapping_path, "rb"),
+            self.mapping_path,
             sheet_name=worksheet,
             engine="openpyxl",
         )
@@ -444,15 +442,15 @@ class Mapper:
             :, ["Method Label Match", "Data Label Match"]
         ] = mappings_to_keep.loc[:, ["Method Label Match", "Data Label Match"]]
 
-        writer = pd.ExcelWriter(self.mapping_path, engine="openpyxl")
-        mappings_to_change.to_excel(writer, sheet_name=worksheet, index=False)
+        with pd.ExcelWriter(self.mapping_path, engine="openpyxl") as writer:
+            mappings_to_change.to_excel(
+                writer, sheet_name=worksheet, index=False
+            )
 
-        sheet = writer.sheets[worksheet]
+            sheet = writer.sheets[worksheet]
 
-        for col in "ABCD":
-            sheet.column_dimensions[col].width = 30
-
-        writer.save()
+            for col in "ABCD":
+                sheet.column_dimensions[col].width = 30
 
     #   def predict_mapping(self, prediction_path, key_map_db, worksheet="sameas"):
     #      prediction_key_map_based_on_db(

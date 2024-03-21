@@ -137,14 +137,10 @@ class CSVParser(DataParser):
         self.df_table = self.df_table.iloc[1:, :]
 
     def generate_excel_spreadsheet(self, output_path):
-        writer = pd.ExcelWriter(output_path, engine="openpyxl")
-
-        self.file_meta_df.to_excel(writer, "file")
-        self.column_df.to_excel(writer, "column_meta")
-        self.meta_df.to_excel(writer, "meta")
-
-        writer.save()
-        writer.close()
+        with pd.ExcelWriter(output_path, engine="openpyxl") as writer:
+            self.file_meta_df.to_excel(writer, "file")
+            self.column_df.to_excel(writer, "column_meta")
+            self.meta_df.to_excel(writer, "meta")
 
     def generate_data_storage(self):
         self.df_table.to_hdf(
