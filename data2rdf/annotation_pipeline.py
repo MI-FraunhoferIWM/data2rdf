@@ -212,7 +212,7 @@ class AnnotationPipeline:
         self.parse_data()
         self.write_rdf()
         self.convert_abox_template()
-        self.update_mapping()
+        # self.update_mapping()
         self.create_mapping()
 
     def export_graph(self, merge_same_as=True):

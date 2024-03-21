@@ -210,7 +210,7 @@ def map_data2method(
     # convert method query to df
     qres = method_graph.query(method_label_query)
     method_ind_df = pd.DataFrame(
-        qres, columns=["Method Individuals", "Method Label Match"]
+        qres, columns=["Method Individuals", "Class type"]
     )
 
     # literals can not be matched using pandas merge
@@ -220,9 +220,7 @@ def map_data2method(
 
     # convert the data individuals and their labels to df
     qres = data_graph.query(data_label_query)
-    data_ind_df = pd.DataFrame(
-        qres, columns=["Data Individuals", "Data Label Match"]
-    )
+    data_ind_df = pd.DataFrame(qres, columns=["Data Individuals", "Key"])
 
     # literals can not be matched using pandas merge
     # data_ind_df = data_ind_df.astype(str)
@@ -233,13 +231,11 @@ def map_data2method(
     # this allows to observe where the mapping is incomplete
 
     # merge mapping with data individuals
-    merged_mapping = pd.merge(
-        mapping_df, data_ind_df, how="left", on=["Data Label Match"]
-    )
+    merged_mapping = pd.merge(mapping_df, data_ind_df, how="left", on=["Key"])
 
     # merge mapping with method individuals
     merged_mapping = pd.merge(
-        merged_mapping, method_ind_df, how="left", on=["Method Label Match"]
+        merged_mapping, method_ind_df, how="left", on=["Class type"]
     )
 
     return merged_mapping
@@ -385,7 +381,7 @@ def report_merge_result(merged_mapping_df):
     Report the number of successfully mapped data individuals.
     """
 
-    data_count = merged_mapping_df["Data Label Choice"].dropna().count()
+    data_count = merged_mapping_df["Key"].dropna().count()
     mapping_count = len(merged_mapping_df.dropna())
 
     print(
@@ -439,8 +435,8 @@ class Mapper:
         )
 
         mappings_to_change.loc[
-            :, ["Method Label Match", "Data Label Match"]
-        ] = mappings_to_keep.loc[:, ["Method Label Match", "Data Label Match"]]
+            :, ["Class type", "Key", "Annotation"]
+        ] = mappings_to_keep.loc[:, ["Class type", "Key", "Annotation"]]
 
         with pd.ExcelWriter(self.mapping_path, engine="openpyxl") as writer:
             mappings_to_change.to_excel(
