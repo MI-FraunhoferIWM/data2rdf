@@ -1,6 +1,7 @@
 import os
 from pathlib import Path
 
+import pandas as pd
 from rdflib import Graph
 
 from data2rdf.abox_template_generation import (
@@ -122,6 +123,26 @@ class AnnotationPipeline:
         self.parser.generate_excel_spreadsheet(self.generic_output)
         self.parser.generate_data_storage()
 
+    def generate_file_uri(self):
+        """Get the file uri to be used as prefix in the knowledge graph."""
+        file_meta_df = pd.read_excel(
+            self.generic_output, sheet_name="file", engine="openpyxl"
+        )
+        file_meta_df.set_index("index", inplace=True)
+
+        if self.only_use_base_iri:
+            self.file_uri = file_meta_df.loc["namespace", "value"] + "/"
+        else:
+            self.file_uri = (
+                "/".join(
+                    [
+                        file_meta_df.loc["namespace", "value"],
+                        file_meta_df.loc["uuid", "value"],
+                    ]
+                )
+                + "#"
+            )
+
     def write_rdf(self):
         """
         Generates a RDF graph representation of the parsed data. This graph uses a generic data model.
@@ -133,12 +154,13 @@ class AnnotationPipeline:
         """
 
         self.writer = RDFGenerator(
-            self.generic_output, self.only_use_base_iri, self.data_download_iri
+            self.generic_output,
+            self.mapping_file,
+            self.file_uri,
+            self.data_download_iri,
         )
 
-        self.file_uri = (
-            self.writer.generate_file_json()
-        )  # store the file uri and use for the abox
+        self.writer.generate_file_json()
         self.writer.generate_meta_json()
         self.writer.generate_column_json()
 
@@ -210,6 +232,7 @@ class AnnotationPipeline:
 
         self.create_output()
         self.parse_data()
+        self.generate_file_uri()
         self.write_rdf()
         self.convert_abox_template()
         # self.update_mapping()

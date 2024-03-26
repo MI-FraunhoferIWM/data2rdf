@@ -444,10 +444,10 @@ class Mapper:
                 writer, sheet_name=worksheet, index=False
             )
 
-            sheet = writer.sheets[worksheet]
+            # sheet = writer.sheets[worksheet]
 
-            for col in "ABCD":
-                sheet.column_dimensions[col].width = 30
+            # for col in "ABCD":
+            #     sheet.column_dimensions[col].width = 30
 
     #   def predict_mapping(self, prediction_path, key_map_db, worksheet="sameas"):
     #      prediction_key_map_based_on_db(

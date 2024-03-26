@@ -35,9 +35,9 @@ class DataParser(ABC):
         self.data_storage_group_name = data_storage_group_name
         self.namespace = namespace
         self.id_uuid = str(uuid.uuid4())
-
-    def generate_file_uuid(self):
-        self.id_uuid = str(uuid.uuid4())
+        self.column_df = None
+        self.df_table = None
+        self.meta_df = None
 
     def generate_file_meta_df(self):
         self.file_meta_df = pd.DataFrame(
@@ -52,6 +52,17 @@ class DataParser(ABC):
             index=["file_path", "server_file_path", "namespace", "uuid"],
         )
         self.file_meta_df.index.name = "index"
+
+    def generate_excel_spreadsheet(self, output_path):
+        with pd.ExcelWriter(output_path, engine="openpyxl") as writer:
+            self.file_meta_df.to_excel(writer, "file")
+            self.column_df.to_excel(writer, "column_meta")
+            self.meta_df.to_excel(writer, "meta")
+
+    def generate_data_storage(self):
+        self.df_table.to_hdf(
+            self.data_storage_path, key=self.data_storage_group_name
+        )
 
     # def generate_file_meta_df(self):
     #     self.file_meta_df = pd.Series()
@@ -77,5 +88,13 @@ class DataParser(ABC):
         pass
 
     @abstractmethod
-    def generate_data_storage(self):
+    def generate_column_df(self):
+        pass
+
+    @abstractmethod
+    def parse_table(self):
+        pass
+
+    @abstractmethod
+    def parser_data(self):
         pass

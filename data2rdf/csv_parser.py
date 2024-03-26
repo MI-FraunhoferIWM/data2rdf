@@ -55,7 +55,6 @@ class CSVParser(DataParser):
     def parser_data(self):
         self.get_file_encoding()
         self.load_file()
-        self.generate_file_uuid()
         self.parse_meta_data()
         self.split_meta_df()
         self.parse_table()
@@ -135,14 +134,3 @@ class CSVParser(DataParser):
 
     def clean_table_df(self):
         self.df_table = self.df_table.iloc[1:, :]
-
-    def generate_excel_spreadsheet(self, output_path):
-        with pd.ExcelWriter(output_path, engine="openpyxl") as writer:
-            self.file_meta_df.to_excel(writer, "file")
-            self.column_df.to_excel(writer, "column_meta")
-            self.meta_df.to_excel(writer, "meta")
-
-    def generate_data_storage(self):
-        self.df_table.to_hdf(
-            self.data_storage_path, key=self.data_storage_group_name
-        )

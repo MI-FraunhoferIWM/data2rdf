@@ -342,3 +342,4 @@ method:TensileTestingMachine a mt:TensileTestingMachine,
 
 isq:Length a owl:Class ;
     rdfs:label "Length" .
+

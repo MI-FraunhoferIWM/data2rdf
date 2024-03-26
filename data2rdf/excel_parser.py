@@ -46,7 +46,6 @@ class ExcelParser(DataParser):
 
     def parser_data(self):
         self.load_file()
-        self.generate_file_uuid()
         self.load_mapping_file()
         self.parse_meta_data()
         self.generate_column_df()
@@ -216,19 +215,3 @@ class ExcelParser(DataParser):
             )
 
         self.column_df = pd.DataFrame(column_data)
-        # print(self.column_df)
-
-    # def clean_table_df(self):
-    #    self.df_table = self.df_table.iloc[1:,:]
-
-    def generate_excel_spreadsheet(self, output_path):
-        with pd.ExcelWriter(output_path, engine="openpyxl") as writer:
-            self.file_meta_df.to_excel(writer, "file")
-            self.column_df.to_excel(writer, "column_meta")
-            self.meta_df.to_excel(writer, "meta")
-
-    def generate_data_storage(self):
-        # print(self.df_table)
-        self.df_table.to_hdf(
-            self.data_storage_path, key=self.data_storage_group_name
-        )
