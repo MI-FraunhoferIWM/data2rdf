@@ -301,4 +301,3 @@ fileid:unitliteral-4 a ns3:UnitLiteral ;
 
 fileid:unitliteral-5 a ns3:UnitLiteral ;
     ns3:EMMO_67fc0a36_8dcb_4ffa_9a43_31074efa3296 "0.035807567"^^xsd:string .
-
