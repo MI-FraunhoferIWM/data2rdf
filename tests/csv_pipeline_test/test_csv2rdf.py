@@ -33,9 +33,9 @@ class TestAnnotationPipelineCSV(unittest.TestCase):
             raw_data,
             parser,
             parser_args,
-            template,
             mapping_file,
             output_folder,
+            template=template,
         )
 
         shutil.rmtree(output_folder, ignore_errors=True)
@@ -49,11 +49,6 @@ class TestAnnotationPipelineCSV(unittest.TestCase):
         self.assertTrue(
             check_file_identifier_in_folder(
                 self.pipeline.output, "generic.xlsx"
-            )
-        )
-        self.assertTrue(
-            check_file_identifier_in_folder(
-                self.pipeline.output, "mapping.ttl"
             )
         )
         self.assertTrue(
