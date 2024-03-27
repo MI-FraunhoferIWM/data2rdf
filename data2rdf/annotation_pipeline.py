@@ -4,13 +4,9 @@ from pathlib import Path
 import pandas as pd
 from rdflib import Graph
 
-from data2rdf.abox_template_generation import (
-    add_individual_labels,
-    convert_abox_namespace,
-)
+from data2rdf.abox_template_generation import convert_abox_namespace
 from data2rdf.csv_parser import CSVParser
 from data2rdf.excel_parser import ExcelParser
-from data2rdf.mapper import Mapper, merge_same_as_individuals
 from data2rdf.rdf_generation import RDFGenerator
 
 parser_choice = {
@@ -30,8 +26,8 @@ class AnnotationPipeline:
         parser(str): The parser used to read the meta data and column data from the file (csv or excel).
         parser_args(dict): A dict with specific arguments for the parser. Is passed to the parser as kwargs.
         mapping_file(str): The file path for the mapping_file (in .xlsx excel format).
-        template(str): The file path for the abox template (in .ttl format).
         output(str): The path for the output folder. This is where all the output files will be stored. The folder will be created.
+        template(str, optional): The file path for the abox template (in .ttl format).
         base_iri(str): An iri used as base for the generated graph entities. The base will be extended by an automatically generated uuid such as: base_iri/uuid#entity
         mapping_db(str, optional): The file path for a mapping database. Can be used to predict possible mappings based on the mapping_file
         only_use_base_iri (bool): In some cases it is not good to automatically add an UUID to the iri. E.g. mapping of the iri to the generated file IDs of the DSMS.
@@ -43,9 +39,9 @@ class AnnotationPipeline:
         input_file,
         parser,
         parser_args,
-        template,
         mapping_file,
         output,
+        template=None,
         mapping_db=None,
         base_iri="http://www.test2.de",
         only_use_base_iri=True,
@@ -87,13 +83,6 @@ class AnnotationPipeline:
         )
         self.data_graph = os.path.join(
             self.output, f"{self.input_file_name}.metadata.ttl"
-        )
-
-        self.mapping_table = os.path.join(
-            self.output, f"{self.input_file_name}.mapping-result.xlsx"
-        )
-        self.mapping_ttl = os.path.join(
-            self.output, f"{self.input_file_name}.mapping.ttl"
         )
 
         self.mapping_prediction = os.path.join(
@@ -177,54 +166,6 @@ class AnnotationPipeline:
             self.template, self.unique_abox_template, unique_uri=self.file_uri
         )
 
-        add_individual_labels(
-            self.unique_abox_template, self.unique_abox_template
-        )
-
-    def update_mapping(self):
-        """
-        Takes the mapping file and adds the new mapping choices extracted from the data graph and the process
-        graph. The mapping matches need to be adjusted manually by the uses.
-        This means, that the for example a data set
-        with a slightly different naming convention (E.g.: Prüfer vs Pruefer vs Tester ...) can
-        be used for the same pipeline. The mapping only needs to be adjusted for the data entities
-        with names different to the original mapping.
-        This applies as well to a changed method graph.
-
-        To make is even easier for the user the mapping is also predicted using a word match algorithm and a
-        DB with known mapping (currently extracted from the synonyms of the stahldigital ontology).
-        The user can use the predicted mapping as a guide to create the new one.
-        """
-
-        self.mapper = Mapper(
-            self.data_graph, self.unique_abox_template, self.mapping_file
-        )
-        self.mapper.update_mapping_template()
-
-        if self.mapping_db:
-            self.mapper.predict_mapping(
-                self.mapping_prediction, self.mapping_db
-            )
-
-    def create_mapping(self):
-        """
-        Maps the data individuals and the process individuals based on the label matches provided in the
-        mapping excel. Mapping means in this context, that an OWL:sameAs relation points from the data individual to
-        the corresponding process individual. An OWl-reasoner (e.g. AllegroGraph) can
-        infer that those two individuals are actually the same.
-
-        The mapping is exported as a mapping table, that provides verbose
-        information of the individuals and the mapping
-        as well as a .ttl file, that exports the mapping as a RDF graph.
-        """
-
-        self.mapper = Mapper(
-            self.data_graph, self.unique_abox_template, self.mapping_file
-        )
-        self.mapper.map_data_and_abox(worksheet="sameas")
-        self.mapper.export_merged_mapping_table(self.mapping_table)
-        self.mapper.export_mapping_as_ttl(self.mapping_ttl)
-
     def run_pipeline(self):
         """
         Runs the complete pipeline with all required steps.
@@ -234,23 +175,19 @@ class AnnotationPipeline:
         self.parse_data()
         self.generate_file_uri()
         self.write_rdf()
-        self.convert_abox_template()
-        # self.update_mapping()
-        self.create_mapping()
+        if self.template:
+            self.convert_abox_template()
 
-    def export_graph(self, merge_same_as=True):
+    def export_graph(self):
         """
         Exports a merged rdflib graph of the data, process and mapping output.
         Can be used e.g. to load the data into a triple store using rdflib.
         """
 
         g = Graph(identifier=self.base_iri)
-        g.parse(self.unique_abox_template, format="ttl")
-        g.parse(self.mapping_ttl, format="ttl")
+        if self.template:
+            g.parse(self.unique_abox_template, format="ttl")
         g.parse(self.data_graph, format="ttl")
-
-        if merge_same_as:
-            g = merge_same_as_individuals(g)
 
         return g
 

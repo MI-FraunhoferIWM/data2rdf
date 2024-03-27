@@ -9,8 +9,6 @@ from rdflib.namespace import OWL, RDFS, SKOS
 
 from data2rdf.annotation_confs import annotations
 
-# from data2rdf.key_map_prediction import prediction_key_map_based_on_db
-
 
 def merge_same_as_individuals(graph, convert_data_label_to_alt_label=True):
     """
