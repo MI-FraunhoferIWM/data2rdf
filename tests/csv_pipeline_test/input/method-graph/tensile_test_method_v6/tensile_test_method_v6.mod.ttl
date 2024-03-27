@@ -151,4 +151,3 @@ method:TensileTestingMachine a owl:NamedIndividual ;
     semiotics:hasSign method:MachineData ;
     mero:hasPart method:DisplacementTransducer,
         method:ForceMeasuringDevice .
-
