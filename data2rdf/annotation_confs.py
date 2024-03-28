@@ -21,4 +21,5 @@ annotations = {
     "column_class": "http://emmo.info/datamodel#DataInstance",
     # Custom class
     "UnitLiteral": "http://emmo.info/emmo/middle/metrology#UnitLiteral",  # TODO add to emmo
+    "QudtURI": "http://qudt.org/2.1/vocab/unit",
 }
