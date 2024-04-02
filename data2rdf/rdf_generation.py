@@ -208,10 +208,6 @@ class RDFGenerator:
                     "@type": "xsd:string",
                     "@value": col_desc["index"],
                 },
-                "csvw:datatype": {
-                    "@type": "xsd:string",
-                    "@value": "number",
-                },
                 "qudt:quantity": {
                     **self._make_types_and_id(col_desc),
                     **_check_qudt_mapping(col_desc["unit"]),
