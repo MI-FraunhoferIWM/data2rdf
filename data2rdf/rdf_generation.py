@@ -1,10 +1,10 @@
 import json
+from typing import List
 
 import pandas as pd
 from rdflib import Graph
 
-from data2rdf.annotation_confs import annotations
-from data2rdf.emmo_lib import emmo_utils
+from data2rdf.qudt_utils import _check_qudt_mapping
 
 
 def split_prefix_suffix(iri):
@@ -77,29 +77,62 @@ class RDFGenerator:
         Generates the basic json-ld data model schema
         """
 
-        # schema
-        self.json["@context"] = {
-            "csvw": "http://www.w3.org/ns/csvw#",
-            "rdfs": "http://www.w3.org/2000/01/rdf-schema#",
-            "dcat": "http://www.w3.org/ns/dcat#",
-            "xsd": "http://www.w3.org/2001/XMLSchema#",
-            "dcterms": "http://purl.org/dc/terms/",
+        file_path = self.file_meta_df.loc["server_file_path", "value"]
+
+        media_type = (
+            "https://www.iana.org/assignments/media-types/application/vnd.ms-excel"
+            if "xls" in file_path
+            else "http://www.iana.org/assignments/media-types/text/csv"
+        )
+
+        self.meta_table = {
+            "@type": "csvw:Table",
+            "rdfs:label": "Metadata",
+            "csvw:row": [],
         }
 
-        self.json["@context"]["fileid"] = self.file_uri
+        self.column_schema = {"@type": "csvw:Schema", "csvw:column": []}
 
-        # #add dcat file description
-        self.json["@id"] = "fileid:dataset"
-        self.json["@type"] = "dcat:Dataset"
-
-        self.json["dcat:downloadURL"] = self.file_meta_df.loc[
-            "server_file_path", "value"
-        ]
+        self.json = {
+            "@context": {
+                "fileid": self.file_uri,
+                "csvw": "http://www.w3.org/ns/csvw#",
+                "rdfs": "http://www.w3.org/2000/01/rdf-schema#",
+                "dcat": "http://www.w3.org/ns/dcat#",
+                "xsd": "http://www.w3.org/2001/XMLSchema#",
+                "dcterms": "http://purl.org/dc/terms/",
+                "qudt": "http://qudt.org/schema/qudt/",
+                "csvw": "http://www.w3.org/ns/csvw#",
+                "foaf": "http://xmlns.com/foaf/spec/",
+            },
+            "@id": "fileid:dataset",
+            "@type": "dcat:Dataset",
+            "dcat:distribution": {
+                "@type": "dcat:Distribution",
+                "dcat:mediaType": {
+                    "@type": "xsd:anyURI",
+                    "@value": media_type,
+                },
+                "dcat:accessURL": {
+                    "@type": "xsd:anyURI",
+                    "@value": file_path,
+                },
+            },
+            "dcterms:hasPart": {
+                "@id": "fileid:tableGroup",
+                "@type": "csvw:TableGroup",
+                "csvw:table": [
+                    self.meta_table,
+                    {
+                        "@type": "csvw:Table",
+                        "rdfs:label": "Time series data",
+                        "csvw:tableSchema": self.column_schema,
+                    },
+                ],
+            },
+        }
 
     def generate_meta_json(self):
-        # all meta data is stored using the notes relation of the file
-        self.json[annotations["hasMetaData"]] = []
-
         ##############################
         # add description meta data to the json
         ##############################
@@ -108,19 +141,19 @@ class RDFGenerator:
         meta_description_df = self.meta.loc[(self.meta["unit"].isna()), :]
 
         for idx, meta_desc in meta_description_df.iterrows():
-            datum = {
-                "rdfs:label": meta_desc["index"],
-                "@type": annotations["meta_data_type"],
-                annotations["meta_data_value_annotation"]: {
-                    # all meta data as string
-                    "@value": meta_desc["value"],
+            row = {
+                "@type": "csvw:Row",
+                "csvw:titles": {
                     "@type": "xsd:string",
+                    "@value": meta_desc["index"],
+                },
+                "csvw:rownum": {"@type": "xsd:integer", "@value": idx},
+                "csvw:describes": {
+                    "@type": self._make_types(meta_desc),
+                    "rdfs:label": meta_desc["value"],
                 },
             }
-            self._make_identifier_and_annotation(datum, meta_desc)
-            if not datum.get("@id"):
-                datum["@id"] = f"fileid:metadata-{idx}"
-            self.json[annotations["hasMetaData"]].append(datum)
+            self.meta_table["csvw:row"].append(row)
 
         ##############################
         # add quantity meta data to the json
@@ -133,86 +166,72 @@ class RDFGenerator:
                 dtype = "xsd:integer"
                 value = int(meta_desc["value"])
             else:
-                dtype = "xsd:string"
-                value = meta_desc["value"]
+                raise ValueError(
+                    f"""Datatype not recognized for key
+                    `{meta_desc['index']}` with value:
+                    `{meta_desc['value']}`"""
+                )
 
-            datum = {
-                "rdfs:label": meta_desc["index"],
-                "@type": [
-                    annotations["quantity_class"],
-                    annotations["meta_data_type"],
-                ],
-                annotations["meta_data_quantity_annotation"]: {
-                    "@type": annotations[
-                        "numeric_class"
-                    ],  # could also be float or any other class
-                    "@id": f"fileid:numeric-{idx}",
-                    annotations["meta_data_numeric_annotation"]: {
-                        "@value": value,
+            row = {
+                "@type": "csvw:Row",
+                "csvw:titles": {
+                    "@type": "xsd:string",
+                    "@value": meta_desc["index"],
+                },
+                "csvw:rownum": {"@type": "xsd:integer", "@value": idx},
+                "qudt:quantity": {
+                    "qudt:value": {
                         "@type": dtype,
+                        "@value": value,
                     },
-                    annotations["meta_data_unit_annotation"]: [
-                        emmo_utils.generate_unit_individuals(
-                            meta_desc["unit"], idx
-                        ),  # function that assigns EMMO units
-                        {
-                            # Additional to the EMMO Unit system, a UnitLiteral is added, this helper individual just stores the
-                            # Name of the unit, allows for simple query construction
-                            "@id": f"fileid:unitliteral-{idx}",
-                            "@type": annotations["UnitLiteral"],
-                            annotations["meta_data_value_annotation"]: {
-                                "@value": meta_desc["unit"],
-                                "@type": "xsd:string",
-                            },
-                        },
-                    ]
-                    # {
-                    # "@value":meta_desc['Unit'] #todo add function that assigns EMMO unit
-                    # }
+                    "@type": self._make_types(meta_desc),
+                    **_check_qudt_mapping(meta_desc["unit"]),
                 },
             }
-            self._make_identifier_and_annotation(datum, meta_desc)
-            if not datum.get("@id"):
-                datum["@id"] = f"fileid:metadata-{idx}"
-            self.json[annotations["hasMetaData"]].append(datum)
+            self.meta_table["csvw:row"].append(row)
 
     def generate_column_json(self):
-        # self.json["hasMetaData"] = []
-        # currently use same relation for columns and meta data since datamodel
-        # ontology -> http://emmo.info/datamodel#composition
-
         for idx, col_desc in self.column_meta.iterrows():
             if self.data_download_iri:
-                download_url = self.data_download_iri + "/" + f"column-{idx}"
+                download_url = {
+                    "dcterms:identifier": {
+                        "@type": "xsd:anyURI",
+                        "@value": f"{self.data_download_iri}/column-{idx}",
+                    }
+                }
             else:
-                download_url = None
+                download_url = {}
 
-            datum = {
-                "@type": annotations["column_class"],
-                "rdfs:label": col_desc["titles"],
-                "dcat:downloadURL": download_url,
-                annotations["meta_data_unit_annotation"]: [
-                    emmo_utils.generate_unit_individuals(
-                        col_desc["unit"], idx
-                    ),  # function that assigns EMMO units
-                    {
-                        # Additional to the EMMO Unit system, a UnitLiteral is added, this helper individual just stores the
-                        # Name of the unit, allows for simple query construction
-                        "@id": f"fileid:unitliteral-{idx}",
-                        "@type": annotations["UnitLiteral"],
-                        annotations["meta_data_unit_annotation"]: {
-                            "@value": col_desc["unit"],
-                            "@type": "xsd:string",
-                        },
+            column = {
+                "@type": "csvw:Column",
+                "csvw:titles": {
+                    "@type": "xsd:string",
+                    "@value": col_desc["index"],
+                },
+                "csvw:datatype": {
+                    "@type": "xsd:string",
+                    "@value": "number",
+                },
+                "qudt:quantity": {
+                    "@type": self._make_types(col_desc),
+                    **_check_qudt_mapping(col_desc["unit"]),
+                },
+                "foaf:page": {
+                    "@type": "foaf:Document",
+                    "dcterms:format": {
+                        "@type": "xsd:anyURI",
+                        "@value": "https://www.iana.org/assignments/media-types/application/json",
                     },
-                ],
+                    "dcterms:type": {
+                        "@type": "xsd:anyURI",
+                        "@value": "http://purl.org/dc/terms/Dataset",
+                    },
+                    **download_url,
+                },
             }
-            self._make_identifier_and_annotation(datum, col_desc)
-            if not datum.get("@id"):
-                datum["@id"] = f"fileid:column-{idx}"
-            self.json[annotations["hasMetaData"]].append(datum)
+            self.column_schema["csvw:column"].append(column)
 
-    def _make_identifier_and_annotation(self, datum, description):
+    def _make_types(self, description) -> List[str]:
         row = self.mapping.loc[
             self.mapping["Key"]
             == (description.get("index") or description.get("title"))
@@ -220,13 +239,13 @@ class RDFGenerator:
         if not row.empty:
             class_type = str(row["Class type"].values[0])
             value_annotation = row["Annotation"].values[0]
-            value = description["value"]
-            dcterms_annotations = [class_type]
+            value = description.get("value")
+            types = [class_type]
             if not value_annotation and value:
-                dcterms_annotations += [value_annotation + "/" + value]
-            suffix = split_prefix_suffix(class_type)
-            datum["dcterms:type"] = dcterms_annotations
-            datum["@id"] = f"fileid:{suffix}"
+                types += [value_annotation + "/" + value]
+            return types
+        else:
+            return ["skos:Concept"]
 
     def to_json_ld(self, f_path):
         with open(f_path, "w") as output_file:
