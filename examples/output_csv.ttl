@@ -1,0 +1,183 @@
+@prefix csvw: <http://www.w3.org/ns/csvw#> .
+@prefix dcat: <http://www.w3.org/ns/dcat#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix fileid: <https://stahldigital.materials-data.space/b82b703d-d145-4430-9470-ea803a0e300d/> .
+@prefix foaf: <http://xmlns.com/foaf/spec/> .
+@prefix qudt: <http://qudt.org/schema/qudt/> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+fileid:dataset a dcat:Dataset ;
+    dcterms:hasPart fileid:tableGroup ;
+    dcat:distribution [ a dcat:Distribution ;
+            dcat:accessURL "../tests/csv_pipeline_test/input/data/DX56_D_FZ2_WR00_43.TXT"^^xsd:anyURI ;
+            dcat:mediaType "http://www.iana.org/assignments/media-types/text/csv"^^xsd:anyURI ] .
+
+fileid:tableGroup a csvw:TableGroup ;
+    csvw:table [ a csvw:Table ;
+            rdfs:label "Metadata" ;
+            csvw:row [ a csvw:Row ;
+                    qudt:quantity [ a <https://w3id.org/steel/ProcessOntology/TestingRate> ;
+                            qudt:hasUnit "http://qudt.org/vocab/unit/MilliM-PER-SEC" ;
+                            qudt:value "0.1"^^xsd:float ] ;
+                    csvw:rownum 16 ;
+                    csvw:titles "Prüfgeschwindigkeit"^^xsd:string ],
+                [ a csvw:Row ;
+                    qudt:quantity [ a <https://w3id.org/steel/ProcessOntology/SpecimenThickness> ;
+                            qudt:hasUnit "http://qudt.org/vocab/unit/MilliM" ;
+                            qudt:value "1.55"^^xsd:float ] ;
+                    csvw:rownum 14 ;
+                    csvw:titles "Probendicke"^^xsd:string ],
+                [ a csvw:Row ;
+                    csvw:describes [ a <https://w3id.org/steel/ProcessOntology/DisplacementTransducer> ;
+                            rdfs:label "Wegaufnehmer_1" ] ;
+                    csvw:rownum 6 ;
+                    csvw:titles "Wegaufnehmer"^^xsd:string ],
+                [ a csvw:Row ;
+                    qudt:quantity [ a <https://w3id.org/steel/ProcessOntology/OriginalGaugeLength> ;
+                            qudt:hasUnit "http://qudt.org/vocab/unit/MilliM" ;
+                            qudt:value "80.0"^^xsd:float ] ;
+                    csvw:rownum 12 ;
+                    csvw:titles "Messlänge Standardweg"^^xsd:string ],
+                [ a csvw:Row ;
+                    csvw:describes [ a <https://w3id.org/steel/ProcessOntology/TestStandard> ;
+                            rdfs:label "ISO-XX" ] ;
+                    csvw:rownum 7 ;
+                    csvw:titles "Prüfnorm"^^xsd:string ],
+                [ a csvw:Row ;
+                    qudt:quantity [ a <https://w3id.org/steel/ProcessOntology/SpecimenWidth> ;
+                            qudt:hasUnit "http://qudt.org/vocab/unit/MilliM" ;
+                            qudt:value "20.04"^^xsd:float ] ;
+                    csvw:rownum 15 ;
+                    csvw:titles "Probenbreite"^^xsd:string ],
+                [ a csvw:Row ;
+                    csvw:describes [ a <https://w3id.org/steel/ProcessOntology/TestingFacility> ;
+                            rdfs:label "institute_1" ] ;
+                    csvw:rownum 0 ;
+                    csvw:titles "Prüfinstitut"^^xsd:string ],
+                [ a csvw:Row ;
+                    csvw:describes [ a <https://w3id.org/steel/ProcessOntology/ProjectName> ;
+                            rdfs:label "proj_name_1" ] ;
+                    csvw:rownum 2 ;
+                    csvw:titles "Projektname"^^xsd:string ],
+                [ a csvw:Row ;
+                    csvw:describes [ a <https://w3id.org/steel/ProcessOntology/ProjectNumber> ;
+                            rdfs:label "123456" ] ;
+                    csvw:rownum 1 ;
+                    csvw:titles "Projektnummer"^^xsd:string ],
+                [ a csvw:Row ;
+                    csvw:describes [ a <https://w3id.org/steel/ProcessOntology/SpecimenType> ;
+                            rdfs:label "Probentyp_1" ] ;
+                    csvw:rownum 9 ;
+                    csvw:titles "Probentyp"^^xsd:string ],
+                [ a csvw:Row ;
+                    csvw:describes [ a <https://w3id.org/steel/ProcessOntology/TimeStamp> ;
+                            rdfs:label "44335.4" ] ;
+                    csvw:rownum 3 ;
+                    csvw:titles "Datum/Uhrzeit"^^xsd:string ],
+                [ a csvw:Row ;
+                    qudt:quantity [ a <https://w3id.org/steel/ProcessOntology/Preload> ;
+                            qudt:hasUnit "http://qudt.org/vocab/unit/MegaPA" ;
+                            qudt:value "2.0"^^xsd:float ] ;
+                    csvw:rownum 17 ;
+                    csvw:titles "Vorkraft"^^xsd:string ],
+                [ a csvw:Row ;
+                    csvw:describes [ a <https://w3id.org/steel/ProcessOntology/Tester> ;
+                            rdfs:label "abc" ] ;
+                    csvw:rownum 10 ;
+                    csvw:titles "Prüfer"^^xsd:string ],
+                [ a csvw:Row ;
+                    qudt:quantity [ a <https://w3id.org/steel/ProcessOntology/Temperature> ;
+                            qudt:hasUnit "http://qudt.org/vocab/unit/DEG_C" ;
+                            qudt:value "22.0"^^xsd:float ] ;
+                    csvw:rownum 18 ;
+                    csvw:titles "Temperatur"^^xsd:string ],
+                [ a csvw:Row ;
+                    csvw:describes [ a <https://w3id.org/steel/ProcessOntology/SampleIdentifier-2> ;
+                            rdfs:label "Probentyp_2" ] ;
+                    csvw:rownum 11 ;
+                    csvw:titles "Probenkennung 2"^^xsd:string ],
+                [ a csvw:Row ;
+                    csvw:describes [ a <https://w3id.org/steel/ProcessOntology/Material> ;
+                            rdfs:label "Werkstoff_1" ] ;
+                    csvw:rownum 8 ;
+                    csvw:titles "Werkstoff"^^xsd:string ],
+                [ a csvw:Row ;
+                    csvw:describes [ a <https://w3id.org/steel/ProcessOntology/Remark> ;
+                            rdfs:label "nan" ] ;
+                    csvw:rownum 19 ;
+                    csvw:titles "Bemerkung"^^xsd:string ],
+                [ a csvw:Row ;
+                    csvw:describes [ a <https://w3id.org/steel/ProcessOntology/ForceMeasuringDevice> ;
+                            rdfs:label "Kraftaufnehmer_1" ] ;
+                    csvw:rownum 5 ;
+                    csvw:titles "Kraftaufnehmer"^^xsd:string ],
+                [ a csvw:Row ;
+                    qudt:quantity [ a <https://w3id.org/steel/ProcessOntology/ParallelLength> ;
+                            qudt:hasUnit "http://qudt.org/vocab/unit/MilliM" ;
+                            qudt:value "120.0"^^xsd:float ] ;
+                    csvw:rownum 13 ;
+                    csvw:titles "Versuchslänge"^^xsd:string ],
+                [ a csvw:Row ;
+                    csvw:describes [ a <https://w3id.org/steel/ProcessOntology/MachineData> ;
+                            rdfs:label "maschine_1" ] ;
+                    csvw:rownum 4 ;
+                    csvw:titles "Maschinendaten"^^xsd:string ] ],
+        [ a csvw:Table ;
+            rdfs:label "Time series data" ;
+            csvw:tableSchema [ a csvw:Schema ;
+                    csvw:column [ a csvw:Column ;
+                            qudt:quantity [ a <https://w3id.org/steel/ProcessOntology/TestTime> ;
+                                    qudt:hasUnit "http://qudt.org/vocab/unit/SEC" ] ;
+                            csvw:datatype "number"^^xsd:string ;
+                            csvw:titles "Prüfzeit"^^xsd:string ;
+                            foaf:page [ a foaf:Document ;
+                                    dcterms:format "https://www.iana.org/assignments/media-types/application/json"^^xsd:anyURI ;
+                                    dcterms:identifier "https://stahldigital.materials-data.space/b82b703d-d145-4430-9470-ea803a0e300d/column-0"^^xsd:anyURI ;
+                                    dcterms:type "http://purl.org/dc/terms/Dataset"^^xsd:anyURI ] ],
+                        [ a csvw:Column ;
+                            qudt:quantity [ a <https://w3id.org/steel/ProcessOntology/Extension> ;
+                                    qudt:hasUnit "http://qudt.org/vocab/unit/MilliM" ] ;
+                            csvw:datatype "number"^^xsd:string ;
+                            csvw:titles "Standardweg"^^xsd:string ;
+                            foaf:page [ a foaf:Document ;
+                                    dcterms:format "https://www.iana.org/assignments/media-types/application/json"^^xsd:anyURI ;
+                                    dcterms:identifier "https://stahldigital.materials-data.space/b82b703d-d145-4430-9470-ea803a0e300d/column-3"^^xsd:anyURI ;
+                                    dcterms:type "http://purl.org/dc/terms/Dataset"^^xsd:anyURI ] ],
+                        [ a csvw:Column ;
+                            qudt:quantity [ a <https://w3id.org/steel/ProcessOntology/AbsoluteCrossheadTravel> ;
+                                    qudt:hasUnit "http://qudt.org/vocab/unit/MilliM" ] ;
+                            csvw:datatype "number"^^xsd:string ;
+                            csvw:titles "Traversenweg absolut"^^xsd:string ;
+                            foaf:page [ a foaf:Document ;
+                                    dcterms:format "https://www.iana.org/assignments/media-types/application/json"^^xsd:anyURI ;
+                                    dcterms:identifier "https://stahldigital.materials-data.space/b82b703d-d145-4430-9470-ea803a0e300d/column-2"^^xsd:anyURI ;
+                                    dcterms:type "http://purl.org/dc/terms/Dataset"^^xsd:anyURI ] ],
+                        [ a csvw:Column ;
+                            qudt:quantity [ a <https://w3id.org/steel/ProcessOntology/StandardForce> ;
+                                    qudt:hasUnit "http://qudt.org/vocab/unit/N" ] ;
+                            csvw:datatype "number"^^xsd:string ;
+                            csvw:titles "Standardkraft"^^xsd:string ;
+                            foaf:page [ a foaf:Document ;
+                                    dcterms:format "https://www.iana.org/assignments/media-types/application/json"^^xsd:anyURI ;
+                                    dcterms:identifier "https://stahldigital.materials-data.space/b82b703d-d145-4430-9470-ea803a0e300d/column-1"^^xsd:anyURI ;
+                                    dcterms:type "http://purl.org/dc/terms/Dataset"^^xsd:anyURI ] ],
+                        [ a csvw:Column ;
+                            qudt:quantity [ a <https://w3id.org/steel/ProcessOntology/WidthChange> ;
+                                    qudt:hasUnit "http://qudt.org/vocab/unit/MilliM" ] ;
+                            csvw:datatype "number"^^xsd:string ;
+                            csvw:titles "Breitenänderung"^^xsd:string ;
+                            foaf:page [ a foaf:Document ;
+                                    dcterms:format "https://www.iana.org/assignments/media-types/application/json"^^xsd:anyURI ;
+                                    dcterms:identifier "https://stahldigital.materials-data.space/b82b703d-d145-4430-9470-ea803a0e300d/column-4"^^xsd:anyURI ;
+                                    dcterms:type "http://purl.org/dc/terms/Dataset"^^xsd:anyURI ] ],
+                        [ a csvw:Column ;
+                            qudt:quantity [ a <https://w3id.org/steel/ProcessOntology/PercentageElongation> ;
+                                    qudt:hasUnit "http://qudt.org/vocab/unit/MilliM" ] ;
+                            csvw:datatype "number"^^xsd:string ;
+                            csvw:titles "Dehnung"^^xsd:string ;
+                            foaf:page [ a foaf:Document ;
+                                    dcterms:format "https://www.iana.org/assignments/media-types/application/json"^^xsd:anyURI ;
+                                    dcterms:identifier "https://stahldigital.materials-data.space/b82b703d-d145-4430-9470-ea803a0e300d/column-5"^^xsd:anyURI ;
+                                    dcterms:type "http://purl.org/dc/terms/Dataset"^^xsd:anyURI ] ] ] ] .
+

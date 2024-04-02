@@ -27,12 +27,12 @@ def _qudt_sparql(symbol: str) -> str:
 @lru_cache
 def _get_qudt_ontology() -> requests.Response:
     url = annotations["qudt_uri"]
-    headers = {"Content-Type": "text/turtle; charset=utf-8"}
-    response = requests.get(url, headers=headers)
+    response = requests.get(url)
     if response.status_code != 200:
         raise RuntimeError(
             f"Could not download QUDT ontology. Please check URI: {url}"
         )
+    response.encoding = "utf-8"
     return response
 
 

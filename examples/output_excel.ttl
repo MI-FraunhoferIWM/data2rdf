@@ -1,0 +1,336 @@
+@prefix csvw: <http://www.w3.org/ns/csvw#> .
+@prefix dcat: <http://www.w3.org/ns/dcat#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix fileid: <https://stahldigital.materials-data.space/b82b703d-d145-4430-9470-ea803a0e300d/> .
+@prefix foaf: <http://xmlns.com/foaf/spec/> .
+@prefix qudt: <http://qudt.org/schema/qudt/> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+fileid:dataset a dcat:Dataset ;
+    dcterms:hasPart fileid:tableGroup ;
+    dcat:distribution [ a dcat:Distribution ;
+            dcat:accessURL "../tests/xls_pipeline_test/input/data/AFZ1-Fz-S1Q.xlsm"^^xsd:anyURI ;
+            dcat:mediaType "https://www.iana.org/assignments/media-types/application/vnd.ms-excel"^^xsd:anyURI ] .
+
+fileid:tableGroup a csvw:TableGroup ;
+    csvw:table [ a csvw:Table ;
+            rdfs:label "Time series data" ;
+            csvw:tableSchema [ a csvw:Schema ;
+                    csvw:column [ a csvw:Column ;
+                            qudt:quantity [ a <skos:Concept> ;
+                                    qudt:hasUnit "http://qudt.org/vocab/unit/MegaPA" ] ;
+                            csvw:datatype "number"^^xsd:string ;
+                            csvw:titles "s-technisch"^^xsd:string ;
+                            foaf:page [ a foaf:Document ;
+                                    dcterms:format "https://www.iana.org/assignments/media-types/application/json"^^xsd:anyURI ;
+                                    dcterms:identifier "https://stahldigital.materials-data.space/b82b703d-d145-4430-9470-ea803a0e300d/column-9"^^xsd:anyURI ;
+                                    dcterms:type "http://purl.org/dc/terms/Dataset"^^xsd:anyURI ] ],
+                        [ a csvw:Column ;
+                            qudt:quantity [ a <skos:Concept> ] ;
+                            csvw:datatype "number"^^xsd:string ;
+                            csvw:titles "e-technisch"^^xsd:string ;
+                            foaf:page [ a foaf:Document ;
+                                    dcterms:format "https://www.iana.org/assignments/media-types/application/json"^^xsd:anyURI ;
+                                    dcterms:identifier "https://stahldigital.materials-data.space/b82b703d-d145-4430-9470-ea803a0e300d/column-6"^^xsd:anyURI ;
+                                    dcterms:type "http://purl.org/dc/terms/Dataset"^^xsd:anyURI ] ],
+                        [ a csvw:Column ;
+                            qudt:quantity [ a <skos:Concept> ] ;
+                            csvw:datatype "number"^^xsd:string ;
+                            csvw:titles "e-Breite"^^xsd:string ;
+                            foaf:page [ a foaf:Document ;
+                                    dcterms:format "https://www.iana.org/assignments/media-types/application/json"^^xsd:anyURI ;
+                                    dcterms:identifier "https://stahldigital.materials-data.space/b82b703d-d145-4430-9470-ea803a0e300d/column-7"^^xsd:anyURI ;
+                                    dcterms:type "http://purl.org/dc/terms/Dataset"^^xsd:anyURI ] ],
+                        [ a csvw:Column ;
+                            qudt:quantity [ a <skos:Concept> ;
+                                    qudt:hasUnit "http://qudt.org/vocab/unit/MilliM" ] ;
+                            csvw:datatype "number"^^xsd:string ;
+                            csvw:titles "DB"^^xsd:string ;
+                            foaf:page [ a foaf:Document ;
+                                    dcterms:format "https://www.iana.org/assignments/media-types/application/json"^^xsd:anyURI ;
+                                    dcterms:identifier "https://stahldigital.materials-data.space/b82b703d-d145-4430-9470-ea803a0e300d/column-4"^^xsd:anyURI ;
+                                    dcterms:type "http://purl.org/dc/terms/Dataset"^^xsd:anyURI ] ],
+                        [ a csvw:Column ;
+                            qudt:quantity [ a <skos:Concept> ;
+                                    qudt:hasUnit "http://qudt.org/vocab/unit/KiloN" ] ;
+                            csvw:datatype "number"^^xsd:string ;
+                            csvw:titles "F"^^xsd:string ;
+                            foaf:page [ a foaf:Document ;
+                                    dcterms:format "https://www.iana.org/assignments/media-types/application/json"^^xsd:anyURI ;
+                                    dcterms:identifier "https://stahldigital.materials-data.space/b82b703d-d145-4430-9470-ea803a0e300d/column-1"^^xsd:anyURI ;
+                                    dcterms:type "http://purl.org/dc/terms/Dataset"^^xsd:anyURI ] ],
+                        [ a csvw:Column ;
+                            qudt:quantity [ a <skos:Concept> ] ;
+                            csvw:datatype "number"^^xsd:string ;
+                            csvw:titles "ew (DL)"^^xsd:string ;
+                            foaf:page [ a foaf:Document ;
+                                    dcterms:format "https://www.iana.org/assignments/media-types/application/json"^^xsd:anyURI ;
+                                    dcterms:identifier "https://stahldigital.materials-data.space/b82b703d-d145-4430-9470-ea803a0e300d/column-8"^^xsd:anyURI ;
+                                    dcterms:type "http://purl.org/dc/terms/Dataset"^^xsd:anyURI ] ],
+                        [ a csvw:Column ;
+                            qudt:quantity [ a <skos:Concept> ] ;
+                            csvw:datatype "number"^^xsd:string ;
+                            csvw:titles "e-plast"^^xsd:string ;
+                            foaf:page [ a foaf:Document ;
+                                    dcterms:format "https://www.iana.org/assignments/media-types/application/json"^^xsd:anyURI ;
+                                    dcterms:identifier "https://stahldigital.materials-data.space/b82b703d-d145-4430-9470-ea803a0e300d/column-5"^^xsd:anyURI ;
+                                    dcterms:type "http://purl.org/dc/terms/Dataset"^^xsd:anyURI ] ],
+                        [ a csvw:Column ;
+                            qudt:quantity [ a <skos:Concept> ] ;
+                            csvw:datatype "number"^^xsd:string ;
+                            csvw:titles "r"^^xsd:string ;
+                            foaf:page [ a foaf:Document ;
+                                    dcterms:format "https://www.iana.org/assignments/media-types/application/json"^^xsd:anyURI ;
+                                    dcterms:identifier "https://stahldigital.materials-data.space/b82b703d-d145-4430-9470-ea803a0e300d/column-11"^^xsd:anyURI ;
+                                    dcterms:type "http://purl.org/dc/terms/Dataset"^^xsd:anyURI ] ],
+                        [ a csvw:Column ;
+                            qudt:quantity [ a <skos:Concept> ;
+                                    qudt:hasUnit "http://qudt.org/vocab/unit/MilliM" ] ;
+                            csvw:datatype "number"^^xsd:string ;
+                            csvw:titles "DL"^^xsd:string ;
+                            foaf:page [ a foaf:Document ;
+                                    dcterms:format "https://www.iana.org/assignments/media-types/application/json"^^xsd:anyURI ;
+                                    dcterms:identifier "https://stahldigital.materials-data.space/b82b703d-d145-4430-9470-ea803a0e300d/column-2"^^xsd:anyURI ;
+                                    dcterms:type "http://purl.org/dc/terms/Dataset"^^xsd:anyURI ] ],
+                        [ a csvw:Column ;
+                            qudt:quantity [ a <skos:Concept> ;
+                                    qudt:hasUnit "http://qudt.org/vocab/unit/SEC" ] ;
+                            csvw:datatype "number"^^xsd:string ;
+                            csvw:titles "Zeit"^^xsd:string ;
+                            foaf:page [ a foaf:Document ;
+                                    dcterms:format "https://www.iana.org/assignments/media-types/application/json"^^xsd:anyURI ;
+                                    dcterms:identifier "https://stahldigital.materials-data.space/b82b703d-d145-4430-9470-ea803a0e300d/column-0"^^xsd:anyURI ;
+                                    dcterms:type "http://purl.org/dc/terms/Dataset"^^xsd:anyURI ] ],
+                        [ a csvw:Column ;
+                            qudt:quantity [ a <skos:Concept> ;
+                                    qudt:hasUnit "http://qudt.org/vocab/unit/MegaPA" ] ;
+                            csvw:datatype "number"^^xsd:string ;
+                            csvw:titles "sw (DL)"^^xsd:string ;
+                            foaf:page [ a foaf:Document ;
+                                    dcterms:format "https://www.iana.org/assignments/media-types/application/json"^^xsd:anyURI ;
+                                    dcterms:identifier "https://stahldigital.materials-data.space/b82b703d-d145-4430-9470-ea803a0e300d/column-10"^^xsd:anyURI ;
+                                    dcterms:type "http://purl.org/dc/terms/Dataset"^^xsd:anyURI ] ],
+                        [ a csvw:Column ;
+                            qudt:quantity [ a <skos:Concept> ;
+                                    qudt:hasUnit "http://qudt.org/vocab/unit/MilliM" ] ;
+                            csvw:datatype "number"^^xsd:string ;
+                            csvw:titles "B"^^xsd:string ;
+                            foaf:page [ a foaf:Document ;
+                                    dcterms:format "https://www.iana.org/assignments/media-types/application/json"^^xsd:anyURI ;
+                                    dcterms:identifier "https://stahldigital.materials-data.space/b82b703d-d145-4430-9470-ea803a0e300d/column-3"^^xsd:anyURI ;
+                                    dcterms:type "http://purl.org/dc/terms/Dataset"^^xsd:anyURI ] ] ] ],
+        [ a csvw:Table ;
+            rdfs:label "Metadata" ;
+            csvw:row [ a csvw:Row ;
+                    qudt:quantity [ a <skos:Concept> ;
+                            qudt:hasUnit "http://qudt.org/vocab/unit/MegaPA" ;
+                            qudt:value "369.1894736842105"^^xsd:float ] ;
+                    csvw:rownum 31 ;
+                    csvw:titles "Zugfestigkeit Rm"^^xsd:string ],
+                [ a csvw:Row ;
+                    qudt:quantity [ a <skos:Concept> ;
+                            qudt:hasUnit "http://qudt.org/vocab/unit/MilliM" ;
+                            qudt:value "1.5"^^xsd:float ] ;
+                    csvw:rownum 9 ;
+                    csvw:titles "Probendicke a"^^xsd:string ],
+                [ a csvw:Row ;
+                    qudt:quantity [ a <skos:Concept> ;
+                            qudt:hasUnit "http://qudt.org/vocab/unit/MilliM" ;
+                            qudt:value "0.5"^^xsd:float ] ;
+                    csvw:rownum 11 ;
+                    csvw:titles "Probendicke A1 nach Bruch"^^xsd:string ],
+                [ a csvw:Row ;
+                    qudt:quantity [ a <skos:Concept> ;
+                            qudt:hasUnit "http://qudt.org/vocab/unit/KiloN" ;
+                            qudt:value "5.65725"^^xsd:float ] ;
+                    csvw:rownum 28 ;
+                    csvw:titles "Fp0,2"^^xsd:string ],
+                [ a csvw:Row ;
+                    csvw:describes [ a <skos:Concept> ;
+                            rdfs:label "1.31519843943616" ] ;
+                    csvw:rownum 21 ;
+                    csvw:titles "ew-Bruch"^^xsd:string ],
+                [ a csvw:Row ;
+                    qudt:quantity [ a <skos:Concept> ;
+                            qudt:hasUnit "http://qudt.org/vocab/unit/MegaPA" ;
+                            qudt:value "1375.411764705882"^^xsd:float ] ;
+                    csvw:rownum 23 ;
+                    csvw:titles "sw-Bruch"^^xsd:string ],
+                [ a csvw:Row ;
+                    csvw:describes [ a <skos:Concept> ;
+                            rdfs:label "0.00104192985130898" ] ;
+                    csvw:rownum 22 ;
+                    csvw:titles "ew-Rm"^^xsd:string ],
+                [ a csvw:Row ;
+                    qudt:quantity [ a <skos:Concept> ;
+                            qudt:hasUnit "http://qudt.org/vocab/unit/MilliM" ;
+                            qudt:value "0.52"^^xsd:float ] ;
+                    csvw:rownum 12 ;
+                    csvw:titles "Probendicke A2 nach Bruch"^^xsd:string ],
+                [ a csvw:Row ;
+                    qudt:quantity [ a <skos:Concept> ;
+                            qudt:hasUnit "http://qudt.org/vocab/unit/PERCENT" ;
+                            qudt:value "73.15789473684211"^^xsd:float ] ;
+                    csvw:rownum 35 ;
+                    csvw:titles "Brucheinschnürung Z"^^xsd:string ],
+                [ a csvw:Row ;
+                    qudt:quantity [ a <skos:Concept> ;
+                            qudt:hasUnit "http://qudt.org/vocab/unit/DEG_C" ;
+                            qudt:value "25.0"^^xsd:float ] ;
+                    csvw:rownum 16 ;
+                    csvw:titles "Prüftemperatur"^^xsd:string ],
+                [ a csvw:Row ;
+                    qudt:quantity [ a <skos:Concept> ;
+                            qudt:hasUnit "http://qudt.org/vocab/unit/KiloN" ;
+                            qudt:value "5.26095"^^xsd:float ] ;
+                    csvw:rownum 18 ;
+                    csvw:titles "Höchstzugkraft Fm"^^xsd:string ],
+                [ a csvw:Row ;
+                    qudt:quantity [ a <skos:Concept> ;
+                            qudt:hasUnit "http://qudt.org/vocab/unit/MilliM" ;
+                            qudt:value "9.5"^^xsd:float ] ;
+                    csvw:rownum 10 ;
+                    csvw:titles "Probenbreite b"^^xsd:string ],
+                [ a csvw:Row ;
+                    qudt:quantity [ a <skos:Concept> ;
+                            qudt:hasUnit "http://qudt.org/vocab/unit/MegaPA" ;
+                            qudt:value "147722.4926104469"^^xsd:float ] ;
+                    csvw:rownum 25 ;
+                    csvw:titles "EModul"^^xsd:string ],
+                [ a csvw:Row ;
+                    csvw:describes [ a <skos:Concept> ;
+                            rdfs:label "Fe" ] ;
+                    csvw:rownum 6 ;
+                    csvw:titles "Prüfer"^^xsd:string ],
+                [ a csvw:Row ;
+                    qudt:quantity [ a <skos:Concept> ;
+                            qudt:hasUnit "http://qudt.org/vocab/unit/MilliM" ;
+                            qudt:value "7.5"^^xsd:float ] ;
+                    csvw:rownum 14 ;
+                    csvw:titles "Probenbreite B2 nach Bruch"^^xsd:string ],
+                [ a csvw:Row ;
+                    qudt:quantity [ a <skos:Concept> ;
+                            qudt:hasUnit "http://qudt.org/vocab/unit/MegaPA" ;
+                            qudt:value "147722.4926104469"^^xsd:float ] ;
+                    csvw:rownum 26 ;
+                    csvw:titles "Elastizitätsmodul"^^xsd:string ],
+                [ a csvw:Row ;
+                    csvw:describes [ a <skos:Concept> ;
+                            rdfs:label "Fz 10x20" ] ;
+                    csvw:rownum 4 ;
+                    csvw:titles "Probenform"^^xsd:string ],
+                [ a csvw:Row ;
+                    qudt:quantity [ a <skos:Concept> ;
+                            qudt:hasUnit "http://qudt.org/vocab/unit/PERCENT" ;
+                            qudt:value "73.15789473684211"^^xsd:float ] ;
+                    csvw:rownum 36 ;
+                    csvw:titles "Z"^^xsd:string ],
+                [ a csvw:Row ;
+                    qudt:quantity [ a <skos:Concept> ;
+                            qudt:value "NaN"^^xsd:float ] ;
+                    csvw:rownum 27 ;
+                    csvw:titles "Geschw."^^xsd:string ],
+                [ a csvw:Row ;
+                    qudt:quantity [ a <skos:Concept> ;
+                            qudt:hasUnit "http://qudt.org/vocab/unit/MilliM" ;
+                            qudt:value "15.0"^^xsd:float ] ;
+                    csvw:rownum 8 ;
+                    csvw:titles "Messlänge Lo"^^xsd:string ],
+                [ a csvw:Row ;
+                    qudt:quantity [ a <skos:Concept> ;
+                            qudt:hasUnit "http://qudt.org/vocab/unit/MilliM" ;
+                            qudt:value "14.25"^^xsd:float ] ;
+                    csvw:rownum 19 ;
+                    csvw:titles "S0"^^xsd:string ],
+                [ a csvw:Row ;
+                    qudt:quantity [ a <skos:Concept> ;
+                            qudt:hasUnit "http://qudt.org/vocab/unit/MilliM" ;
+                            qudt:value "7.125539429929905"^^xsd:float ] ;
+                    csvw:rownum 17 ;
+                    csvw:titles "Bruchverlängerung"^^xsd:string ],
+                [ a csvw:Row ;
+                    csvw:describes [ a <skos:Concept> ;
+                            rdfs:label "M_1" ] ;
+                    csvw:rownum 2 ;
+                    csvw:titles "Prüfmaschine"^^xsd:string ],
+                [ a csvw:Row ;
+                    csvw:describes [ a <skos:Concept> ;
+                            rdfs:label "2016-10-11 00:00:00" ] ;
+                    csvw:rownum 1 ;
+                    csvw:titles "Datum"^^xsd:string ],
+                [ a csvw:Row ;
+                    qudt:quantity [ a <skos:Concept> ;
+                            qudt:hasUnit "http://qudt.org/vocab/unit/MilliM2" ;
+                            qudt:value "3.825"^^xsd:float ] ;
+                    csvw:rownum 20 ;
+                    csvw:titles "Su"^^xsd:string ],
+                [ a csvw:Row ;
+                    qudt:quantity [ a <skos:Concept> ;
+                            qudt:hasUnit "http://qudt.org/vocab/unit/MegaPA" ;
+                            qudt:value "397.0"^^xsd:float ] ;
+                    csvw:rownum 30 ;
+                    csvw:titles "Dehngrenze ReL"^^xsd:string ],
+                [ a csvw:Row ;
+                    csvw:describes [ a <skos:Concept> ;
+                            rdfs:label "Werkstoff_1" ] ;
+                    csvw:rownum 3 ;
+                    csvw:titles "Werkstoff"^^xsd:string ],
+                [ a csvw:Row ;
+                    qudt:quantity [ a <skos:Concept> ;
+                            qudt:hasUnit "http://qudt.org/vocab/unit/MegaPA" ;
+                            qudt:value "1375.411764705882"^^xsd:float ] ;
+                    csvw:rownum 24 ;
+                    csvw:titles "sw-Rm"^^xsd:string ],
+                [ a csvw:Row ;
+                    qudt:quantity [ a <skos:Concept> ;
+                            qudt:hasUnit "http://qudt.org/vocab/unit/MilliM-PER-SEC" ;
+                            qudt:value "0.02"^^xsd:float ] ;
+                    csvw:rownum 15 ;
+                    csvw:titles "Prüfgeschwindigkeit"^^xsd:string ],
+                [ a csvw:Row ;
+                    qudt:quantity [ a <skos:Concept> ;
+                            qudt:hasUnit "http://qudt.org/vocab/unit/MilliM" ;
+                            qudt:value "7.5"^^xsd:float ] ;
+                    csvw:rownum 13 ;
+                    csvw:titles "Probenbreite B1 nach Bruch"^^xsd:string ],
+                [ a csvw:Row ;
+                    qudt:quantity [ a <skos:Concept> ;
+                            qudt:hasUnit "http://qudt.org/vocab/unit/PERCENT" ;
+                            qudt:value "47.5035961995327"^^xsd:float ] ;
+                    csvw:rownum 34 ;
+                    csvw:titles "A"^^xsd:string ],
+                [ a csvw:Row ;
+                    csvw:describes [ a <skos:Concept> ;
+                            rdfs:label "Fz 10x20" ] ;
+                    csvw:rownum 5 ;
+                    csvw:titles "Probentyp"^^xsd:string ],
+                [ a csvw:Row ;
+                    qudt:quantity [ a <skos:Concept> ;
+                            qudt:hasUnit "http://qudt.org/vocab/unit/PERCENT" ;
+                            qudt:value "47.50352632351397"^^xsd:float ] ;
+                    csvw:rownum 32 ;
+                    csvw:titles "Dehnung bei Höchstkraft Ag"^^xsd:string ],
+                [ a csvw:Row ;
+                    qudt:quantity [ a <skos:Concept> ;
+                            qudt:hasUnit "http://qudt.org/vocab/unit/MegaPA" ;
+                            qudt:value "397.0"^^xsd:float ] ;
+                    csvw:rownum 29 ;
+                    csvw:titles "Rp0,2"^^xsd:string ],
+                [ a csvw:Row ;
+                    csvw:describes [ a <skos:Concept> ;
+                            rdfs:label "123456" ] ;
+                    csvw:rownum 7 ;
+                    csvw:titles "Probennummer"^^xsd:string ],
+                [ a csvw:Row ;
+                    qudt:quantity [ a <skos:Concept> ;
+                            qudt:hasUnit "http://qudt.org/vocab/unit/PERCENT" ;
+                            qudt:value "47.5035961995327"^^xsd:float ] ;
+                    csvw:rownum 33 ;
+                    csvw:titles "Bruchdehnung A20mm"^^xsd:string ],
+                [ a csvw:Row ;
+                    csvw:describes [ a <skos:Concept> ;
+                            rdfs:label "Projekt_1" ] ;
+                    csvw:rownum 0 ;
+                    csvw:titles "Projekt"^^xsd:string ] ] .
+
