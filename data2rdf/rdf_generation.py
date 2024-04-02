@@ -1,5 +1,5 @@
 import json
-from typing import List
+import re
 
 import pandas as pd
 from rdflib import Graph
@@ -149,7 +149,7 @@ class RDFGenerator:
                 },
                 "csvw:rownum": {"@type": "xsd:integer", "@value": idx},
                 "csvw:describes": {
-                    "@type": self._make_types(meta_desc),
+                    **self._make_types_and_id(meta_desc),
                     "rdfs:label": meta_desc["value"],
                 },
             }
@@ -184,7 +184,7 @@ class RDFGenerator:
                         "@type": dtype,
                         "@value": value,
                     },
-                    "@type": self._make_types(meta_desc),
+                    **self._make_types_and_id(meta_desc),
                     **_check_qudt_mapping(meta_desc["unit"]),
                 },
             }
@@ -213,7 +213,7 @@ class RDFGenerator:
                     "@value": "number",
                 },
                 "qudt:quantity": {
-                    "@type": self._make_types(col_desc),
+                    **self._make_types_and_id(col_desc),
                     **_check_qudt_mapping(col_desc["unit"]),
                 },
                 "foaf:page": {
@@ -231,7 +231,7 @@ class RDFGenerator:
             }
             self.column_schema["csvw:column"].append(column)
 
-    def _make_types(self, description) -> List[str]:
+    def _make_types_and_id(self, description):
         row = self.mapping.loc[
             self.mapping["Key"]
             == (description.get("index") or description.get("title"))
@@ -243,9 +243,15 @@ class RDFGenerator:
             types = [class_type]
             if not value_annotation and value:
                 types += [value_annotation + "/" + value]
-            return types
+            suffix = split_prefix_suffix(class_type)
+            return {"@type": types, "@id": f"fileid:{suffix}"}
         else:
-            return ["skos:Concept"]
+            identifier = re.sub(
+                r"[^A-Za-z0-9]+",
+                "",
+                description.get("index") or description.get("title"),
+            )
+            return {"@type": "skos:Concept", "@id": identifier}
 
     def to_json_ld(self, f_path):
         with open(f_path, "w") as output_file:
