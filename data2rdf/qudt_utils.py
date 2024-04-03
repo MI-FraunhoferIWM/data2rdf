@@ -72,9 +72,15 @@ def _check_qudt_mapping(symbol: str) -> Optional[str]:
             warnings.warn(
                 f"Multiple QUDT Mappings found for unit with symbol `{symbol}`."
             )
-            unit = {"qudt:hasUnit": match}
+            unit = {
+                "qudt:hasUnit": [
+                    {"@value": uri, "@type": "xsd:anyURI"} for uri in match
+                ]
+            }
         else:
-            unit = {"qudt:hasUnit": match.pop()}
+            unit = {
+                "qudt:hasUnit": {"@value": match.pop(), "@type": "xsd:anyURI"}
+            }
     else:
         unit = {}
     return unit

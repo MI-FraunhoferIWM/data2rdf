@@ -1,0 +1,111 @@
+@prefix dc: <http://purl.org/dc/elements/1.1/> .
+@prefix emmo: <http://emmo.info/emmo#> .
+@prefix holistic: <http://emmo.info/emmo/middle/holistic#> .
+@prefix manufacturing: <http://emmo.info/emmo/middle/manufacturing#> .
+@prefix mero: <http://emmo.info/emmo/top/mereotopology#> .
+@prefix fileid: <http://abox-namespace-placeholder.org/> .
+@prefix mt: <http://emmo.info/emmo/domain/mechanical-testing#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix semiotics: <http://emmo.info/emmo/middle/semiotics#> .
+
+emmo:hasProperty a owl:ObjectProperty ;
+    rdfs:label "has property" .
+
+mt:hasInput a owl:ObjectProperty ;
+    rdfs:label "has input" .
+
+mt:hasOutput a owl:ObjectProperty ;
+    rdfs:label "has output" .
+
+holistic:hasParticipant a owl:ObjectProperty ;
+    rdfs:label "has participant" .
+
+semiotics:hasSign a owl:ObjectProperty ;
+    rdfs:label "has sign" .
+
+mero:hasPart a owl:ObjectProperty ;
+    rdfs:label "has part" ;
+    rdfs:domain emmo:Matrix,
+        mt:DataSet .
+
+fileid:PercentageElongation a owl:NamedIndividual .
+
+fileid:SpecimenID a owl:NamedIndividual .
+
+fileid:TestTime a owl:NamedIndividual .
+
+fileid:WidthChange a owl:NamedIndividual .
+
+fileid:AbsoluteCrossheadTravel owl:NamedIndividual .
+
+fileid:Extension a owl:NamedIndividual .
+
+fileid:MachineData a owl:NamedIndividual .
+
+fileid:Material a owl:NamedIndividual .
+
+fileid:OriginalGaugeLength a owl:NamedIndividual .
+
+fileid:ParallelLength a owl:NamedIndividual .
+
+fileid:ProjectName a owl:NamedIndividual .
+
+fileid:ProjectNumber a owl:NamedIndividual .
+
+fileid:Remark a owl:NamedIndividual .
+
+fileid:SpecimenThickness a owl:NamedIndividual .
+
+fileid:SpecimenType a owl:NamedIndividual .
+
+fileid:SpecimenWidth a owl:NamedIndividual .
+
+fileid:StandardForce a owl:NamedIndividual .
+
+fileid:Temperature a owl:NamedIndividual .
+
+fileid:TestStandard a owl:NamedIndividual .
+
+fileid:TimeStamp a owl:NamedIndividual .
+
+fileid:TensileTestSpecimen a owl:NamedIndividual ;
+    emmo:hasProperty fileid:ParallelLength,
+        fileid:SpecimenThickness,
+        fileid:SpecimenType,
+        fileid:SpecimenWidth ;
+    mero:hasPart fileid:Material .
+
+fileid:TensileTestingMachine a owl:NamedIndividual ;
+    mt:hasOutput fileid:AbsoluteCrossheadTravel ;
+    semiotics:hasSign fileid:MachineData ;
+    mero:hasPart fileid:DisplacementTransducer,
+        fileid:ForceMeasuringDevice .
+
+fileid:Preload a owl:NamedIndividual ;
+    mt:hasInput fileid:TensileTestingMachine .
+
+fileid:TestingFacility a owl:NamedIndividual ;
+    mero:hasPart fileid:Tester .
+
+fileid:ForceMeasuringDevice a owl:NamedIndividual ;
+    mt:hasOutput fileid:StandardForce .
+
+fileid:DisplacementTransducer a owl:NamedIndividual ;
+    mt:hasInput fileid:OriginalGaugeLength ;
+    mt:hasOutput fileid:Extension .
+
+fileid:TestingRate a owl:NamedIndividual ;
+    mt:hasInput fileid:TensileTestingMachine .
+
+fileid:TensileTestExperiment a owl:NamedIndividual ;
+    emmo:hasProperty fileid:ProjectName,
+        fileid:ProjectNumber,
+        fileid:Remark,
+        fileid:Temperature,
+        fileid:TestStandard,
+        fileid:TimeStamp ;
+    mt:hasInput fileid:TensileTestSpecimen ;
+    holistic:hasParticipant fileid:TensileTestingMachine,
+        fileid:Tester,
+        fileid:TestingFacility .

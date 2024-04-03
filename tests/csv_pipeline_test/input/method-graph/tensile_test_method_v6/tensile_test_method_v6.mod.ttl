@@ -3,7 +3,7 @@
 @prefix holistic: <http://emmo.info/emmo/middle/holistic#> .
 @prefix manufacturing: <http://emmo.info/emmo/middle/manufacturing#> .
 @prefix mero: <http://emmo.info/emmo/top/mereotopology#> .
-@prefix method: <http://abox-namespace-placeholder.org/> .
+@prefix fileid: <http://abox-namespace-placeholder.org/> .
 @prefix mt: <http://emmo.info/emmo/domain/mechanical-testing#> .
 @prefix owl: <http://www.w3.org/2002/07/owl#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
@@ -11,12 +11,6 @@
 
 emmo:hasProperty a owl:ObjectProperty ;
     rdfs:label "has property" .
-
-mt: a owl:Ontology ;
-    dc:creator "creator_1" ;
-    dc:description "Ontology code created by Chowlk" ;
-    dc:title "EMMO ABox minimal" ;
-    owl:versionInfo "0.0.1" .
 
 mt:hasInput a owl:ObjectProperty ;
     rdfs:label "has input" .
@@ -31,123 +25,37 @@ semiotics:hasSign a owl:ObjectProperty ;
     rdfs:label "has sign" .
 
 mero:hasPart a owl:ObjectProperty ;
-    rdfs:label "has part" ;
-    rdfs:domain emmo:Matrix,
-        mt:DataSet .
+    rdfs:label "has part" .
 
-method:ColumnData a owl:DatatypeProperty ;
-    rdfs:label "column data" ;
-    rdfs:domain emmo:Matrix .
+fileid:TensileTestSpecimen emmo:hasProperty fileid:ParallelLength ,
+                                            fileid:SpecimenThickness,
+                                            fileid:SpecimenType,
+                                            fileid:SpecimenWidth ;
+                           mero:hasPart fileid:Material .
 
-method:DataSet a owl:DatatypeProperty ;
-    rdfs:label "data set" ;
-    rdfs:domain mt:DataSet .
+fileid:TensileTestingMachine mt:hasOutput fileid:AbsoluteCrossheadTravel ;
+                             semiotics:hasSign fileid:MachineData ;
+                             mero:hasPart fileid:DisplacementTransducer,
+                                          fileid:ForceMeasuringDevice .
 
-method:PercentageElongation a owl:NamedIndividual ;
-    rdfs:label "PercentageElongation" .
+fileid:Preload mt:hasInput fileid:TensileTestingMachine .
 
-method:Preload a owl:NamedIndividual ;
-    rdfs:label "Preload" ;
-    mt:hasInput method:TensileTestingMachine .
+fileid:TestingFacility mero:hasPart fileid:Tester .
 
-method:SpecimenID a owl:NamedIndividual ;
-    rdfs:label "SpecimenID" .
+fileid:ForceMeasuringDevice mt:hasOutput fileid:StandardForce .
 
-method:TensileTestExperiment a owl:NamedIndividual ;
-    rdfs:label "TensileTestExperiment" ;
-    emmo:hasProperty method:ProjectName,
-        method:ProjectNumber,
-        method:Remark,
-        method:Temperature,
-        method:TestStandard,
-        method:TimeStamp ;
-    mt:hasInput method:TensileTestSpecimen ;
-    holistic:hasParticipant method:TensileTestingMachine,
-        method:Tester,
-        method:TestingFacility .
+fileid:DisplacementTransducer mt:hasInput fileid:OriginalGaugeLength ;
+                              mt:hasOutput fileid:Extension .
 
-method:TestTime a owl:NamedIndividual ;
-    rdfs:label "TestTime" .
+fileid:TestingRate mt:hasInput fileid:TensileTestingMachine .
 
-method:TestingRate a owl:NamedIndividual ;
-    rdfs:label "TestingRate" ;
-    mt:hasInput method:TensileTestingMachine .
-
-method:WidthChange a owl:NamedIndividual ;
-    rdfs:label "WidthChange" .
-
-method:AbsoluteCrossheadTravel owl:NamedIndividual ;
-    rdfs:label "AbsoluteCrossheadTravel" .
-
-method:DisplacementTransducer a owl:NamedIndividual ;
-    rdfs:label "DisplacementTransducer" ;
-    mt:hasInput method:OriginalGaugeLength ;
-    mt:hasOutput method:Extension .
-
-method:Extension a owl:NamedIndividual ;
-    rdfs:label "Extension" .
-
-method:ForceMeasuringDevice a owl:NamedIndividual ;
-    rdfs:label "ForceMeasuringDevice" ;
-    mt:hasOutput method:StandardForce .
-
-method:MachineData a owl:NamedIndividual ;
-    rdfs:label "MachineData" .
-
-method:Material a owl:NamedIndividual ;
-    rdfs:label "Material" .
-
-method:OriginalGaugeLength a owl:NamedIndividual ;
-    rdfs:label "OriginalGaugeLength" .
-
-method:ParallelLength a owl:NamedIndividual ;
-    rdfs:label "ParallelLength" .
-
-method:ProjectName a owl:NamedIndividual ;
-    rdfs:label "ProjectName" .
-
-method:ProjectNumber a owl:NamedIndividual ;
-    rdfs:label "ProjectNumber" .
-
-method:Remark a owl:NamedIndividual ;
-    rdfs:label "Remark" .
-
-method:SpecimenThickness a owl:NamedIndividual ;
-    rdfs:label "SpecimenThickness" .
-
-method:SpecimenType a owl:NamedIndividual ;
-    rdfs:label "SpecimenType" .
-
-method:SpecimenWidth a owl:NamedIndividual ;
-    rdfs:label "SpecimenWidth" .
-
-method:StandardForce a owl:NamedIndividual ;
-    rdfs:label "StandardForce" .
-
-method:Temperature a owl:NamedIndividual ;
-    rdfs:label "Temperature" .
-
-method:TensileTestSpecimen a owl:NamedIndividual ;
-    rdfs:label "TensileTestSpecimen" ;
-    emmo:hasProperty method:ParallelLength,
-        method:SpecimenThickness,
-        method:SpecimenType,
-        method:SpecimenWidth ;
-    mero:hasPart method:Material .
-
-method:TestStandard a owl:NamedIndividual ;
-    rdfs:label "TestStandard" .
-
-method:TestingFacility a owl:NamedIndividual ;
-    rdfs:label "TestingFacility" ;
-    mero:hasPart method:Tester .
-
-method:TimeStamp a owl:NamedIndividual ;
-    rdfs:label "TimeStamp" .
-
-method:TensileTestingMachine a owl:NamedIndividual ;
-    rdfs:label "TensileTestingMachine" ;
-    mt:hasOutput method:AbsoluteCrossheadTravel ;
-    semiotics:hasSign method:MachineData ;
-    mero:hasPart method:DisplacementTransducer,
-        method:ForceMeasuringDevice .
+fileid:TensileTestExperiment emmo:hasProperty fileid:ProjectName,
+                                              fileid:ProjectNumber,
+                                              fileid:Remark,
+                                              fileid:Temperature,
+                                              fileid:TestStandard,
+                                              fileid:TimeStamp ;
+                             mt:hasInput fileid:TensileTestSpecimen ;
+                             holistic:hasParticipant fileid:TensileTestingMachine,
+                                                     fileid:Tester,
+                                                     fileid:TestingFacility .
