@@ -15,7 +15,6 @@ output_folder = os.path.join(test_folder, "output")
 template = os.path.join(
     working_folder,
     "method-graph",
-    "tensile_test_method_v6",
     "tensile_test_method_v6.mod.ttl",
 )
 mapping_file = os.path.join(

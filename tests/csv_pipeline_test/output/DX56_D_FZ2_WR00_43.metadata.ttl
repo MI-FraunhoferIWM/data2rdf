@@ -100,29 +100,93 @@ fileid:WidthChange a <https://w3id.org/steel/ProcessOntology/WidthChange> ;
 
 fileid:tableGroup a csvw:TableGroup ;
     csvw:table [ a csvw:Table ;
+            rdfs:label "Metadata" ;
+            csvw:row [ a csvw:Row ;
+                    qudt:quantity fileid:TestingRate ;
+                    csvw:rownum 16 ;
+                    csvw:titles "Prüfgeschwindigkeit"^^xsd:string ],
+                [ a csvw:Row ;
+                    csvw:describes fileid:SpecimenType ;
+                    csvw:rownum 9 ;
+                    csvw:titles "Probentyp"^^xsd:string ],
+                [ a csvw:Row ;
+                    csvw:describes fileid:ProjectName ;
+                    csvw:rownum 2 ;
+                    csvw:titles "Projektname"^^xsd:string ],
+                [ a csvw:Row ;
+                    qudt:quantity fileid:SpecimenWidth ;
+                    csvw:rownum 15 ;
+                    csvw:titles "Probenbreite"^^xsd:string ],
+                [ a csvw:Row ;
+                    csvw:describes fileid:DisplacementTransducer ;
+                    csvw:rownum 6 ;
+                    csvw:titles "Wegaufnehmer"^^xsd:string ],
+                [ a csvw:Row ;
+                    csvw:describes fileid:Tester ;
+                    csvw:rownum 10 ;
+                    csvw:titles "Prüfer"^^xsd:string ],
+                [ a csvw:Row ;
+                    qudt:quantity fileid:SpecimenThickness ;
+                    csvw:rownum 14 ;
+                    csvw:titles "Probendicke"^^xsd:string ],
+                [ a csvw:Row ;
+                    qudt:quantity fileid:ParallelLength ;
+                    csvw:rownum 13 ;
+                    csvw:titles "Versuchslänge"^^xsd:string ],
+                [ a csvw:Row ;
+                    qudt:quantity fileid:OriginalGaugeLength ;
+                    csvw:rownum 12 ;
+                    csvw:titles "Messlänge Standardweg"^^xsd:string ],
+                [ a csvw:Row ;
+                    qudt:quantity fileid:Preload ;
+                    csvw:rownum 17 ;
+                    csvw:titles "Vorkraft"^^xsd:string ],
+                [ a csvw:Row ;
+                    csvw:describes fileid:TimeStamp ;
+                    csvw:rownum 3 ;
+                    csvw:titles "Datum/Uhrzeit"^^xsd:string ],
+                [ a csvw:Row ;
+                    csvw:describes fileid:TestStandard ;
+                    csvw:rownum 7 ;
+                    csvw:titles "Prüfnorm"^^xsd:string ],
+                [ a csvw:Row ;
+                    csvw:describes fileid:ForceMeasuringDevice ;
+                    csvw:rownum 5 ;
+                    csvw:titles "Kraftaufnehmer"^^xsd:string ],
+                [ a csvw:Row ;
+                    csvw:describes fileid:SampleIdentifier-2 ;
+                    csvw:rownum 11 ;
+                    csvw:titles "Probenkennung 2"^^xsd:string ],
+                [ a csvw:Row ;
+                    csvw:describes fileid:Remark ;
+                    csvw:rownum 19 ;
+                    csvw:titles "Bemerkung"^^xsd:string ],
+                [ a csvw:Row ;
+                    csvw:describes fileid:TestingFacility ;
+                    csvw:rownum 0 ;
+                    csvw:titles "Prüfinstitut"^^xsd:string ],
+                [ a csvw:Row ;
+                    csvw:describes fileid:ProjectNumber ;
+                    csvw:rownum 1 ;
+                    csvw:titles "Projektnummer"^^xsd:string ],
+                [ a csvw:Row ;
+                    csvw:describes fileid:MachineData ;
+                    csvw:rownum 4 ;
+                    csvw:titles "Maschinendaten"^^xsd:string ],
+                [ a csvw:Row ;
+                    qudt:quantity fileid:Temperature ;
+                    csvw:rownum 18 ;
+                    csvw:titles "Temperatur"^^xsd:string ],
+                [ a csvw:Row ;
+                    csvw:describes fileid:Material ;
+                    csvw:rownum 8 ;
+                    csvw:titles "Werkstoff"^^xsd:string ] ],
+        [ a csvw:Table ;
             rdfs:label "Time series data" ;
             csvw:tableSchema [ a csvw:Schema ;
                     csvw:column [ a csvw:Column ;
-                            qudt:quantity fileid:PercentageElongation ;
-                            csvw:titles "Dehnung"^^xsd:string ;
-                            foaf:page [ a foaf:Document ;
-                                    dcterms:format "https://www.iana.org/assignments/media-types/application/json"^^xsd:anyURI ;
-                                    dcterms:type "http://purl.org/dc/terms/Dataset"^^xsd:anyURI ] ],
-                        [ a csvw:Column ;
                             qudt:quantity fileid:Extension ;
                             csvw:titles "Standardweg"^^xsd:string ;
-                            foaf:page [ a foaf:Document ;
-                                    dcterms:format "https://www.iana.org/assignments/media-types/application/json"^^xsd:anyURI ;
-                                    dcterms:type "http://purl.org/dc/terms/Dataset"^^xsd:anyURI ] ],
-                        [ a csvw:Column ;
-                            qudt:quantity fileid:StandardForce ;
-                            csvw:titles "Standardkraft"^^xsd:string ;
-                            foaf:page [ a foaf:Document ;
-                                    dcterms:format "https://www.iana.org/assignments/media-types/application/json"^^xsd:anyURI ;
-                                    dcterms:type "http://purl.org/dc/terms/Dataset"^^xsd:anyURI ] ],
-                        [ a csvw:Column ;
-                            qudt:quantity fileid:AbsoluteCrossheadTravel ;
-                            csvw:titles "Traversenweg absolut"^^xsd:string ;
                             foaf:page [ a foaf:Document ;
                                     dcterms:format "https://www.iana.org/assignments/media-types/application/json"^^xsd:anyURI ;
                                     dcterms:type "http://purl.org/dc/terms/Dataset"^^xsd:anyURI ] ],
@@ -133,90 +197,26 @@ fileid:tableGroup a csvw:TableGroup ;
                                     dcterms:format "https://www.iana.org/assignments/media-types/application/json"^^xsd:anyURI ;
                                     dcterms:type "http://purl.org/dc/terms/Dataset"^^xsd:anyURI ] ],
                         [ a csvw:Column ;
+                            qudt:quantity fileid:PercentageElongation ;
+                            csvw:titles "Dehnung"^^xsd:string ;
+                            foaf:page [ a foaf:Document ;
+                                    dcterms:format "https://www.iana.org/assignments/media-types/application/json"^^xsd:anyURI ;
+                                    dcterms:type "http://purl.org/dc/terms/Dataset"^^xsd:anyURI ] ],
+                        [ a csvw:Column ;
+                            qudt:quantity fileid:AbsoluteCrossheadTravel ;
+                            csvw:titles "Traversenweg absolut"^^xsd:string ;
+                            foaf:page [ a foaf:Document ;
+                                    dcterms:format "https://www.iana.org/assignments/media-types/application/json"^^xsd:anyURI ;
+                                    dcterms:type "http://purl.org/dc/terms/Dataset"^^xsd:anyURI ] ],
+                        [ a csvw:Column ;
+                            qudt:quantity fileid:StandardForce ;
+                            csvw:titles "Standardkraft"^^xsd:string ;
+                            foaf:page [ a foaf:Document ;
+                                    dcterms:format "https://www.iana.org/assignments/media-types/application/json"^^xsd:anyURI ;
+                                    dcterms:type "http://purl.org/dc/terms/Dataset"^^xsd:anyURI ] ],
+                        [ a csvw:Column ;
                             qudt:quantity fileid:TestTime ;
                             csvw:titles "Prüfzeit"^^xsd:string ;
                             foaf:page [ a foaf:Document ;
                                     dcterms:format "https://www.iana.org/assignments/media-types/application/json"^^xsd:anyURI ;
-                                    dcterms:type "http://purl.org/dc/terms/Dataset"^^xsd:anyURI ] ] ] ],
-        [ a csvw:Table ;
-            rdfs:label "Metadata" ;
-            csvw:row [ a csvw:Row ;
-                    qudt:quantity fileid:Temperature ;
-                    csvw:rownum 18 ;
-                    csvw:titles "Temperatur"^^xsd:string ],
-                [ a csvw:Row ;
-                    qudt:quantity fileid:ParallelLength ;
-                    csvw:rownum 13 ;
-                    csvw:titles "Versuchslänge"^^xsd:string ],
-                [ a csvw:Row ;
-                    csvw:describes fileid:Material ;
-                    csvw:rownum 8 ;
-                    csvw:titles "Werkstoff"^^xsd:string ],
-                [ a csvw:Row ;
-                    csvw:describes fileid:ProjectName ;
-                    csvw:rownum 2 ;
-                    csvw:titles "Projektname"^^xsd:string ],
-                [ a csvw:Row ;
-                    csvw:describes fileid:TestStandard ;
-                    csvw:rownum 7 ;
-                    csvw:titles "Prüfnorm"^^xsd:string ],
-                [ a csvw:Row ;
-                    qudt:quantity fileid:Preload ;
-                    csvw:rownum 17 ;
-                    csvw:titles "Vorkraft"^^xsd:string ],
-                [ a csvw:Row ;
-                    csvw:describes fileid:SpecimenType ;
-                    csvw:rownum 9 ;
-                    csvw:titles "Probentyp"^^xsd:string ],
-                [ a csvw:Row ;
-                    qudt:quantity fileid:SpecimenWidth ;
-                    csvw:rownum 15 ;
-                    csvw:titles "Probenbreite"^^xsd:string ],
-                [ a csvw:Row ;
-                    csvw:describes fileid:Tester ;
-                    csvw:rownum 10 ;
-                    csvw:titles "Prüfer"^^xsd:string ],
-                [ a csvw:Row ;
-                    csvw:describes fileid:Remark ;
-                    csvw:rownum 19 ;
-                    csvw:titles "Bemerkung"^^xsd:string ],
-                [ a csvw:Row ;
-                    csvw:describes fileid:DisplacementTransducer ;
-                    csvw:rownum 6 ;
-                    csvw:titles "Wegaufnehmer"^^xsd:string ],
-                [ a csvw:Row ;
-                    csvw:describes fileid:TimeStamp ;
-                    csvw:rownum 3 ;
-                    csvw:titles "Datum/Uhrzeit"^^xsd:string ],
-                [ a csvw:Row ;
-                    csvw:describes fileid:MachineData ;
-                    csvw:rownum 4 ;
-                    csvw:titles "Maschinendaten"^^xsd:string ],
-                [ a csvw:Row ;
-                    qudt:quantity fileid:TestingRate ;
-                    csvw:rownum 16 ;
-                    csvw:titles "Prüfgeschwindigkeit"^^xsd:string ],
-                [ a csvw:Row ;
-                    csvw:describes fileid:ForceMeasuringDevice ;
-                    csvw:rownum 5 ;
-                    csvw:titles "Kraftaufnehmer"^^xsd:string ],
-                [ a csvw:Row ;
-                    csvw:describes fileid:SampleIdentifier-2 ;
-                    csvw:rownum 11 ;
-                    csvw:titles "Probenkennung 2"^^xsd:string ],
-                [ a csvw:Row ;
-                    qudt:quantity fileid:OriginalGaugeLength ;
-                    csvw:rownum 12 ;
-                    csvw:titles "Messlänge Standardweg"^^xsd:string ],
-                [ a csvw:Row ;
-                    csvw:describes fileid:ProjectNumber ;
-                    csvw:rownum 1 ;
-                    csvw:titles "Projektnummer"^^xsd:string ],
-                [ a csvw:Row ;
-                    qudt:quantity fileid:SpecimenThickness ;
-                    csvw:rownum 14 ;
-                    csvw:titles "Probendicke"^^xsd:string ],
-                [ a csvw:Row ;
-                    csvw:describes fileid:TestingFacility ;
-                    csvw:rownum 0 ;
-                    csvw:titles "Prüfinstitut"^^xsd:string ] ] .
+                                    dcterms:type "http://purl.org/dc/terms/Dataset"^^xsd:anyURI ] ] ] ] .
