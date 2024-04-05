@@ -220,4 +220,3 @@ fileid:tableGroup a csvw:TableGroup ;
                     csvw:describes fileid:TestingFacility ;
                     csvw:rownum 0 ;
                     csvw:titles "Prüfinstitut"^^xsd:string ] ] .
-

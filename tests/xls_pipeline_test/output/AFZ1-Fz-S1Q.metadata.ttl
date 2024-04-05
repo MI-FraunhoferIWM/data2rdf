@@ -407,4 +407,3 @@ fileid:tableGroup a csvw:TableGroup ;
                     qudt:quantity <file:///home/bue/data2rdf/A> ;
                     csvw:rownum 34 ;
                     csvw:titles "A"^^xsd:string ] ] .
-
