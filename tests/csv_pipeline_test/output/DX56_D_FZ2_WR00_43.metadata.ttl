@@ -1,303 +1,223 @@
+@prefix csvw: <http://www.w3.org/ns/csvw#> .
 @prefix dcat: <http://www.w3.org/ns/dcat#> .
 @prefix dcterms: <http://purl.org/dc/terms/> .
 @prefix fileid: <http://www.test2.de/> .
-@prefix ns1: <http://emmo.info/emmo/middle/reductionistic#> .
-@prefix ns2: <http://emmo.info/emmo/middle/math#> .
-@prefix ns3: <http://emmo.info/emmo/middle/metrology#> .
-@prefix ns4: <http://emmo.info/datamodel#> .
-@prefix ns5: <http://emmo.info/emmo/middle/perceptual#> .
+@prefix foaf: <http://xmlns.com/foaf/spec/> .
+@prefix qudt: <http://qudt.org/schema/qudt/> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
 fileid:dataset a dcat:Dataset ;
-    ns4:composition fileid:DisplacementTransducer,
-        fileid:ForceMeasuringDevice,
-        fileid:MachineData,
-        fileid:Material,
-        fileid:Preload,
-        fileid:ProjectName,
-        fileid:ProjectNumber,
-        fileid:Remark,
-        fileid:SampleIdentifier-2,
-        fileid:SpecimenThickness,
-        fileid:SpecimenType,
-        fileid:SpecimenWidth,
-        fileid:Temperature,
-        fileid:TimeStamp,
-        fileid:column-0,
-        fileid:column-1,
-        fileid:column-2,
-        fileid:column-3,
-        fileid:column-4,
-        fileid:column-5,
-        fileid:metadata-0,
-        fileid:metadata-10,
-        fileid:metadata-12,
-        fileid:metadata-13,
-        fileid:metadata-16,
-        fileid:metadata-7 ;
-    dcat:downloadURL "/home/bue/data2rdf/tests/csv_pipeline_test/input/data/DX56_D_FZ2_WR00_43.TXT" .
-
-fileid:DisplacementTransducer a ns4:Metadata ;
-    rdfs:label "Wegaufnehmer" ;
-    ns5:EMMO_23b579e1_8088_45b5_9975_064014026c42 "Wegaufnehmer_1"^^xsd:string ;
-    dcterms:type "https://w3id.org/steel/ProcessOntology/DisplacementTransducer" .
-
-fileid:ForceMeasuringDevice a ns4:Metadata ;
-    rdfs:label "Kraftaufnehmer" ;
-    ns5:EMMO_23b579e1_8088_45b5_9975_064014026c42 "Kraftaufnehmer_1"^^xsd:string ;
-    dcterms:type "https://w3id.org/steel/ProcessOntology/ForceMeasuringDevice" .
-
-fileid:MachineData a ns4:Metadata ;
-    rdfs:label "Maschinendaten" ;
-    ns5:EMMO_23b579e1_8088_45b5_9975_064014026c42 "maschine_1"^^xsd:string ;
-    dcterms:type "https://w3id.org/steel/ProcessOntology/MachineData" .
-
-fileid:Material a ns4:Metadata ;
-    rdfs:label "Werkstoff" ;
-    ns5:EMMO_23b579e1_8088_45b5_9975_064014026c42 "Werkstoff_1"^^xsd:string ;
-    dcterms:type "https://w3id.org/steel/ProcessOntology/Material" .
-
-fileid:MetricPrefix-13 a <http://emmo.info/emmo/middle/siunits#EMMO_a3a701ed_6f7d_4a10_9aee_dfa1961fc7b7> .
-
-fileid:MetricPrefix-14 a <http://emmo.info/emmo/middle/siunits#EMMO_a3a701ed_6f7d_4a10_9aee_dfa1961fc7b7> .
-
-fileid:MetricPrefix-15 a <http://emmo.info/emmo/middle/siunits#EMMO_a3a701ed_6f7d_4a10_9aee_dfa1961fc7b7> .
-
-fileid:MetricPrefix-17 a <http://emmo.info/emmo/middle/siunits#EMMO_5eaecadc_4f0d_4a3a_afc7_1fc0b83cc928> .
-
-fileid:Preload a ns4:Metadata,
-        ns3:EMMO_f658c301_ce93_46cf_9639_4eace2c5d1d5 ;
-    rdfs:label "Vorkraft" ;
-    ns3:EMMO_8ef3cd6d_ae58_4a8d_9fc0_ad8f49015cd0 fileid:numeric-17 ;
-    dcterms:type "https://w3id.org/steel/ProcessOntology/Preload" .
-
-fileid:ProjectName a ns4:Metadata ;
-    rdfs:label "Projektname" ;
-    ns5:EMMO_23b579e1_8088_45b5_9975_064014026c42 "proj_name_1"^^xsd:string ;
-    dcterms:type "https://w3id.org/steel/ProcessOntology/ProjectName" .
-
-fileid:ProjectNumber a ns4:Metadata ;
-    rdfs:label "Projektnummer" ;
-    ns5:EMMO_23b579e1_8088_45b5_9975_064014026c42 "123456"^^xsd:string ;
-    dcterms:type "https://w3id.org/steel/ProcessOntology/ProjectNumber" .
-
-fileid:Remark a ns4:Metadata ;
-    rdfs:label "Bemerkung" ;
-    ns5:EMMO_23b579e1_8088_45b5_9975_064014026c42 "nan"^^xsd:string ;
-    dcterms:type "https://w3id.org/steel/ProcessOntology/Remark" .
-
-fileid:SampleIdentifier-2 a ns4:Metadata ;
-    rdfs:label "Probenkennung 2" ;
-    ns5:EMMO_23b579e1_8088_45b5_9975_064014026c42 "Probentyp_2"^^xsd:string ;
-    dcterms:type "https://w3id.org/steel/ProcessOntology/SampleIdentifier-2" .
-
-fileid:SpecimenThickness a ns4:Metadata,
-        ns3:EMMO_f658c301_ce93_46cf_9639_4eace2c5d1d5 ;
-    rdfs:label "Probendicke" ;
-    ns3:EMMO_8ef3cd6d_ae58_4a8d_9fc0_ad8f49015cd0 fileid:numeric-14 ;
-    dcterms:type "https://w3id.org/steel/ProcessOntology/SpecimenThickness" .
-
-fileid:SpecimenType a ns4:Metadata ;
-    rdfs:label "Probentyp" ;
-    ns5:EMMO_23b579e1_8088_45b5_9975_064014026c42 "Probentyp_1"^^xsd:string ;
-    dcterms:type "https://w3id.org/steel/ProcessOntology/SpecimenType" .
-
-fileid:SpecimenWidth a ns4:Metadata,
-        ns3:EMMO_f658c301_ce93_46cf_9639_4eace2c5d1d5 ;
-    rdfs:label "Probenbreite" ;
-    ns3:EMMO_8ef3cd6d_ae58_4a8d_9fc0_ad8f49015cd0 fileid:numeric-15 ;
-    dcterms:type "https://w3id.org/steel/ProcessOntology/SpecimenWidth" .
-
-fileid:Temperature a ns4:Metadata,
-        ns3:EMMO_f658c301_ce93_46cf_9639_4eace2c5d1d5 ;
-    rdfs:label "Temperatur" ;
-    ns3:EMMO_8ef3cd6d_ae58_4a8d_9fc0_ad8f49015cd0 fileid:numeric-18 ;
-    dcterms:type "https://w3id.org/steel/ProcessOntology/Temperature" .
-
-fileid:TimeStamp a ns4:Metadata ;
-    rdfs:label "Datum/Uhrzeit" ;
-    ns5:EMMO_23b579e1_8088_45b5_9975_064014026c42 "44335.4"^^xsd:string ;
-    dcterms:type "https://w3id.org/steel/ProcessOntology/TimeStamp" .
-
-fileid:UnitSymbol-13 a <http://emmo.info/emmo/middle/siunits#EMMO_7db11dbf_a643_464a_9b56_07eabcc3e9c5> .
-
-fileid:UnitSymbol-14 a <http://emmo.info/emmo/middle/siunits#EMMO_7db11dbf_a643_464a_9b56_07eabcc3e9c5> .
-
-fileid:UnitSymbol-15 a <http://emmo.info/emmo/middle/siunits#EMMO_7db11dbf_a643_464a_9b56_07eabcc3e9c5> .
-
-fileid:UnitSymbol-17 a <http://emmo.info/emmo/middle/siunits#EMMO_a80dc6f5_b1aa_41a7_a3a8_cd5040da2162> .
-
-fileid:column-0 a ns4:DataInstance ;
-    rdfs:label "s" ;
-    ns3:EMMO_67fc0a36_8dcb_4ffa_9a43_31074efa3296 fileid:unit-0,
-        fileid:unitliteral-0 .
-
-fileid:column-1 a ns4:DataInstance ;
-    rdfs:label "N" ;
-    ns3:EMMO_67fc0a36_8dcb_4ffa_9a43_31074efa3296 fileid:unit-1,
-        fileid:unitliteral-1 .
-
-fileid:column-2 a ns4:DataInstance ;
-    rdfs:label "mm" ;
-    ns3:EMMO_67fc0a36_8dcb_4ffa_9a43_31074efa3296 fileid:unit-2,
-        fileid:unitliteral-2 .
-
-fileid:column-3 a ns4:DataInstance ;
-    rdfs:label "mm.1" ;
-    ns3:EMMO_67fc0a36_8dcb_4ffa_9a43_31074efa3296 fileid:unit-3,
-        fileid:unitliteral-3 .
-
-fileid:column-4 a ns4:DataInstance ;
-    rdfs:label "mm.2" ;
-    ns3:EMMO_67fc0a36_8dcb_4ffa_9a43_31074efa3296 fileid:unit-4,
-        fileid:unitliteral-4 .
-
-fileid:column-5 a ns4:DataInstance ;
-    rdfs:label "mm.3" ;
-    ns3:EMMO_67fc0a36_8dcb_4ffa_9a43_31074efa3296 fileid:unit-5,
-        fileid:unitliteral-5 .
-
-fileid:metadata-0 a ns4:Metadata ;
-    rdfs:label "Pr�finstitut" ;
-    ns5:EMMO_23b579e1_8088_45b5_9975_064014026c42 "institute_1"^^xsd:string .
-
-fileid:metadata-10 a ns4:Metadata ;
-    rdfs:label "Pr�fer" ;
-    ns5:EMMO_23b579e1_8088_45b5_9975_064014026c42 "abc"^^xsd:string .
-
-fileid:metadata-12 a ns4:Metadata,
-        ns3:EMMO_f658c301_ce93_46cf_9639_4eace2c5d1d5 ;
-    rdfs:label "Messl�nge Standardweg" ;
-    ns3:EMMO_8ef3cd6d_ae58_4a8d_9fc0_ad8f49015cd0 fileid:numeric-12 .
+    dcterms:hasPart fileid:tableGroup ;
+    dcat:distribution [ a dcat:Distribution ;
+            dcat:accessURL "/home/bue/data2rdf/tests/csv_pipeline_test/input/data/DX56_D_FZ2_WR00_43.TXT"^^xsd:anyURI ;
+            dcat:mediaType "http://www.iana.org/assignments/media-types/text/csv"^^xsd:anyURI ] .
 
-fileid:metadata-13 a ns4:Metadata,
-        ns3:EMMO_f658c301_ce93_46cf_9639_4eace2c5d1d5 ;
-    rdfs:label "Versuchsl�nge" ;
-    ns3:EMMO_8ef3cd6d_ae58_4a8d_9fc0_ad8f49015cd0 fileid:numeric-13 .
+fileid:AbsoluteCrossheadTravel a <https://w3id.org/steel/ProcessOntology/AbsoluteCrossheadTravel> ;
+    qudt:hasUnit "http://qudt.org/vocab/unit/MilliM"^^xsd:anyURI .
 
-fileid:metadata-16 a ns4:Metadata,
-        ns3:EMMO_f658c301_ce93_46cf_9639_4eace2c5d1d5 ;
-    rdfs:label "Pr�fgeschwindigkeit" ;
-    ns3:EMMO_8ef3cd6d_ae58_4a8d_9fc0_ad8f49015cd0 fileid:numeric-16 .
+fileid:DisplacementTransducer a <https://w3id.org/steel/ProcessOntology/DisplacementTransducer> ;
+    rdfs:label "Wegaufnehmer_1" .
+
+fileid:Extension a <https://w3id.org/steel/ProcessOntology/Extension> ;
+    qudt:hasUnit "http://qudt.org/vocab/unit/MilliM"^^xsd:anyURI .
+
+fileid:ForceMeasuringDevice a <https://w3id.org/steel/ProcessOntology/ForceMeasuringDevice> ;
+    rdfs:label "Kraftaufnehmer_1" .
+
+fileid:MachineData a <https://w3id.org/steel/ProcessOntology/MachineData> ;
+    rdfs:label "maschine_1" .
+
+fileid:Material a <https://w3id.org/steel/ProcessOntology/Material> ;
+    rdfs:label "Werkstoff_1" .
+
+fileid:OriginalGaugeLength a <https://w3id.org/steel/ProcessOntology/OriginalGaugeLength> ;
+    qudt:hasUnit "http://qudt.org/vocab/unit/MilliM"^^xsd:anyURI ;
+    qudt:value "80.0"^^xsd:float .
+
+fileid:ParallelLength a <https://w3id.org/steel/ProcessOntology/ParallelLength> ;
+    qudt:hasUnit "http://qudt.org/vocab/unit/MilliM"^^xsd:anyURI ;
+    qudt:value "120.0"^^xsd:float .
+
+fileid:PercentageElongation a <https://w3id.org/steel/ProcessOntology/PercentageElongation> ;
+    qudt:hasUnit "http://qudt.org/vocab/unit/MilliM"^^xsd:anyURI .
+
+fileid:Preload a <https://w3id.org/steel/ProcessOntology/Preload> ;
+    qudt:hasUnit "http://qudt.org/vocab/unit/MegaPA"^^xsd:anyURI ;
+    qudt:value "2.0"^^xsd:float .
+
+fileid:ProjectName a <https://w3id.org/steel/ProcessOntology/ProjectName> ;
+    rdfs:label "proj_name_1" .
+
+fileid:ProjectNumber a <https://w3id.org/steel/ProcessOntology/ProjectNumber> ;
+    rdfs:label "123456" .
+
+fileid:Remark a <https://w3id.org/steel/ProcessOntology/Remark> ;
+    rdfs:label "nan" .
+
+fileid:SampleIdentifier-2 a <https://w3id.org/steel/ProcessOntology/SampleIdentifier-2> ;
+    rdfs:label "Probentyp_2" .
+
+fileid:SpecimenThickness a <https://w3id.org/steel/ProcessOntology/SpecimenThickness> ;
+    qudt:hasUnit "http://qudt.org/vocab/unit/MilliM"^^xsd:anyURI ;
+    qudt:value "1.55"^^xsd:float .
+
+fileid:SpecimenType a <https://w3id.org/steel/ProcessOntology/SpecimenType> ;
+    rdfs:label "Probentyp_1" .
+
+fileid:SpecimenWidth a <https://w3id.org/steel/ProcessOntology/SpecimenWidth> ;
+    qudt:hasUnit "http://qudt.org/vocab/unit/MilliM"^^xsd:anyURI ;
+    qudt:value "20.04"^^xsd:float .
+
+fileid:StandardForce a <https://w3id.org/steel/ProcessOntology/StandardForce> ;
+    qudt:hasUnit "http://qudt.org/vocab/unit/N"^^xsd:anyURI .
+
+fileid:Temperature a <https://w3id.org/steel/ProcessOntology/Temperature> ;
+    qudt:hasUnit "http://qudt.org/vocab/unit/DEG_C"^^xsd:anyURI ;
+    qudt:value "22.0"^^xsd:float .
+
+fileid:TestStandard a <https://w3id.org/steel/ProcessOntology/TestStandard> ;
+    rdfs:label "ISO-XX" .
+
+fileid:TestTime a <https://w3id.org/steel/ProcessOntology/TestTime> ;
+    qudt:hasUnit "http://qudt.org/vocab/unit/SEC"^^xsd:anyURI .
+
+fileid:Tester a <https://w3id.org/steel/ProcessOntology/Tester> ;
+    rdfs:label "abc" .
+
+fileid:TestingFacility a <https://w3id.org/steel/ProcessOntology/TestingFacility> ;
+    rdfs:label "institute_1" .
+
+fileid:TestingRate a <https://w3id.org/steel/ProcessOntology/TestingRate> ;
+    qudt:hasUnit "http://qudt.org/vocab/unit/MilliM-PER-SEC"^^xsd:anyURI ;
+    qudt:value "0.1"^^xsd:float .
+
+fileid:TimeStamp a <https://w3id.org/steel/ProcessOntology/TimeStamp> ;
+    rdfs:label "44335.4" .
+
+fileid:WidthChange a <https://w3id.org/steel/ProcessOntology/WidthChange> ;
+    qudt:hasUnit "http://qudt.org/vocab/unit/MilliM"^^xsd:anyURI .
+
+fileid:tableGroup a csvw:TableGroup ;
+    csvw:table [ a csvw:Table ;
+            rdfs:label "Time series data" ;
+            csvw:tableSchema [ a csvw:Schema ;
+                    csvw:column [ a csvw:Column ;
+                            qudt:quantity fileid:PercentageElongation ;
+                            csvw:titles "Dehnung"^^xsd:string ;
+                            foaf:page [ a foaf:Document ;
+                                    dcterms:format "https://www.iana.org/assignments/media-types/application/json"^^xsd:anyURI ;
+                                    dcterms:type "http://purl.org/dc/terms/Dataset"^^xsd:anyURI ] ],
+                        [ a csvw:Column ;
+                            qudt:quantity fileid:Extension ;
+                            csvw:titles "Standardweg"^^xsd:string ;
+                            foaf:page [ a foaf:Document ;
+                                    dcterms:format "https://www.iana.org/assignments/media-types/application/json"^^xsd:anyURI ;
+                                    dcterms:type "http://purl.org/dc/terms/Dataset"^^xsd:anyURI ] ],
+                        [ a csvw:Column ;
+                            qudt:quantity fileid:StandardForce ;
+                            csvw:titles "Standardkraft"^^xsd:string ;
+                            foaf:page [ a foaf:Document ;
+                                    dcterms:format "https://www.iana.org/assignments/media-types/application/json"^^xsd:anyURI ;
+                                    dcterms:type "http://purl.org/dc/terms/Dataset"^^xsd:anyURI ] ],
+                        [ a csvw:Column ;
+                            qudt:quantity fileid:AbsoluteCrossheadTravel ;
+                            csvw:titles "Traversenweg absolut"^^xsd:string ;
+                            foaf:page [ a foaf:Document ;
+                                    dcterms:format "https://www.iana.org/assignments/media-types/application/json"^^xsd:anyURI ;
+                                    dcterms:type "http://purl.org/dc/terms/Dataset"^^xsd:anyURI ] ],
+                        [ a csvw:Column ;
+                            qudt:quantity fileid:WidthChange ;
+                            csvw:titles "Breitenänderung"^^xsd:string ;
+                            foaf:page [ a foaf:Document ;
+                                    dcterms:format "https://www.iana.org/assignments/media-types/application/json"^^xsd:anyURI ;
+                                    dcterms:type "http://purl.org/dc/terms/Dataset"^^xsd:anyURI ] ],
+                        [ a csvw:Column ;
+                            qudt:quantity fileid:TestTime ;
+                            csvw:titles "Prüfzeit"^^xsd:string ;
+                            foaf:page [ a foaf:Document ;
+                                    dcterms:format "https://www.iana.org/assignments/media-types/application/json"^^xsd:anyURI ;
+                                    dcterms:type "http://purl.org/dc/terms/Dataset"^^xsd:anyURI ] ] ] ],
+        [ a csvw:Table ;
+            rdfs:label "Metadata" ;
+            csvw:row [ a csvw:Row ;
+                    qudt:quantity fileid:Temperature ;
+                    csvw:rownum 18 ;
+                    csvw:titles "Temperatur"^^xsd:string ],
+                [ a csvw:Row ;
+                    qudt:quantity fileid:ParallelLength ;
+                    csvw:rownum 13 ;
+                    csvw:titles "Versuchslänge"^^xsd:string ],
+                [ a csvw:Row ;
+                    csvw:describes fileid:Material ;
+                    csvw:rownum 8 ;
+                    csvw:titles "Werkstoff"^^xsd:string ],
+                [ a csvw:Row ;
+                    csvw:describes fileid:ProjectName ;
+                    csvw:rownum 2 ;
+                    csvw:titles "Projektname"^^xsd:string ],
+                [ a csvw:Row ;
+                    csvw:describes fileid:TestStandard ;
+                    csvw:rownum 7 ;
+                    csvw:titles "Prüfnorm"^^xsd:string ],
+                [ a csvw:Row ;
+                    qudt:quantity fileid:Preload ;
+                    csvw:rownum 17 ;
+                    csvw:titles "Vorkraft"^^xsd:string ],
+                [ a csvw:Row ;
+                    csvw:describes fileid:SpecimenType ;
+                    csvw:rownum 9 ;
+                    csvw:titles "Probentyp"^^xsd:string ],
+                [ a csvw:Row ;
+                    qudt:quantity fileid:SpecimenWidth ;
+                    csvw:rownum 15 ;
+                    csvw:titles "Probenbreite"^^xsd:string ],
+                [ a csvw:Row ;
+                    csvw:describes fileid:Tester ;
+                    csvw:rownum 10 ;
+                    csvw:titles "Prüfer"^^xsd:string ],
+                [ a csvw:Row ;
+                    csvw:describes fileid:Remark ;
+                    csvw:rownum 19 ;
+                    csvw:titles "Bemerkung"^^xsd:string ],
+                [ a csvw:Row ;
+                    csvw:describes fileid:DisplacementTransducer ;
+                    csvw:rownum 6 ;
+                    csvw:titles "Wegaufnehmer"^^xsd:string ],
+                [ a csvw:Row ;
+                    csvw:describes fileid:TimeStamp ;
+                    csvw:rownum 3 ;
+                    csvw:titles "Datum/Uhrzeit"^^xsd:string ],
+                [ a csvw:Row ;
+                    csvw:describes fileid:MachineData ;
+                    csvw:rownum 4 ;
+                    csvw:titles "Maschinendaten"^^xsd:string ],
+                [ a csvw:Row ;
+                    qudt:quantity fileid:TestingRate ;
+                    csvw:rownum 16 ;
+                    csvw:titles "Prüfgeschwindigkeit"^^xsd:string ],
+                [ a csvw:Row ;
+                    csvw:describes fileid:ForceMeasuringDevice ;
+                    csvw:rownum 5 ;
+                    csvw:titles "Kraftaufnehmer"^^xsd:string ],
+                [ a csvw:Row ;
+                    csvw:describes fileid:SampleIdentifier-2 ;
+                    csvw:rownum 11 ;
+                    csvw:titles "Probenkennung 2"^^xsd:string ],
+                [ a csvw:Row ;
+                    qudt:quantity fileid:OriginalGaugeLength ;
+                    csvw:rownum 12 ;
+                    csvw:titles "Messlänge Standardweg"^^xsd:string ],
+                [ a csvw:Row ;
+                    csvw:describes fileid:ProjectNumber ;
+                    csvw:rownum 1 ;
+                    csvw:titles "Projektnummer"^^xsd:string ],
+                [ a csvw:Row ;
+                    qudt:quantity fileid:SpecimenThickness ;
+                    csvw:rownum 14 ;
+                    csvw:titles "Probendicke"^^xsd:string ],
+                [ a csvw:Row ;
+                    csvw:describes fileid:TestingFacility ;
+                    csvw:rownum 0 ;
+                    csvw:titles "Prüfinstitut"^^xsd:string ] ] .
 
-fileid:metadata-7 a ns4:Metadata ;
-    rdfs:label "Pr�fnorm" ;
-    ns5:EMMO_23b579e1_8088_45b5_9975_064014026c42 "ISO-XX"^^xsd:string .
-
-fileid:numeric-12 a ns2:EMMO_4ce76d7f_03f8_45b6_9003_90052a79bfaa ;
-    ns2:EMMO_faf79f53_749d_40b2_807c_d34244c192f4 "80.0"^^xsd:float ;
-    ns3:EMMO_67fc0a36_8dcb_4ffa_9a43_31074efa3296 fileid:unit-12,
-        fileid:unitliteral-12 .
-
-fileid:numeric-13 a ns2:EMMO_4ce76d7f_03f8_45b6_9003_90052a79bfaa ;
-    ns2:EMMO_faf79f53_749d_40b2_807c_d34244c192f4 "120.0"^^xsd:float ;
-    ns3:EMMO_67fc0a36_8dcb_4ffa_9a43_31074efa3296 fileid:unit-13,
-        fileid:unitliteral-13 .
-
-fileid:numeric-14 a ns2:EMMO_4ce76d7f_03f8_45b6_9003_90052a79bfaa ;
-    ns2:EMMO_faf79f53_749d_40b2_807c_d34244c192f4 "1.55"^^xsd:float ;
-    ns3:EMMO_67fc0a36_8dcb_4ffa_9a43_31074efa3296 fileid:unit-14,
-        fileid:unitliteral-14 .
-
-fileid:numeric-15 a ns2:EMMO_4ce76d7f_03f8_45b6_9003_90052a79bfaa ;
-    ns2:EMMO_faf79f53_749d_40b2_807c_d34244c192f4 "20.04"^^xsd:float ;
-    ns3:EMMO_67fc0a36_8dcb_4ffa_9a43_31074efa3296 fileid:unit-15,
-        fileid:unitliteral-15 .
-
-fileid:numeric-16 a ns2:EMMO_4ce76d7f_03f8_45b6_9003_90052a79bfaa ;
-    ns2:EMMO_faf79f53_749d_40b2_807c_d34244c192f4 "0.1"^^xsd:float ;
-    ns3:EMMO_67fc0a36_8dcb_4ffa_9a43_31074efa3296 fileid:unit-16,
-        fileid:unitliteral-16 .
-
-fileid:numeric-17 a ns2:EMMO_4ce76d7f_03f8_45b6_9003_90052a79bfaa ;
-    ns2:EMMO_faf79f53_749d_40b2_807c_d34244c192f4 "2.0"^^xsd:float ;
-    ns3:EMMO_67fc0a36_8dcb_4ffa_9a43_31074efa3296 fileid:unit-17,
-        fileid:unitliteral-17 .
-
-fileid:numeric-18 a ns2:EMMO_4ce76d7f_03f8_45b6_9003_90052a79bfaa ;
-    ns2:EMMO_faf79f53_749d_40b2_807c_d34244c192f4 "22.0"^^xsd:float ;
-    ns3:EMMO_67fc0a36_8dcb_4ffa_9a43_31074efa3296 fileid:unit-18,
-        fileid:unitliteral-18 .
-
-fileid:unit-0 a <http://www.example.de#UnparseableUnit> ;
-    ns5:EMMO_23b579e1_8088_45b5_9975_064014026c42 "0.902359827"^^xsd:string .
-
-fileid:unit-1 a <http://www.example.de#UnparseableUnit> ;
-    ns5:EMMO_23b579e1_8088_45b5_9975_064014026c42 "0.576537916"^^xsd:string .
-
-fileid:unit-12 a <http://www.example.de#UnparseableUnit> ;
-    ns5:EMMO_23b579e1_8088_45b5_9975_064014026c42 "mm'"^^xsd:string .
-
-fileid:unit-13 a ns3:EMMO_c6d4a5e0_7e95_44df_a6db_84ee0a8bbc8e ;
-    ns1:EMMO_b2282816_b7a3_44c6_b2cb_3feff1ceb7fe fileid:MetricPrefix-13,
-        fileid:UnitSymbol-13 .
-
-fileid:unit-14 a ns3:EMMO_c6d4a5e0_7e95_44df_a6db_84ee0a8bbc8e ;
-    ns1:EMMO_b2282816_b7a3_44c6_b2cb_3feff1ceb7fe fileid:MetricPrefix-14,
-        fileid:UnitSymbol-14 .
-
-fileid:unit-15 a ns3:EMMO_c6d4a5e0_7e95_44df_a6db_84ee0a8bbc8e ;
-    ns1:EMMO_b2282816_b7a3_44c6_b2cb_3feff1ceb7fe fileid:MetricPrefix-15,
-        fileid:UnitSymbol-15 .
-
-fileid:unit-16 a <http://www.example.de#UnparseableUnit> ;
-    ns5:EMMO_23b579e1_8088_45b5_9975_064014026c42 "mm/s"^^xsd:string .
-
-fileid:unit-17 a ns3:EMMO_c6d4a5e0_7e95_44df_a6db_84ee0a8bbc8e ;
-    ns1:EMMO_b2282816_b7a3_44c6_b2cb_3feff1ceb7fe fileid:MetricPrefix-17,
-        fileid:UnitSymbol-17 .
-
-fileid:unit-18 a <http://www.example.de#UnparseableUnit> ;
-    ns5:EMMO_23b579e1_8088_45b5_9975_064014026c42 "�C"^^xsd:string .
-
-fileid:unit-2 a <http://www.example.de#UnparseableUnit> ;
-    ns5:EMMO_23b579e1_8088_45b5_9975_064014026c42 "0.261094396"^^xsd:string .
-
-fileid:unit-3 a <http://www.example.de#UnparseableUnit> ;
-    ns5:EMMO_23b579e1_8088_45b5_9975_064014026c42 "0.767421407"^^xsd:string .
-
-fileid:unit-4 a <http://www.example.de#UnparseableUnit> ;
-    ns5:EMMO_23b579e1_8088_45b5_9975_064014026c42 "0.950183725"^^xsd:string .
-
-fileid:unit-5 a <http://www.example.de#UnparseableUnit> ;
-    ns5:EMMO_23b579e1_8088_45b5_9975_064014026c42 "0.035807567"^^xsd:string .
-
-fileid:unitliteral-0 a ns3:UnitLiteral ;
-    ns3:EMMO_67fc0a36_8dcb_4ffa_9a43_31074efa3296 "0.902359827"^^xsd:string .
-
-fileid:unitliteral-1 a ns3:UnitLiteral ;
-    ns3:EMMO_67fc0a36_8dcb_4ffa_9a43_31074efa3296 "0.576537916"^^xsd:string .
-
-fileid:unitliteral-12 a ns3:UnitLiteral ;
-    ns5:EMMO_23b579e1_8088_45b5_9975_064014026c42 "mm'"^^xsd:string .
-
-fileid:unitliteral-13 a ns3:UnitLiteral ;
-    ns5:EMMO_23b579e1_8088_45b5_9975_064014026c42 "mm"^^xsd:string .
-
-fileid:unitliteral-14 a ns3:UnitLiteral ;
-    ns5:EMMO_23b579e1_8088_45b5_9975_064014026c42 "mm"^^xsd:string .
-
-fileid:unitliteral-15 a ns3:UnitLiteral ;
-    ns5:EMMO_23b579e1_8088_45b5_9975_064014026c42 "mm"^^xsd:string .
-
-fileid:unitliteral-16 a ns3:UnitLiteral ;
-    ns5:EMMO_23b579e1_8088_45b5_9975_064014026c42 "mm/s"^^xsd:string .
-
-fileid:unitliteral-17 a ns3:UnitLiteral ;
-    ns5:EMMO_23b579e1_8088_45b5_9975_064014026c42 "MPa"^^xsd:string .
-
-fileid:unitliteral-18 a ns3:UnitLiteral ;
-    ns5:EMMO_23b579e1_8088_45b5_9975_064014026c42 "�C"^^xsd:string .
-
-fileid:unitliteral-2 a ns3:UnitLiteral ;
-    ns3:EMMO_67fc0a36_8dcb_4ffa_9a43_31074efa3296 "0.261094396"^^xsd:string .
-
-fileid:unitliteral-3 a ns3:UnitLiteral ;
-    ns3:EMMO_67fc0a36_8dcb_4ffa_9a43_31074efa3296 "0.767421407"^^xsd:string .
-
-fileid:unitliteral-4 a ns3:UnitLiteral ;
-    ns3:EMMO_67fc0a36_8dcb_4ffa_9a43_31074efa3296 "0.950183725"^^xsd:string .
-
-fileid:unitliteral-5 a ns3:UnitLiteral ;
-    ns3:EMMO_67fc0a36_8dcb_4ffa_9a43_31074efa3296 "0.035807567"^^xsd:string .
