@@ -4,9 +4,6 @@ import pandas as pd
 from rdflib import Graph
 from rdflib.namespace import SKOS
 
-# pd.set_option('display.max_colwidth', None)  # or 199
-# pd.set_option('display.max_columns', None)  # or 1000
-
 
 def add_emmo_name_to_diagrams(
     input_file,
@@ -77,12 +74,3 @@ def add_emmo_name_to_diagrams(
     # store new XML
     with open(output_file, "w") as output_file:
         output_file.write(text)
-
-
-# INPUT_FILE = os.path.join("method_graph","tensile_test_method.xml")
-# OUTPUT_FILE = os.path.join("method_graph","tensile_test_method_conv.xml")
-# EMMO_ONTOLOGY = os.path.join("emmo","emmo.ttl")
-
-# add_emmo_name_to_diagrams(INPUT_FILE, OUTPUT_FILE, EMMO_ONTOLOGY)
-
-# TODO: Take care, that only EMMO namespaces are converted !!

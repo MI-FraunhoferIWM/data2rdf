@@ -1,6 +1,6 @@
 import unittest
 
-from data2rdf.qudt_utils import _get_query_match
+from data2rdf.qudt.utils import _get_query_match
 
 
 class TestQudtMatch(unittest.TestCase):

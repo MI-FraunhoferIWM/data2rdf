@@ -1,12 +1,48 @@
+import json
 import tempfile
 import warnings
 from functools import lru_cache
-from typing import List, Optional
+from typing import List, Optional, Union
 
 import requests
+from pydantic import AnyUrl
 from rdflib import Graph
 
-from data2rdf.annotation_confs import annotations
+from data2rdf.config import config
+
+
+def make_qudt_quantity(
+    oclass: str,
+    value: Union[float, int],
+    unit: Optional[str] = None,
+    iri: AnyUrl = config.base_iri,
+    separator: str = config.separator,
+    suffix: Optional[str] = None,
+) -> Graph:
+    graph = Graph()
+    if not suffix:
+        suffix = oclass.split(separator)[-1]
+    if not iri.endswith(separator):
+        prefix = iri + separator
+    else:
+        prefix = iri
+    model = {
+        "@context": {
+            "fileid": prefix,
+            "rdfs": "http://www.w3.org/2000/01/rdf-schema#",
+            "xsd": "http://www.w3.org/2001/XMLSchema#",
+            "qudt": "http://qudt.org/schema/qudt/",
+        },
+        "@id": f"{prefix}:{suffix}",
+        "@type": oclass,
+        "qudt:value": {
+            "@type": "xsd:float",
+            "@value": value,
+        }
+        ** _check_qudt_mapping(unit),
+    }
+    graph.parse(data=json.dumps(model), format="json-ld")
+    return graph
 
 
 def _qudt_sparql(symbol: str) -> str:
@@ -26,7 +62,7 @@ def _qudt_sparql(symbol: str) -> str:
 
 @lru_cache
 def _get_qudt_ontology() -> requests.Response:
-    url = annotations["qudt_uri"]
+    url = config.qudt_units
     response = requests.get(url)
     if response.status_code != 200:
         raise RuntimeError(
@@ -60,7 +96,7 @@ def _get_query_match(symbol: str) -> List[str]:
     return [str(row["unit"]) for row in graph.query(query)]
 
 
-def _check_qudt_mapping(symbol: str) -> Optional[str]:
+def _check_qudt_mapping(symbol: Optional[str]) -> Optional[str]:
     if symbol:
         match = _get_query_match(symbol)
         if len(match) == 0:

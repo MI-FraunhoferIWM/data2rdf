@@ -1,10 +1,14 @@
 import json
 import re
+from typing import TYPE_CHECKING
 
 import pandas as pd
 from rdflib import Graph
 
-from data2rdf.qudt_utils import _check_qudt_mapping
+from data2rdf.qudt.utils import _check_qudt_mapping
+
+if TYPE_CHECKING:
+    from typing import Any, Dict, Union
 
 
 def split_prefix_suffix(iri):
@@ -62,15 +66,26 @@ class RDFGenerator:
             ""
         )  # nan triggers error for simple_unit_lookup
 
-        self.mapping = pd.read_excel(
-            mapping_file,
-            sheet_name="sameas",
-            engine="openpyxl",
-        )
+        self._read_mapping_file(mapping_file)
 
         self.json = {}
 
         self.data_download_iri = data_download_iri
+
+    def _read_mapping_file(
+        self, mapping_file: "Union[str, Dict[str, Any]]"
+    ) -> None:
+        if mapping_file.endswith("xlsx"):
+            self.mapping = pd.read_excel(
+                mapping_file,
+                sheet_name="sameas",
+                engine="openpyxl",
+            )
+        elif mapping_file.endswith("json"):
+            with open(mapping_file):
+                self.mapping = json.read(mapping_file)
+        else:
+            raise TypeError("File type for mapping not supported!")
 
     def generate_file_json(self):
         """

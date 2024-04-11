@@ -7,7 +7,7 @@ import pandas as pd
 from rdflib import Graph, URIRef
 from rdflib.namespace import OWL, RDFS, SKOS
 
-from data2rdf.annotation_confs import annotations
+from data2rdf.data2rdf.config import annotations
 
 
 def merge_same_as_individuals(graph, convert_data_label_to_alt_label=True):

@@ -1,7 +1,7 @@
 @prefix csvw: <http://www.w3.org/ns/csvw#> .
 @prefix dcat: <http://www.w3.org/ns/dcat#> .
 @prefix dcterms: <http://purl.org/dc/terms/> .
-@prefix fileid: <http://www.test2.de/> .
+@prefix fileid: <https://www.example.org//> .
 @prefix foaf: <http://xmlns.com/foaf/spec/> .
 @prefix qudt: <http://qudt.org/schema/qudt/> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
@@ -186,6 +186,24 @@ fileid:tableGroup a csvw:TableGroup ;
             rdfs:label "Time series data" ;
             csvw:tableSchema [ a csvw:Schema ;
                     csvw:column [ a csvw:Column ;
+                            qudt:quantity <file:///home/bue/data2rdf/Zeit> ;
+                            csvw:titles "Zeit"^^xsd:string ;
+                            foaf:page [ a foaf:Document ;
+                                    dcterms:format "https://www.iana.org/assignments/media-types/application/json"^^xsd:anyURI ;
+                                    dcterms:type "http://purl.org/dc/terms/Dataset"^^xsd:anyURI ] ],
+                        [ a csvw:Column ;
+                            qudt:quantity <file:///home/bue/data2rdf/F> ;
+                            csvw:titles "F"^^xsd:string ;
+                            foaf:page [ a foaf:Document ;
+                                    dcterms:format "https://www.iana.org/assignments/media-types/application/json"^^xsd:anyURI ;
+                                    dcterms:type "http://purl.org/dc/terms/Dataset"^^xsd:anyURI ] ],
+                        [ a csvw:Column ;
+                            qudt:quantity <file:///home/bue/data2rdf/eBreite> ;
+                            csvw:titles "e-Breite"^^xsd:string ;
+                            foaf:page [ a foaf:Document ;
+                                    dcterms:format "https://www.iana.org/assignments/media-types/application/json"^^xsd:anyURI ;
+                                    dcterms:type "http://purl.org/dc/terms/Dataset"^^xsd:anyURI ] ],
+                        [ a csvw:Column ;
                             qudt:quantity <file:///home/bue/data2rdf/stechnisch> ;
                             csvw:titles "s-technisch"^^xsd:string ;
                             foaf:page [ a foaf:Document ;
@@ -198,26 +216,14 @@ fileid:tableGroup a csvw:TableGroup ;
                                     dcterms:format "https://www.iana.org/assignments/media-types/application/json"^^xsd:anyURI ;
                                     dcterms:type "http://purl.org/dc/terms/Dataset"^^xsd:anyURI ] ],
                         [ a csvw:Column ;
-                            qudt:quantity <file:///home/bue/data2rdf/eBreite> ;
-                            csvw:titles "e-Breite"^^xsd:string ;
-                            foaf:page [ a foaf:Document ;
-                                    dcterms:format "https://www.iana.org/assignments/media-types/application/json"^^xsd:anyURI ;
-                                    dcterms:type "http://purl.org/dc/terms/Dataset"^^xsd:anyURI ] ],
-                        [ a csvw:Column ;
-                            qudt:quantity <file:///home/bue/data2rdf/etechnisch> ;
-                            csvw:titles "e-technisch"^^xsd:string ;
-                            foaf:page [ a foaf:Document ;
-                                    dcterms:format "https://www.iana.org/assignments/media-types/application/json"^^xsd:anyURI ;
-                                    dcterms:type "http://purl.org/dc/terms/Dataset"^^xsd:anyURI ] ],
-                        [ a csvw:Column ;
                             qudt:quantity <file:///home/bue/data2rdf/B> ;
                             csvw:titles "B"^^xsd:string ;
                             foaf:page [ a foaf:Document ;
                                     dcterms:format "https://www.iana.org/assignments/media-types/application/json"^^xsd:anyURI ;
                                     dcterms:type "http://purl.org/dc/terms/Dataset"^^xsd:anyURI ] ],
                         [ a csvw:Column ;
-                            qudt:quantity <file:///home/bue/data2rdf/swDL> ;
-                            csvw:titles "sw (DL)"^^xsd:string ;
+                            qudt:quantity <file:///home/bue/data2rdf/r> ;
+                            csvw:titles "r"^^xsd:string ;
                             foaf:page [ a foaf:Document ;
                                     dcterms:format "https://www.iana.org/assignments/media-types/application/json"^^xsd:anyURI ;
                                     dcterms:type "http://purl.org/dc/terms/Dataset"^^xsd:anyURI ] ],
@@ -234,163 +240,121 @@ fileid:tableGroup a csvw:TableGroup ;
                                     dcterms:format "https://www.iana.org/assignments/media-types/application/json"^^xsd:anyURI ;
                                     dcterms:type "http://purl.org/dc/terms/Dataset"^^xsd:anyURI ] ],
                         [ a csvw:Column ;
-                            qudt:quantity <file:///home/bue/data2rdf/r> ;
-                            csvw:titles "r"^^xsd:string ;
-                            foaf:page [ a foaf:Document ;
-                                    dcterms:format "https://www.iana.org/assignments/media-types/application/json"^^xsd:anyURI ;
-                                    dcterms:type "http://purl.org/dc/terms/Dataset"^^xsd:anyURI ] ],
-                        [ a csvw:Column ;
-                            qudt:quantity <file:///home/bue/data2rdf/F> ;
-                            csvw:titles "F"^^xsd:string ;
-                            foaf:page [ a foaf:Document ;
-                                    dcterms:format "https://www.iana.org/assignments/media-types/application/json"^^xsd:anyURI ;
-                                    dcterms:type "http://purl.org/dc/terms/Dataset"^^xsd:anyURI ] ],
-                        [ a csvw:Column ;
                             qudt:quantity <file:///home/bue/data2rdf/DL> ;
                             csvw:titles "DL"^^xsd:string ;
                             foaf:page [ a foaf:Document ;
                                     dcterms:format "https://www.iana.org/assignments/media-types/application/json"^^xsd:anyURI ;
                                     dcterms:type "http://purl.org/dc/terms/Dataset"^^xsd:anyURI ] ],
                         [ a csvw:Column ;
-                            qudt:quantity <file:///home/bue/data2rdf/Zeit> ;
-                            csvw:titles "Zeit"^^xsd:string ;
+                            qudt:quantity <file:///home/bue/data2rdf/etechnisch> ;
+                            csvw:titles "e-technisch"^^xsd:string ;
+                            foaf:page [ a foaf:Document ;
+                                    dcterms:format "https://www.iana.org/assignments/media-types/application/json"^^xsd:anyURI ;
+                                    dcterms:type "http://purl.org/dc/terms/Dataset"^^xsd:anyURI ] ],
+                        [ a csvw:Column ;
+                            qudt:quantity <file:///home/bue/data2rdf/swDL> ;
+                            csvw:titles "sw (DL)"^^xsd:string ;
                             foaf:page [ a foaf:Document ;
                                     dcterms:format "https://www.iana.org/assignments/media-types/application/json"^^xsd:anyURI ;
                                     dcterms:type "http://purl.org/dc/terms/Dataset"^^xsd:anyURI ] ] ] ],
         [ a csvw:Table ;
             rdfs:label "Metadata" ;
             csvw:row [ a csvw:Row ;
-                    csvw:describes <file:///home/bue/data2rdf/Projekt> ;
-                    csvw:rownum 0 ;
-                    csvw:titles "Projekt"^^xsd:string ],
-                [ a csvw:Row ;
                     qudt:quantity <file:///home/bue/data2rdf/HchstzugkraftFm> ;
                     csvw:rownum 18 ;
                     csvw:titles "Höchstzugkraft Fm"^^xsd:string ],
-                [ a csvw:Row ;
-                    qudt:quantity <file:///home/bue/data2rdf/Geschw> ;
-                    csvw:rownum 27 ;
-                    csvw:titles "Geschw."^^xsd:string ],
-                [ a csvw:Row ;
-                    qudt:quantity <file:///home/bue/data2rdf/Probendickea> ;
-                    csvw:rownum 9 ;
-                    csvw:titles "Probendicke a"^^xsd:string ],
-                [ a csvw:Row ;
-                    qudt:quantity <file:///home/bue/data2rdf/swBruch> ;
-                    csvw:rownum 23 ;
-                    csvw:titles "sw-Bruch"^^xsd:string ],
-                [ a csvw:Row ;
-                    csvw:describes <file:///home/bue/data2rdf/ewBruch> ;
-                    csvw:rownum 21 ;
-                    csvw:titles "ew-Bruch"^^xsd:string ],
-                [ a csvw:Row ;
-                    qudt:quantity <file:///home/bue/data2rdf/Probenbreiteb> ;
-                    csvw:rownum 10 ;
-                    csvw:titles "Probenbreite b"^^xsd:string ],
-                [ a csvw:Row ;
-                    qudt:quantity <file:///home/bue/data2rdf/EModul> ;
-                    csvw:rownum 25 ;
-                    csvw:titles "EModul"^^xsd:string ],
-                [ a csvw:Row ;
-                    qudt:quantity <file:///home/bue/data2rdf/Prftemperatur> ;
-                    csvw:rownum 16 ;
-                    csvw:titles "Prüftemperatur"^^xsd:string ],
-                [ a csvw:Row ;
-                    qudt:quantity <file:///home/bue/data2rdf/ProbenbreiteB2nachBruch> ;
-                    csvw:rownum 14 ;
-                    csvw:titles "Probenbreite B2 nach Bruch"^^xsd:string ],
-                [ a csvw:Row ;
-                    qudt:quantity <file:///home/bue/data2rdf/A> ;
-                    csvw:rownum 34 ;
-                    csvw:titles "A"^^xsd:string ],
-                [ a csvw:Row ;
-                    qudt:quantity <file:///home/bue/data2rdf/Fp02> ;
-                    csvw:rownum 28 ;
-                    csvw:titles "Fp0,2"^^xsd:string ],
-                [ a csvw:Row ;
-                    qudt:quantity <file:///home/bue/data2rdf/Bruchverlngerung> ;
-                    csvw:rownum 17 ;
-                    csvw:titles "Bruchverlängerung"^^xsd:string ],
-                [ a csvw:Row ;
-                    qudt:quantity <file:///home/bue/data2rdf/S0> ;
-                    csvw:rownum 19 ;
-                    csvw:titles "S0"^^xsd:string ],
-                [ a csvw:Row ;
-                    qudt:quantity <file:///home/bue/data2rdf/ZugfestigkeitRm> ;
-                    csvw:rownum 31 ;
-                    csvw:titles "Zugfestigkeit Rm"^^xsd:string ],
                 [ a csvw:Row ;
                     qudt:quantity <file:///home/bue/data2rdf/Z> ;
                     csvw:rownum 36 ;
                     csvw:titles "Z"^^xsd:string ],
                 [ a csvw:Row ;
-                    csvw:describes <file:///home/bue/data2rdf/Probennummer> ;
-                    csvw:rownum 7 ;
-                    csvw:titles "Probennummer"^^xsd:string ],
+                    qudt:quantity <file:///home/bue/data2rdf/ProbendickeA2nachBruch> ;
+                    csvw:rownum 12 ;
+                    csvw:titles "Probendicke A2 nach Bruch"^^xsd:string ],
                 [ a csvw:Row ;
-                    qudt:quantity <file:///home/bue/data2rdf/Elastizittsmodul> ;
-                    csvw:rownum 26 ;
-                    csvw:titles "Elastizitätsmodul"^^xsd:string ],
+                    qudt:quantity <file:///home/bue/data2rdf/Bruchverlngerung> ;
+                    csvw:rownum 17 ;
+                    csvw:titles "Bruchverlängerung"^^xsd:string ],
                 [ a csvw:Row ;
-                    qudt:quantity <file:///home/bue/data2rdf/swRm> ;
-                    csvw:rownum 24 ;
-                    csvw:titles "sw-Rm"^^xsd:string ],
+                    csvw:describes <file:///home/bue/data2rdf/ewBruch> ;
+                    csvw:rownum 21 ;
+                    csvw:titles "ew-Bruch"^^xsd:string ],
                 [ a csvw:Row ;
-                    csvw:describes <file:///home/bue/data2rdf/ewRm> ;
-                    csvw:rownum 22 ;
-                    csvw:titles "ew-Rm"^^xsd:string ],
+                    qudt:quantity <file:///home/bue/data2rdf/ProbenbreiteB2nachBruch> ;
+                    csvw:rownum 14 ;
+                    csvw:titles "Probenbreite B2 nach Bruch"^^xsd:string ],
                 [ a csvw:Row ;
-                    csvw:describes <file:///home/bue/data2rdf/Prfmaschine> ;
-                    csvw:rownum 2 ;
-                    csvw:titles "Prüfmaschine"^^xsd:string ],
+                    qudt:quantity <file:///home/bue/data2rdf/ZugfestigkeitRm> ;
+                    csvw:rownum 31 ;
+                    csvw:titles "Zugfestigkeit Rm"^^xsd:string ],
                 [ a csvw:Row ;
-                    qudt:quantity <file:///home/bue/data2rdf/Rp02> ;
-                    csvw:rownum 29 ;
-                    csvw:titles "Rp0,2"^^xsd:string ],
-                [ a csvw:Row ;
-                    csvw:describes <file:///home/bue/data2rdf/Probentyp> ;
-                    csvw:rownum 5 ;
-                    csvw:titles "Probentyp"^^xsd:string ],
+                    qudt:quantity <file:///home/bue/data2rdf/EModul> ;
+                    csvw:rownum 25 ;
+                    csvw:titles "EModul"^^xsd:string ],
                 [ a csvw:Row ;
                     qudt:quantity <file:///home/bue/data2rdf/BrucheinschnrungZ> ;
                     csvw:rownum 35 ;
                     csvw:titles "Brucheinschnürung Z"^^xsd:string ],
                 [ a csvw:Row ;
-                    qudt:quantity <file:///home/bue/data2rdf/ProbenbreiteB1nachBruch> ;
-                    csvw:rownum 13 ;
-                    csvw:titles "Probenbreite B1 nach Bruch"^^xsd:string ],
+                    qudt:quantity <file:///home/bue/data2rdf/ProbendickeA1nachBruch> ;
+                    csvw:rownum 11 ;
+                    csvw:titles "Probendicke A1 nach Bruch"^^xsd:string ],
                 [ a csvw:Row ;
                     qudt:quantity <file:///home/bue/data2rdf/DehnungbeiHchstkraftAg> ;
                     csvw:rownum 32 ;
                     csvw:titles "Dehnung bei Höchstkraft Ag"^^xsd:string ],
                 [ a csvw:Row ;
-                    qudt:quantity <file:///home/bue/data2rdf/Su> ;
-                    csvw:rownum 20 ;
-                    csvw:titles "Su"^^xsd:string ],
+                    qudt:quantity <file:///home/bue/data2rdf/S0> ;
+                    csvw:rownum 19 ;
+                    csvw:titles "S0"^^xsd:string ],
                 [ a csvw:Row ;
-                    qudt:quantity <file:///home/bue/data2rdf/Prfgeschwindigkeit> ;
-                    csvw:rownum 15 ;
-                    csvw:titles "Prüfgeschwindigkeit"^^xsd:string ],
-                [ a csvw:Row ;
-                    qudt:quantity <file:///home/bue/data2rdf/ProbendickeA1nachBruch> ;
-                    csvw:rownum 11 ;
-                    csvw:titles "Probendicke A1 nach Bruch"^^xsd:string ],
-                [ a csvw:Row ;
-                    qudt:quantity <file:///home/bue/data2rdf/ProbendickeA2nachBruch> ;
-                    csvw:rownum 12 ;
-                    csvw:titles "Probendicke A2 nach Bruch"^^xsd:string ],
-                [ a csvw:Row ;
-                    csvw:describes <file:///home/bue/data2rdf/Probenform> ;
-                    csvw:rownum 4 ;
-                    csvw:titles "Probenform"^^xsd:string ],
+                    qudt:quantity <file:///home/bue/data2rdf/Prftemperatur> ;
+                    csvw:rownum 16 ;
+                    csvw:titles "Prüftemperatur"^^xsd:string ],
                 [ a csvw:Row ;
                     qudt:quantity <file:///home/bue/data2rdf/MesslngeLo> ;
                     csvw:rownum 8 ;
                     csvw:titles "Messlänge Lo"^^xsd:string ],
                 [ a csvw:Row ;
-                    qudt:quantity <file:///home/bue/data2rdf/DehngrenzeReL> ;
-                    csvw:rownum 30 ;
-                    csvw:titles "Dehngrenze ReL"^^xsd:string ],
+                    csvw:describes <file:///home/bue/data2rdf/Prfer> ;
+                    csvw:rownum 6 ;
+                    csvw:titles "Prüfer"^^xsd:string ],
+                [ a csvw:Row ;
+                    qudt:quantity <file:///home/bue/data2rdf/Rp02> ;
+                    csvw:rownum 29 ;
+                    csvw:titles "Rp0,2"^^xsd:string ],
+                [ a csvw:Row ;
+                    qudt:quantity <file:///home/bue/data2rdf/swBruch> ;
+                    csvw:rownum 23 ;
+                    csvw:titles "sw-Bruch"^^xsd:string ],
+                [ a csvw:Row ;
+                    csvw:describes <file:///home/bue/data2rdf/Projekt> ;
+                    csvw:rownum 0 ;
+                    csvw:titles "Projekt"^^xsd:string ],
+                [ a csvw:Row ;
+                    qudt:quantity <file:///home/bue/data2rdf/A> ;
+                    csvw:rownum 34 ;
+                    csvw:titles "A"^^xsd:string ],
+                [ a csvw:Row ;
+                    qudt:quantity <file:///home/bue/data2rdf/swRm> ;
+                    csvw:rownum 24 ;
+                    csvw:titles "sw-Rm"^^xsd:string ],
+                [ a csvw:Row ;
+                    qudt:quantity <file:///home/bue/data2rdf/ProbenbreiteB1nachBruch> ;
+                    csvw:rownum 13 ;
+                    csvw:titles "Probenbreite B1 nach Bruch"^^xsd:string ],
+                [ a csvw:Row ;
+                    csvw:describes <file:///home/bue/data2rdf/Prfmaschine> ;
+                    csvw:rownum 2 ;
+                    csvw:titles "Prüfmaschine"^^xsd:string ],
+                [ a csvw:Row ;
+                    qudt:quantity <file:///home/bue/data2rdf/Elastizittsmodul> ;
+                    csvw:rownum 26 ;
+                    csvw:titles "Elastizitätsmodul"^^xsd:string ],
+                [ a csvw:Row ;
+                    csvw:describes <file:///home/bue/data2rdf/Probenform> ;
+                    csvw:rownum 4 ;
+                    csvw:titles "Probenform"^^xsd:string ],
                 [ a csvw:Row ;
                     csvw:describes <file:///home/bue/data2rdf/Werkstoff> ;
                     csvw:rownum 3 ;
@@ -400,10 +364,46 @@ fileid:tableGroup a csvw:TableGroup ;
                     csvw:rownum 33 ;
                     csvw:titles "Bruchdehnung A20mm"^^xsd:string ],
                 [ a csvw:Row ;
-                    csvw:describes <file:///home/bue/data2rdf/Prfer> ;
-                    csvw:rownum 6 ;
-                    csvw:titles "Prüfer"^^xsd:string ],
+                    qudt:quantity <file:///home/bue/data2rdf/Probenbreiteb> ;
+                    csvw:rownum 10 ;
+                    csvw:titles "Probenbreite b"^^xsd:string ],
+                [ a csvw:Row ;
+                    qudt:quantity <file:///home/bue/data2rdf/Fp02> ;
+                    csvw:rownum 28 ;
+                    csvw:titles "Fp0,2"^^xsd:string ],
+                [ a csvw:Row ;
+                    qudt:quantity <file:///home/bue/data2rdf/DehngrenzeReL> ;
+                    csvw:rownum 30 ;
+                    csvw:titles "Dehngrenze ReL"^^xsd:string ],
+                [ a csvw:Row ;
+                    csvw:describes <file:///home/bue/data2rdf/Probennummer> ;
+                    csvw:rownum 7 ;
+                    csvw:titles "Probennummer"^^xsd:string ],
+                [ a csvw:Row ;
+                    qudt:quantity <file:///home/bue/data2rdf/Su> ;
+                    csvw:rownum 20 ;
+                    csvw:titles "Su"^^xsd:string ],
+                [ a csvw:Row ;
+                    qudt:quantity <file:///home/bue/data2rdf/Prfgeschwindigkeit> ;
+                    csvw:rownum 15 ;
+                    csvw:titles "Prüfgeschwindigkeit"^^xsd:string ],
+                [ a csvw:Row ;
+                    qudt:quantity <file:///home/bue/data2rdf/Probendickea> ;
+                    csvw:rownum 9 ;
+                    csvw:titles "Probendicke a"^^xsd:string ],
+                [ a csvw:Row ;
+                    csvw:describes <file:///home/bue/data2rdf/ewRm> ;
+                    csvw:rownum 22 ;
+                    csvw:titles "ew-Rm"^^xsd:string ],
+                [ a csvw:Row ;
+                    qudt:quantity <file:///home/bue/data2rdf/Geschw> ;
+                    csvw:rownum 27 ;
+                    csvw:titles "Geschw."^^xsd:string ],
                 [ a csvw:Row ;
                     csvw:describes <file:///home/bue/data2rdf/Datum> ;
                     csvw:rownum 1 ;
-                    csvw:titles "Datum"^^xsd:string ] ] .
+                    csvw:titles "Datum"^^xsd:string ],
+                [ a csvw:Row ;
+                    csvw:describes <file:///home/bue/data2rdf/Probentyp> ;
+                    csvw:rownum 5 ;
+                    csvw:titles "Probentyp"^^xsd:string ] ] .

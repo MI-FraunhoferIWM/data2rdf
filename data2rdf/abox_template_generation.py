@@ -5,7 +5,7 @@ from pathlib import Path
 from rdflib import Graph, Literal, URIRef
 from rdflib.namespace import OWL, RDF, RDFS, SKOS
 
-from data2rdf.emmo_lib import chowlk_utils
+from data2rdf.chowlk.utils import add_emmo_name_to_diagrams
 
 
 def run_chowlk(inputfile, outputfile):
@@ -150,9 +150,7 @@ class ABoxScaffoldPipeline:
         # self.ttl_path_ns = os.path.join(out_path, filename.replace('.xml','.ns.ttl'))
 
     def xml_conversion(self):
-        chowlk_utils.add_emmo_name_to_diagrams(
-            self.xml_path, self.mod_xml_path
-        )
+        add_emmo_name_to_diagrams(self.xml_path, self.mod_xml_path)
 
     def run_chowlk(self):
         run_chowlk(self.mod_xml_path, self.ttl_path)
@@ -195,12 +193,3 @@ class ABoxScaffoldPipeline:
         self.set_output_paths(folder_path)
 
         self.run_pipeline()
-
-
-# FOLDER_PATH = os.path.dirname(os.path.abspath(__file__))
-# TT_EXAMPLE_PATH = os.path.join(FOLDER_PATH, "tests", "tensile_test_example")
-# XML_FILE_PATH = os.path.join(TT_EXAMPLE_PATH,"tensile_test_method_v6.xml")
-# OUTPUT_PATH = os.path.join(TT_EXAMPLE_PATH)
-
-# abox_pipeline = ABoxScaffoldPipeline(XML_FILE_PATH, OUTPUT_PATH)
-# abox_pipeline.run_pipeline()

@@ -5,6 +5,7 @@ import pandas as pd
 from rdflib import Graph
 
 from data2rdf.abox_template_generation import convert_abox_namespace
+from data2rdf.config import config
 from data2rdf.csv_parser import CSVParser
 from data2rdf.excel_parser import ExcelParser
 from data2rdf.rdf_generation import RDFGenerator
@@ -43,7 +44,7 @@ class AnnotationPipeline:
         output,
         template=None,
         mapping_db=None,
-        base_iri="http://www.test2.de",
+        base_iri=config.base_iri,
         only_use_base_iri=True,
         data_download_iri=None,
     ):
