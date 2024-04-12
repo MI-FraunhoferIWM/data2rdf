@@ -17,15 +17,16 @@ def make_qudt_quantity(
     unit: Optional[str] = None,
     iri: AnyUrl = config.base_iri,
     separator: str = config.separator,
+    graph_identifier: str = config.base_iri,
     suffix: Optional[str] = None,
 ) -> Graph:
-    graph = Graph()
+    graph = Graph(identifier=str(graph_identifier))
     if not suffix:
         suffix = oclass.split(separator)[-1]
-    if not iri.endswith(separator):
-        prefix = iri + separator
+    if not str(iri).endswith(separator):
+        prefix = str(iri) + separator
     else:
-        prefix = iri
+        prefix = str(iri)
     model = {
         "@context": {
             "fileid": prefix,
@@ -33,13 +34,13 @@ def make_qudt_quantity(
             "xsd": "http://www.w3.org/2001/XMLSchema#",
             "qudt": "http://qudt.org/schema/qudt/",
         },
-        "@id": f"{prefix}:{suffix}",
+        "@id": f"fileid:{suffix}",
         "@type": oclass,
         "qudt:value": {
             "@type": "xsd:float",
             "@value": value,
-        }
-        ** _check_qudt_mapping(unit),
+        },
+        **_check_qudt_mapping(unit),
     }
     graph.parse(data=json.dumps(model), format="json-ld")
     return graph
