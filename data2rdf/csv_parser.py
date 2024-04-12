@@ -1,8 +1,8 @@
 import io
 
-import magic
 import pandas as pd
 
+from data2rdf.config import config
 from data2rdf.parser import DataParser
 
 
@@ -53,7 +53,6 @@ class CSVParser(DataParser):
         self.header_length = header_length
 
     def parser_data(self):
-        self.get_file_encoding()
         self.load_file()
         self.parse_meta_data()
         self.split_meta_df()
@@ -62,17 +61,8 @@ class CSVParser(DataParser):
         self.generate_file_meta_df()
         self.clean_table_df()
 
-    def get_file_encoding(self):
-        """
-        Get file encoding
-        """
-        rawdata = open(self.f_path, "rb").read()
-        buffered = magic.open(magic.MAGIC_MIME_ENCODING)
-        buffered.load()
-        self.encoding = buffered.buffer(rawdata)
-
     def load_file(self):
-        with open(self.f_path, encoding=self.encoding) as file:
+        with open(self.f_path, encoding=config.encoding) as file:
             self.file = file.read()
 
     def parse_meta_data(self):
@@ -121,7 +111,7 @@ class CSVParser(DataParser):
     def parse_table(self):
         self.df_table = pd.read_csv(
             self.f_path,
-            encoding=self.encoding,
+            encoding=config.encoding,
             sep=self.column_sep,
             skiprows=self.header_length,
         )

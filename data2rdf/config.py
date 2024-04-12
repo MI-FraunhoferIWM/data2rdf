@@ -24,5 +24,9 @@ class Config(BaseSettings):
         "/", description="Separator between base IRI and suffix."
     )
 
+    encoding: str = Field(
+        "utf-8", description="Encoding to read the data file"
+    )
+
 
 config = Config()
