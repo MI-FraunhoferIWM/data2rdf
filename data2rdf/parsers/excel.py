@@ -1,7 +1,7 @@
 import pandas as pd
 from openpyxl import load_workbook
 
-from data2rdf.parser import DataParser
+from data2rdf.parsers import DataParser
 
 
 class ExcelParser(DataParser):
@@ -50,7 +50,6 @@ class ExcelParser(DataParser):
         self.parse_meta_data()
         self.generate_column_df()
         self.parse_table()
-        self.generate_file_meta_df()
 
     def load_mapping_file(self):
         self.meta_mapping_df = pd.read_excel(

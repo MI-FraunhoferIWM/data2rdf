@@ -25,22 +25,6 @@ def split_prefix_suffix(iri):
     return suffix
 
 
-def is_integer(s):
-    try:
-        int(s)
-        return True
-    except ValueError:
-        return False
-
-
-def is_float(s):
-    try:
-        float(s)
-        return True
-    except ValueError:
-        return False
-
-
 class RDFGenerator:
 
     """
@@ -71,21 +55,6 @@ class RDFGenerator:
         self.json = {}
 
         self.data_download_iri = data_download_iri
-
-    def _read_mapping_file(
-        self, mapping_file: "Union[str, Dict[str, Any]]"
-    ) -> None:
-        if mapping_file.endswith("xlsx"):
-            self.mapping = pd.read_excel(
-                mapping_file,
-                sheet_name="sameas",
-                engine="openpyxl",
-            )
-        elif mapping_file.endswith("json"):
-            with open(mapping_file):
-                self.mapping = json.read(mapping_file)
-        else:
-            raise TypeError("File type for mapping not supported!")
 
     def generate_file_json(self):
         """
@@ -267,8 +236,3 @@ class RDFGenerator:
     def to_json_ld(self, f_path):
         with open(f_path, "w") as output_file:
             json.dump(self.json, output_file, indent=4)
-
-    def to_ttl(self, f_path):
-        g = Graph()
-        graph = g.parse(data=json.dumps(self.json), format="json-ld")
-        graph.serialize(f_path, format="ttl")

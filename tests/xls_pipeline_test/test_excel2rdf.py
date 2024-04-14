@@ -2,7 +2,7 @@ import os
 import shutil
 import unittest
 
-from data2rdf.annotation_pipeline import AnnotationPipeline
+from data2rdf.pipelines.annotation_pipeline import AnnotationPipeline
 
 from .test_utils import check_file_identifier_in_folder
 
