@@ -7,6 +7,7 @@ from .models import (
     PropertyMapping,
     QuantityMapping,
 )
+from .parsers import Parser
 from .pipelines import ABoxScaffoldPipeline, AnnotationPipeline
 
 __all__ = [
@@ -17,4 +18,5 @@ __all__ = [
     "PropertyMapping",
     "ClassConceptMapping",
     "BasicConceptMapping",
+    "Parser",
 ]

@@ -2,8 +2,8 @@
 
 from enum import Enum
 
-from .csv_parser import CSVParser
-from .excel_parser import ExcelParser
+from .csv import CSVParser
+from .excel import ExcelParser
 
 Parser = Enum(
     "Parser",

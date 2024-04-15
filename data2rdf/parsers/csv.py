@@ -11,8 +11,9 @@ from data2rdf.models.mapping import (
     PropertyMapping,
     QuantityMapping,
 )
-from data2rdf.parsers.base import DataParser
 from data2rdf.utils import get_as_jsonld, make_prefix
+
+from .base import DataParser
 
 if TYPE_CHECKING:
     from typing import Dict, List

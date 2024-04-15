@@ -4,7 +4,7 @@ from rdflib import Graph
 
 
 def test_valued_quantity():
-    from data2rdf.models.mapping import ValuedQuantityMapping
+    from data2rdf.models.mapping import QuantityMapping
 
     expected = """@prefix fileid: <https://www.example.org/> .
     @prefix qudt: <http://qudt.org/schema/qudt/> .
@@ -17,7 +17,7 @@ def test_valued_quantity():
     expected_graph = Graph()
     expected_graph.parse(format="turtle", data=expected)
 
-    model = ValuedQuantityMapping(
+    model = QuantityMapping(
         value=0.1, key="test", unit="mm", iri="https://example.org/test"
     )
     assert model.graph.isomorphic(expected_graph)

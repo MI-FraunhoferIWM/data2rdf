@@ -20,12 +20,18 @@ parser_args = {"header_sep": "\t", "column_sep": "\t", "header_length": 20}
 
 
 def test_csv_pipeline() -> None:
-    from data2rdf import AnnotationPipeline
+    from rdflib import Graph
+
+    from data2rdf import AnnotationPipeline, Parser
 
     pipeline = AnnotationPipeline(
         raw_data=raw_data,
         mapping=mapping_file,
-        parser="csv",
+        parser=Parser.csv,
         parser_args=parser_args,
         extra_triples=template,
     )
+
+    expected_graph = Graph()
+    expected_graph.parse(expected)
+    pipeline.graph.isomorphic(expected_graph)

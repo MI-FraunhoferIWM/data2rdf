@@ -3,7 +3,14 @@
 import json
 from typing import TYPE_CHECKING, Any, Dict, Optional, Union
 
-from pydantic import BaseModel, Field, ValidationInfo, field_validator, model_validator
+from pydantic import (
+    BaseModel,
+    ConfigDict,
+    Field,
+    ValidationInfo,
+    field_validator,
+    model_validator,
+)
 from rdflib import Graph
 
 from data2rdf.config import Config
@@ -49,6 +56,10 @@ class AnnotationPipeline(BaseModel):
         description="Filepath or rdflib-object for a Graph with extra triples for the resulting pipeline graph.",
     )
 
+    model_config = ConfigDict(
+        arbitrary_types_allowed=True, use_enum_values=True
+    )
+
     @field_validator("extra_triples")
     @classmethod
     def validate_extra_triples(
@@ -66,9 +77,9 @@ class AnnotationPipeline(BaseModel):
                 f"`extra_triples` must be of type {str} or {Graph}, not {type(value)}."
             )
         extra_triples = extra_triples.replace(
-            config.namespace_placeholder, config.base_iri
+            config.namespace_placeholder, str(config.base_iri)
         )
-        graph = Graph(identifier=cls.config.graph_identifier)
+        graph = Graph(identifier=config.graph_identifier)
         graph.parse(data=extra_triples)
         return value
 
@@ -77,7 +88,10 @@ class AnnotationPipeline(BaseModel):
     def run_pipeline(cls, self: "AnnotationPipeline") -> "AnnotationPipeline":
         """Run pipeline."""
         self.parser = self.parser(
-            raw_data=self.raw_data, mapping=self.mapping, config=self.config
+            raw_data=self.raw_data,
+            mapping=self.mapping,
+            config=self.config,
+            **self.parser_args,
         )
 
         return self
@@ -114,7 +128,16 @@ class AnnotationPipeline(BaseModel):
             "dcterms:hasPart": get_as_jsonld(cls.parser.graph),
         }
         if cls.extra_triples:
-            model.update(**get_as_jsonld(cls.parser.graph))
+            extra_triples = get_as_jsonld(cls.parser.graph)
+            if isinstance(extra_triples, list):
+                for triple in extra_triples:
+                    model.update(triple)
+            elif isinstance(extra_triples, dict):
+                model.update(extra_triples)
+            else:
+                raise TypeError(
+                    f"Extra triples have an invalid parsed type: {type(extra_triples)}"
+                )
 
         graph = Graph(identifier=cls.config.graph_identifier)
         graph.parse(data=json.dumps(model), format="json-ld")

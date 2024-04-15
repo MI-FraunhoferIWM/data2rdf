@@ -1,7 +1,7 @@
 import pandas as pd
 from openpyxl import load_workbook
 
-from data2rdf.parsers import DataParser
+from .base import DataParser
 
 
 class ExcelParser(DataParser):
