@@ -11,7 +11,7 @@ output_folder = os.path.join(test_folder, "output")
 
 mapping_folder = os.path.join(working_folder, "mapping")
 raw_data = os.path.join(working_folder, "data", "AFZ1-Fz-S1Q.xlsm")
-expected = os.path.join(output_folder, "output_csv_parser.ttl")
+expected = os.path.join(output_folder, "output_excel_parser.ttl")
 
 metadata = {
     "ProjectNumber": "Projekt_1",

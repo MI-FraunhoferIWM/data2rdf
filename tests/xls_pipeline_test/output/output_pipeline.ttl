@@ -8,8 +8,8 @@
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
 fileid:tableGroup a csvw:TableGroup ;
-    csvw:table _:N18c75f6f31584cef91469543b24058cb,
-        _:Nfff620a29f99467cb372a7d3f45a5817 .
+    csvw:table _:N7b880dda99844920b29f1d1bb211d7f2,
+        _:Nb89f6a97bfc04c97b4cc69cd09ff4eb7 .
 
 fileid:AbsoluteCrossheadTravel a <https://w3id.org/steel/ProcessOntology/AbsoluteCrossheadTravel> ;
     qudt:hasUnit "http://qudt.org/vocab/unit/MilliM"^^xsd:anyURI .
@@ -18,36 +18,49 @@ fileid:Extension a <https://w3id.org/steel/ProcessOntology/Extension> ;
     qudt:hasUnit "http://qudt.org/vocab/unit/MilliM"^^xsd:anyURI .
 
 fileid:MachineData a <https://w3id.org/steel/ProcessOntology/MachineData> ;
-    rdfs:label "M_1" ;
+    rdfs:label "M_1" .
+
+fileid:OriginalGaugeLength a <https://w3id.org/steel/ProcessOntology/OriginalGaugeLength> ;
+    qudt:hasUnit "http://qudt.org/vocab/unit/MilliM"^^xsd:anyURI ;
+    qudt:value "15.0"^^xsd:float .
+
+fileid:PercentageElongation a <https://w3id.org/steel/ProcessOntology/PercentageElongation> ;
+    qudt:hasUnit "http://qudt.org/vocab/unit/FRACTION"^^xsd:anyURI .
+
+fileid:ProjectNumber a <https://w3id.org/steel/ProcessOntology/ProjectNumber> ;
+    rdfs:label "Projekt_1" .
+
+fileid:Remark a <https://w3id.org/steel/ProcessOntology/Remark> ;
+    rdfs:label "None" ;
     dcterms:format "https://www.iana.org/assignments/media-types/application/json"^^xsd:anyURI ;
-    dcterms:hasPart _:N004e4fad2895485ab37587f56739acd0,
-        _:N0940ac1b5f724ce5ae0654dba930a701,
-        _:N13d6f845d459411caa11245c193f8c6b,
-        _:N146a3bd6403b4c2bb3e3e06896a42987,
-        _:N18c75f6f31584cef91469543b24058cb,
-        _:N1a5781b3a6904cc39ff87f34829a6d2b,
-        _:N1c8901691ced400e8097ed8a2906d412,
-        _:N1f76718077cc4f7ba91432c6c9e38dc7,
-        _:N3060fe9c6a7141f8a3c30fb25925d95a,
-        _:N45b068f66224409da51ef2820e07e4f5,
-        _:N54609d6d02254452b529e205fcfa8d98,
-        _:N5c78aa26ae4548b1a0e3c22c08bc5967,
-        _:N6693ae08cdf64247a6230a639ae51268,
-        _:N7850a30f530c4a469fa6c1b9dc9594b9,
-        _:N7bd05bf70c6c4cc5bb4f511d9f3882bd,
-        _:N88976f65ba6444d8b67d04830b7543e2,
-        _:N8b44376cc85c496b98f7f306fe6a71ae,
-        _:N99ff9bb079654e628fbb064aefe959f1,
-        _:N9b290a982bd34ec685d1a2cc96188e7c,
-        _:Nac499368f1f7440b8627a4c7ea8daf60,
-        _:Nb1570dcbca84440792ebb37193687eac,
-        _:Nbf3847cbf78f41e0bef0bfa4d3bcab79,
-        _:Ndaa31858d0f44ea9b8ae1d166cedae3c,
-        _:Ndcf29b2c0cab4f42b0766781fffabb09,
-        _:Ne80c6825c94b4a6fb3fa59004188cf64,
-        _:Nf061ffd1177a48d7a26d7e7d9db1e316,
-        _:Nf58a2648fa0e470d9d17dbd43c0eec0b,
-        _:Nfff620a29f99467cb372a7d3f45a5817,
+    dcterms:hasPart _:N0bc96f2803d040968451a345f6b6a50d,
+        _:N0c34a54c5afc4014b2fcbf7c699170e1,
+        _:N246a3b69e57849c7a847a39be69da1a3,
+        _:N414b0762c0e54b90afca34632e73db9f,
+        _:N46b4df294ea04f11ad09717d95550d60,
+        _:N46e622cbce4f49678c1631f68531eb29,
+        _:N4f2071ffd940451298cbc30079025689,
+        _:N53be70207abc489882350622f1edab5e,
+        _:N576bcb366f654f14a21e6722f396d1aa,
+        _:N7b880dda99844920b29f1d1bb211d7f2,
+        _:N7f06cde7919b4d208ae4b11eb7bf7f3a,
+        _:N84f3be601a71401babb2ec554ed45f22,
+        _:N8c381a1a441c417bb3ed64ec2a482a62,
+        _:N971295db071548809dfb81fd652befd5,
+        _:N9886f4eeccca4100866ed100db78cb1f,
+        _:N9ff157f88c4b493d988543fc151c8737,
+        _:Na142f189a8434accb04b72116a85dd31,
+        _:Na5ac7a28185e471bbe677014ba7f96e9,
+        _:Nb89959f3f21b4ddca26448b8b22ca664,
+        _:Nb89f6a97bfc04c97b4cc69cd09ff4eb7,
+        _:Nbcedd455dced4e259cd4a787be7ab27c,
+        _:Nc3f43f18ad86480f808911baf56323c2,
+        _:Nc6a84b75c4f24f739b498f379fcaaff3,
+        _:Ncf032da92c71414b9f669d1aa004f7ab,
+        _:Nd4cede3840ff4881b8c4699afdcc98bb,
+        _:Ndf1b3241c9eb4df1af6084a96edcf4dc,
+        _:Ne88e82f00c0d468eafcbcf059f86d89a,
+        _:Nf65efec3ed8a4bce92e178f4b55bbbe7,
         fileid:AbsoluteCrossheadTravel,
         fileid:Extension,
         fileid:MachineData,
@@ -72,7 +85,7 @@ fileid:MachineData a <https://w3id.org/steel/ProcessOntology/MachineData> ;
     dcterms:type "http://purl.org/dc/terms/Dataset"^^xsd:anyURI ;
     qudt:hasUnit "http://qudt.org/vocab/unit/MilliM"^^xsd:anyURI ;
     qudt:quantity fileid:TestTime ;
-    qudt:value "25.0"^^xsd:float ;
+    qudt:value "15.0"^^xsd:float ;
     csvw:column [ ],
         [ ],
         [ ],
@@ -101,19 +114,6 @@ fileid:MachineData a <https://w3id.org/steel/ProcessOntology/MachineData> ;
             dcat:accessURL "https://www.example.org/download/"^^xsd:anyURI ;
             dcat:mediaType "https://www.iana.org/assignments/media-types/application/vnd.ms-excel"^^xsd:anyURI ] ;
     foaf:page [ ] .
-
-fileid:OriginalGaugeLength a <https://w3id.org/steel/ProcessOntology/OriginalGaugeLength> ;
-    qudt:hasUnit "http://qudt.org/vocab/unit/MilliM"^^xsd:anyURI ;
-    qudt:value "15.0"^^xsd:float .
-
-fileid:PercentageElongation a <https://w3id.org/steel/ProcessOntology/PercentageElongation> ;
-    qudt:hasUnit "http://qudt.org/vocab/unit/FRACTION"^^xsd:anyURI .
-
-fileid:ProjectNumber a <https://w3id.org/steel/ProcessOntology/ProjectNumber> ;
-    rdfs:label "Projekt_1" .
-
-fileid:Remark a <https://w3id.org/steel/ProcessOntology/Remark> ;
-    rdfs:label "None" .
 
 fileid:SampleIdentifier-2 a <https://w3id.org/steel/ProcessOntology/SampleIdentifier-2> ;
     rdfs:label "123456" .
@@ -155,142 +155,142 @@ fileid:Material a <https://w3id.org/steel/ProcessOntology/Material> ;
 fileid:TestTime a <https://w3id.org/steel/ProcessOntology/TestTime> ;
     qudt:hasUnit "http://qudt.org/vocab/unit/SEC"^^xsd:anyURI .
 
-_:N004e4fad2895485ab37587f56739acd0 a foaf:Document ;
-    dcterms:format "https://www.iana.org/assignments/media-types/application/json"^^xsd:anyURI ;
-    dcterms:identifier "https://www.example.org/download//column-0"^^xsd:anyURI ;
-    dcterms:type "http://purl.org/dc/terms/Dataset"^^xsd:anyURI .
+_:N0bc96f2803d040968451a345f6b6a50d a csvw:Row ;
+    csvw:describes fileid:Material ;
+    csvw:titles "Werkstoff" .
 
-_:N0940ac1b5f724ce5ae0654dba930a701 a csvw:Row ;
-    csvw:describes fileid:SpecimenType ;
-    csvw:titles "Probenform" .
-
-_:N13d6f845d459411caa11245c193f8c6b a csvw:Row ;
-    qudt:quantity fileid:Temperature ;
-    csvw:titles "Prüftemperatur" .
-
-_:N146a3bd6403b4c2bb3e3e06896a42987 a csvw:Row ;
-    qudt:quantity fileid:SpecimenThickness ;
-    csvw:titles "Probendicke a" .
-
-_:N18c75f6f31584cef91469543b24058cb a csvw:Table ;
-    rdfs:label "Time series data" ;
-    csvw:tableSchema _:N5c78aa26ae4548b1a0e3c22c08bc5967 .
-
-_:N1a5781b3a6904cc39ff87f34829a6d2b a csvw:Column ;
+_:N0c34a54c5afc4014b2fcbf7c699170e1 a csvw:Column ;
     qudt:quantity fileid:Extension ;
     csvw:titles "Standardweg" ;
-    foaf:page _:N7bd05bf70c6c4cc5bb4f511d9f3882bd .
+    foaf:page _:Na142f189a8434accb04b72116a85dd31 .
 
-_:N1c8901691ced400e8097ed8a2906d412 a csvw:Column ;
-    qudt:quantity fileid:PercentageElongation ;
-    csvw:titles "Dehnung" ;
-    foaf:page _:N45b068f66224409da51ef2820e07e4f5 .
+_:N246a3b69e57849c7a847a39be69da1a3 a csvw:Column ;
+    qudt:quantity fileid:WidthChange ;
+    csvw:titles "Breitenänderung" ;
+    foaf:page _:Ndf1b3241c9eb4df1af6084a96edcf4dc .
 
-_:N1f76718077cc4f7ba91432c6c9e38dc7 a csvw:Row ;
-    csvw:describes fileid:Remark ;
-    csvw:titles "Bemerkungen" .
+_:N414b0762c0e54b90afca34632e73db9f a csvw:Row ;
+    csvw:describes fileid:TimeStamp ;
+    csvw:titles "Datum" .
 
-_:N3060fe9c6a7141f8a3c30fb25925d95a a csvw:Row ;
-    qudt:quantity fileid:OriginalGaugeLength ;
-    csvw:titles "Messlänge Standardweg" .
-
-_:N45b068f66224409da51ef2820e07e4f5 a foaf:Document ;
-    dcterms:format "https://www.iana.org/assignments/media-types/application/json"^^xsd:anyURI ;
-    dcterms:identifier "https://www.example.org/download//column-1"^^xsd:anyURI ;
-    dcterms:type "http://purl.org/dc/terms/Dataset"^^xsd:anyURI .
-
-_:N54609d6d02254452b529e205fcfa8d98 a csvw:Row ;
-    qudt:quantity fileid:TestingRate ;
-    csvw:titles "Prüfgeschwindigkeit" .
-
-_:N5c78aa26ae4548b1a0e3c22c08bc5967 a csvw:Schema ;
-    csvw:column _:N1a5781b3a6904cc39ff87f34829a6d2b,
-        _:N1c8901691ced400e8097ed8a2906d412,
-        _:Nac499368f1f7440b8627a4c7ea8daf60,
-        _:Nbf3847cbf78f41e0bef0bfa4d3bcab79,
-        _:Ndaa31858d0f44ea9b8ae1d166cedae3c,
-        _:Ne80c6825c94b4a6fb3fa59004188cf64 .
-
-_:N6693ae08cdf64247a6230a639ae51268 a foaf:Document ;
-    dcterms:format "https://www.iana.org/assignments/media-types/application/json"^^xsd:anyURI ;
-    dcterms:identifier "https://www.example.org/download//column-5"^^xsd:anyURI ;
-    dcterms:type "http://purl.org/dc/terms/Dataset"^^xsd:anyURI .
-
-_:N7850a30f530c4a469fa6c1b9dc9594b9 a csvw:Row ;
-    csvw:describes fileid:ProjectNumber ;
-    csvw:titles "Projekt" .
-
-_:N7bd05bf70c6c4cc5bb4f511d9f3882bd a foaf:Document ;
-    dcterms:format "https://www.iana.org/assignments/media-types/application/json"^^xsd:anyURI ;
-    dcterms:identifier "https://www.example.org/download//column-3"^^xsd:anyURI ;
-    dcterms:type "http://purl.org/dc/terms/Dataset"^^xsd:anyURI .
-
-_:N88976f65ba6444d8b67d04830b7543e2 a foaf:Document ;
-    dcterms:format "https://www.iana.org/assignments/media-types/application/json"^^xsd:anyURI ;
-    dcterms:identifier "https://www.example.org/download//column-2"^^xsd:anyURI ;
-    dcterms:type "http://purl.org/dc/terms/Dataset"^^xsd:anyURI .
-
-_:N8b44376cc85c496b98f7f306fe6a71ae a csvw:Row ;
-    csvw:describes fileid:Tester ;
-    csvw:titles "Prüfer" .
-
-_:N99ff9bb079654e628fbb064aefe959f1 a csvw:Row ;
+_:N46b4df294ea04f11ad09717d95550d60 a csvw:Row ;
     qudt:quantity fileid:SpecimenWidth ;
     csvw:titles "Probenbreite b" .
 
-_:N9b290a982bd34ec685d1a2cc96188e7c a csvw:Row ;
-    csvw:describes fileid:MachineData ;
-    csvw:titles "Prüfmaschine" .
+_:N46e622cbce4f49678c1631f68531eb29 a csvw:Row ;
+    qudt:quantity fileid:Temperature ;
+    csvw:titles "Prüftemperatur" .
 
-_:Nac499368f1f7440b8627a4c7ea8daf60 a csvw:Column ;
+_:N4f2071ffd940451298cbc30079025689 a csvw:Row ;
+    csvw:describes fileid:Remark ;
+    csvw:titles "Bemerkungen" .
+
+_:N53be70207abc489882350622f1edab5e a csvw:Row ;
+    csvw:describes fileid:Tester ;
+    csvw:titles "Prüfer" .
+
+_:N576bcb366f654f14a21e6722f396d1aa a csvw:Column ;
     qudt:quantity fileid:AbsoluteCrossheadTravel ;
     csvw:titles "Traversenweg absolut" ;
-    foaf:page _:Nb1570dcbca84440792ebb37193687eac .
+    foaf:page _:N8c381a1a441c417bb3ed64ec2a482a62 .
 
-_:Nb1570dcbca84440792ebb37193687eac a foaf:Document ;
+_:N7b880dda99844920b29f1d1bb211d7f2 a csvw:Table ;
+    rdfs:label "Metadata" ;
+    csvw:row _:N0bc96f2803d040968451a345f6b6a50d,
+        _:N414b0762c0e54b90afca34632e73db9f,
+        _:N46b4df294ea04f11ad09717d95550d60,
+        _:N46e622cbce4f49678c1631f68531eb29,
+        _:N4f2071ffd940451298cbc30079025689,
+        _:N53be70207abc489882350622f1edab5e,
+        _:N7f06cde7919b4d208ae4b11eb7bf7f3a,
+        _:N84f3be601a71401babb2ec554ed45f22,
+        _:N971295db071548809dfb81fd652befd5,
+        _:N9886f4eeccca4100866ed100db78cb1f,
+        _:Nc3f43f18ad86480f808911baf56323c2,
+        _:Ncf032da92c71414b9f669d1aa004f7ab,
+        _:Ne88e82f00c0d468eafcbcf059f86d89a .
+
+_:N7f06cde7919b4d208ae4b11eb7bf7f3a a csvw:Row ;
+    qudt:quantity fileid:OriginalGaugeLength ;
+    csvw:titles "Messlänge Standardweg" .
+
+_:N84f3be601a71401babb2ec554ed45f22 a csvw:Row ;
+    csvw:describes fileid:SpecimenType ;
+    csvw:titles "Probenform" .
+
+_:N8c381a1a441c417bb3ed64ec2a482a62 a foaf:Document ;
     dcterms:format "https://www.iana.org/assignments/media-types/application/json"^^xsd:anyURI ;
     dcterms:identifier "https://www.example.org/download//column-4"^^xsd:anyURI ;
     dcterms:type "http://purl.org/dc/terms/Dataset"^^xsd:anyURI .
 
-_:Nbf3847cbf78f41e0bef0bfa4d3bcab79 a csvw:Column ;
-    qudt:quantity fileid:WidthChange ;
-    csvw:titles "Breitenänderung" ;
-    foaf:page _:N004e4fad2895485ab37587f56739acd0 .
+_:N971295db071548809dfb81fd652befd5 a csvw:Row ;
+    csvw:describes fileid:ProjectNumber ;
+    csvw:titles "Projekt" .
 
-_:Ndaa31858d0f44ea9b8ae1d166cedae3c a csvw:Column ;
+_:N9886f4eeccca4100866ed100db78cb1f a csvw:Row ;
+    qudt:quantity fileid:TestingRate ;
+    csvw:titles "Prüfgeschwindigkeit" .
+
+_:N9ff157f88c4b493d988543fc151c8737 a csvw:Schema ;
+    csvw:column _:N0c34a54c5afc4014b2fcbf7c699170e1,
+        _:N246a3b69e57849c7a847a39be69da1a3,
+        _:N576bcb366f654f14a21e6722f396d1aa,
+        _:Na5ac7a28185e471bbe677014ba7f96e9,
+        _:Nb89959f3f21b4ddca26448b8b22ca664,
+        _:Nc6a84b75c4f24f739b498f379fcaaff3 .
+
+_:Na142f189a8434accb04b72116a85dd31 a foaf:Document ;
+    dcterms:format "https://www.iana.org/assignments/media-types/application/json"^^xsd:anyURI ;
+    dcterms:identifier "https://www.example.org/download//column-3"^^xsd:anyURI ;
+    dcterms:type "http://purl.org/dc/terms/Dataset"^^xsd:anyURI .
+
+_:Na5ac7a28185e471bbe677014ba7f96e9 a csvw:Column ;
+    qudt:quantity fileid:PercentageElongation ;
+    csvw:titles "Dehnung" ;
+    foaf:page _:Nd4cede3840ff4881b8c4699afdcc98bb .
+
+_:Nb89959f3f21b4ddca26448b8b22ca664 a csvw:Column ;
     qudt:quantity fileid:StandardForce ;
     csvw:titles "Standardkraft" ;
-    foaf:page _:N88976f65ba6444d8b67d04830b7543e2 .
+    foaf:page _:Nbcedd455dced4e259cd4a787be7ab27c .
 
-_:Ndcf29b2c0cab4f42b0766781fffabb09 a csvw:Row ;
-    csvw:describes fileid:Material ;
-    csvw:titles "Werkstoff" .
+_:Nb89f6a97bfc04c97b4cc69cd09ff4eb7 a csvw:Table ;
+    rdfs:label "Time series data" ;
+    csvw:tableSchema _:N9ff157f88c4b493d988543fc151c8737 .
 
-_:Ne80c6825c94b4a6fb3fa59004188cf64 a csvw:Column ;
-    qudt:quantity fileid:TestTime ;
-    csvw:titles "Zeit" ;
-    foaf:page _:N6693ae08cdf64247a6230a639ae51268 .
+_:Nbcedd455dced4e259cd4a787be7ab27c a foaf:Document ;
+    dcterms:format "https://www.iana.org/assignments/media-types/application/json"^^xsd:anyURI ;
+    dcterms:identifier "https://www.example.org/download//column-2"^^xsd:anyURI ;
+    dcterms:type "http://purl.org/dc/terms/Dataset"^^xsd:anyURI .
 
-_:Nf061ffd1177a48d7a26d7e7d9db1e316 a csvw:Row ;
-    csvw:describes fileid:TimeStamp ;
-    csvw:titles "Datum" .
-
-_:Nf58a2648fa0e470d9d17dbd43c0eec0b a csvw:Row ;
+_:Nc3f43f18ad86480f808911baf56323c2 a csvw:Row ;
     csvw:describes fileid:SampleIdentifier-2 ;
     csvw:titles "Probenkennung 2" .
 
-_:Nfff620a29f99467cb372a7d3f45a5817 a csvw:Table ;
-    rdfs:label "Metadata" ;
-    csvw:row _:N0940ac1b5f724ce5ae0654dba930a701,
-        _:N13d6f845d459411caa11245c193f8c6b,
-        _:N146a3bd6403b4c2bb3e3e06896a42987,
-        _:N1f76718077cc4f7ba91432c6c9e38dc7,
-        _:N3060fe9c6a7141f8a3c30fb25925d95a,
-        _:N54609d6d02254452b529e205fcfa8d98,
-        _:N7850a30f530c4a469fa6c1b9dc9594b9,
-        _:N8b44376cc85c496b98f7f306fe6a71ae,
-        _:N99ff9bb079654e628fbb064aefe959f1,
-        _:N9b290a982bd34ec685d1a2cc96188e7c,
-        _:Ndcf29b2c0cab4f42b0766781fffabb09,
-        _:Nf061ffd1177a48d7a26d7e7d9db1e316,
-        _:Nf58a2648fa0e470d9d17dbd43c0eec0b .
+_:Nc6a84b75c4f24f739b498f379fcaaff3 a csvw:Column ;
+    qudt:quantity fileid:TestTime ;
+    csvw:titles "Zeit" ;
+    foaf:page _:Nf65efec3ed8a4bce92e178f4b55bbbe7 .
+
+_:Ncf032da92c71414b9f669d1aa004f7ab a csvw:Row ;
+    qudt:quantity fileid:SpecimenThickness ;
+    csvw:titles "Probendicke a" .
+
+_:Nd4cede3840ff4881b8c4699afdcc98bb a foaf:Document ;
+    dcterms:format "https://www.iana.org/assignments/media-types/application/json"^^xsd:anyURI ;
+    dcterms:identifier "https://www.example.org/download//column-1"^^xsd:anyURI ;
+    dcterms:type "http://purl.org/dc/terms/Dataset"^^xsd:anyURI .
+
+_:Ndf1b3241c9eb4df1af6084a96edcf4dc a foaf:Document ;
+    dcterms:format "https://www.iana.org/assignments/media-types/application/json"^^xsd:anyURI ;
+    dcterms:identifier "https://www.example.org/download//column-0"^^xsd:anyURI ;
+    dcterms:type "http://purl.org/dc/terms/Dataset"^^xsd:anyURI .
+
+_:Ne88e82f00c0d468eafcbcf059f86d89a a csvw:Row ;
+    csvw:describes fileid:MachineData ;
+    csvw:titles "Prüfmaschine" .
+
+_:Nf65efec3ed8a4bce92e178f4b55bbbe7 a foaf:Document ;
+    dcterms:format "https://www.iana.org/assignments/media-types/application/json"^^xsd:anyURI ;
+    dcterms:identifier "https://www.example.org/download//column-5"^^xsd:anyURI ;
+    dcterms:type "http://purl.org/dc/terms/Dataset"^^xsd:anyURI .

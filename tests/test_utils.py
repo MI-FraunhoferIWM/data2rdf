@@ -1,3 +1,5 @@
+"""Test DSMS utilities"""
+
 import pytest
 
 mappings = [
