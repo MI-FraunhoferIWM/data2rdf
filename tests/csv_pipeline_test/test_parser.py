@@ -75,6 +75,7 @@ def test_parser(extension) -> None:
 
     expected_graph = Graph()
     expected_graph.parse(expected)
+
     assert parser.graph.isomorphic(expected_graph)
 
     assert parser.plain_metadata == metadata

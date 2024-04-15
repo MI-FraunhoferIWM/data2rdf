@@ -1,7 +1,11 @@
+"""Data2RDF base model for parsers"""
+
+import json
 from abc import abstractmethod
 from typing import TYPE_CHECKING, Any, Dict, Union
 
 from pydantic import BaseModel, Field, PrivateAttr
+from rdflib import Graph
 
 from data2rdf import ClassConceptMapping, Config
 
@@ -9,7 +13,6 @@ if TYPE_CHECKING:
     from typing import List
 
     from pydantic import AnyUrl
-    from rdflib import Graph
 
     from data2rdf import BasicConceptMapping
 
@@ -34,6 +37,13 @@ class DataParser(BaseModel):
     _general_metadata: Any = PrivateAttr()
     _time_series_metadata: Any = PrivateAttr()
     _time_series: Any = PrivateAttr()
+
+    @property
+    def graph(cls) -> "Graph":
+        """Return RDF Graph from the parsed data."""
+        graph = Graph(identifier=cls.config.graph_identifier)
+        graph.parse(data=json.dumps(cls.json_ld), format="json-ld")
+        return graph
 
     @property
     def general_metadata(cls) -> "List[BasicConceptMapping]":
@@ -71,5 +81,5 @@ class DataParser(BaseModel):
 
     @property
     @abstractmethod
-    def graph(cls) -> "Graph":
-        """Return RDF Graph from the parsed data."""
+    def json_ld(cls) -> Dict[str, Any]:
+        """Return dict for json ld for graph"""

@@ -20,4 +20,5 @@ def test_valued_quantity():
     model = QuantityMapping(
         value=0.1, key="test", unit="mm", iri="https://example.org/test"
     )
+
     assert model.graph.isomorphic(expected_graph)

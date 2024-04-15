@@ -1,16 +1,16 @@
-import json
-from typing import Dict, Union
+"""Data2rdf excel parser"""
+
+from typing import Any, Dict, Union
 
 from openpyxl import load_workbook
 from pydantic import Field, model_validator
-from rdflib import Graph
 
 from data2rdf.models.mapping import (
     ExcelConceptMapping,
     PropertyMapping,
     QuantityMapping,
 )
-from data2rdf.utils import get_as_jsonld, make_prefix
+from data2rdf.utils import make_prefix
 
 from .base import DataParser
 from .utils import _load_mapping_file, _strip_unit
@@ -34,7 +34,7 @@ class ExcelParser(DataParser):
         return "https://www.iana.org/assignments/media-types/application/vnd.ms-excel"
 
     @property
-    def graph(cls) -> Graph:
+    def json_ld(cls) -> Dict[str, Any]:
         meta_table = {
             "@type": "csvw:Table",
             "rdfs:label": "Metadata",
@@ -75,7 +75,7 @@ class ExcelParser(DataParser):
                         "@type": "xsd:string",
                         "@value": mapping.key,
                     },
-                    "qudt:quantity": get_as_jsonld(mapping.graph),
+                    "qudt:quantity": mapping.json_ld,
                 }
                 meta_table["csvw:row"].append(row)
             elif isinstance(mapping, PropertyMapping):
@@ -85,7 +85,7 @@ class ExcelParser(DataParser):
                         "@type": "xsd:string",
                         "@value": mapping.key,
                     },
-                    "csvw:describes": get_as_jsonld(mapping.graph),
+                    "csvw:describes": mapping.json_ld,
                 }
                 meta_table["csvw:row"].append(row)
             else:
@@ -115,7 +115,7 @@ class ExcelParser(DataParser):
                     "@type": "xsd:string",
                     "@value": mapping.key,
                 },
-                "qudt:quantity": get_as_jsonld(mapping.graph),
+                "qudt:quantity": mapping.json_ld,
                 "foaf:page": {
                     "@type": "foaf:Document",
                     "dcterms:format": {
@@ -131,9 +131,7 @@ class ExcelParser(DataParser):
             }
             column_schema["csvw:column"].append(column)
 
-        graph = Graph(identifier=cls.config.graph_identifier)
-        graph.parse(data=json.dumps(triples), format="json-ld")
-        return graph
+        return triples
 
     @model_validator(mode="after")
     @classmethod

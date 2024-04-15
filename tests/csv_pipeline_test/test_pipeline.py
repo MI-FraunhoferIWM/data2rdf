@@ -89,7 +89,6 @@ def test_csv_pipeline(extension) -> None:
     expected_graph = Graph()
     expected_graph.parse(expected)
 
-    # TODO: NODE hashes are differing with every pipeline run. Not dramatic but this test should be executed
-    # assert pipeline.graph.isomorphic(expected_graph)
+    assert pipeline.graph.isomorphic(expected_graph)
 
     assert pipeline.plain_metadata == metadata

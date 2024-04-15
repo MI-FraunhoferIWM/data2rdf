@@ -3,394 +3,319 @@
 @prefix dcterms: <http://purl.org/dc/terms/> .
 @prefix fileid: <https://www.example.org/> .
 @prefix foaf: <http://xmlns.com/foaf/spec/> .
+@prefix ns1: <http://www.w3.org/ns/prov#> .
 @prefix qudt: <http://qudt.org/schema/qudt/> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
-fileid:tableGroup a csvw:TableGroup ;
-    csvw:table _:N0951a1e9bc4d4d87a27584d3ee548521,
-        _:N20c8f83f2219435aa19db04b2fb7ed39 .
+fileid:TensileTestExperiment a ns1:Activity ;
+    ns1:generated fileid:AbsoluteCrossheadTravel,
+        fileid:Extension,
+        fileid:Remark,
+        fileid:StandardForce,
+        fileid:TimeStamp,
+        fileid:dataset ;
+    ns1:hadPlan fileid:TestStandard ;
+    ns1:used fileid:DisplacementTransducer,
+        fileid:ForceMeasuringDevice,
+        fileid:TensileTestSpecimen,
+        fileid:TensileTestingMachine,
+        fileid:TestingFacility ;
+    ns1:wasAssociatedWith fileid:Tester ;
+    ns1:wasInfluencedBy fileid:ExperimentPreparation .
 
-fileid:AbsoluteCrossheadTravel a <https://w3id.org/steel/ProcessOntology/AbsoluteCrossheadTravel> ;
+fileid:TestingStandard a ns1:Plan .
+
+fileid:Elongation a <https://w3id.org/steel/ProcessOntology/Elongation> ;
     qudt:hasUnit "http://qudt.org/vocab/unit/MilliM"^^xsd:anyURI .
 
-fileid:DisplacementTransducer a <https://w3id.org/steel/ProcessOntology/DisplacementTransducer> ;
-    rdfs:label "Wegaufnehmer_1" .
-
-fileid:Extension a <https://w3id.org/steel/ProcessOntology/Extension> ;
-    qudt:hasUnit "http://qudt.org/vocab/unit/MilliM"^^xsd:anyURI .
-
-fileid:ForceMeasuringDevice a <https://w3id.org/steel/ProcessOntology/ForceMeasuringDevice> ;
-    rdfs:label "Kraftaufnehmer_1" .
+fileid:ExperimentPreparation a ns1:Activity ;
+    ns1:atLocation fileid:TestingLab ;
+    ns1:generated fileid:OriginalGaugeLength,
+        fileid:Preload,
+        fileid:TestingRate ;
+    ns1:wasAssociatedWith fileid:DisplacementTransducer,
+        fileid:ForceMeasuringDevice,
+        fileid:TensileTestSpecimen,
+        fileid:TensileTestingMachine,
+        fileid:Tester ;
+    ns1:wasInfluencedBy fileid:SamplePreparatation .
 
 fileid:MachineData a <https://w3id.org/steel/ProcessOntology/MachineData> ;
     rdfs:label "maschine_1" .
 
-fileid:Material a <https://w3id.org/steel/ProcessOntology/Material> ;
-    rdfs:label "Werkstoff_1" .
-
-fileid:OriginalGaugeLength a <https://w3id.org/steel/ProcessOntology/OriginalGaugeLength> ;
-    qudt:hasUnit "http://qudt.org/vocab/unit/MilliM"^^xsd:anyURI ;
-    qudt:value "80.0"^^xsd:float .
-
-fileid:ParallelLength a <https://w3id.org/steel/ProcessOntology/ParallelLength> ;
-    qudt:hasUnit "http://qudt.org/vocab/unit/MilliM"^^xsd:anyURI ;
-    qudt:value "120.0"^^xsd:float .
-
-fileid:Preload a <https://w3id.org/steel/ProcessOntology/Preload> ;
-    qudt:hasUnit "http://qudt.org/vocab/unit/MegaPA"^^xsd:anyURI ;
-    qudt:value "2.0"^^xsd:float .
-
-fileid:ProjectName a <https://w3id.org/steel/ProcessOntology/ProjectName> ;
-    rdfs:label "proj_name_1" .
-
-fileid:ProjectNumber a <https://w3id.org/steel/ProcessOntology/ProjectNumber> ;
-    rdfs:label "123456" .
+fileid:Project a ns1:Activity ;
+    ns1:generated fileid:ProjectName,
+        fileid:ProjectNumber ;
+    ns1:wasAssociatedWith fileid:TestingFacility .
 
 fileid:SampleIdentifier-2 a <https://w3id.org/steel/ProcessOntology/SampleIdentifier-2> ;
     rdfs:label "Probentyp_2" .
 
-fileid:SpecimenThickness a <https://w3id.org/steel/ProcessOntology/SpecimenThickness> ;
-    qudt:hasUnit "http://qudt.org/vocab/unit/MilliM"^^xsd:anyURI ;
-    qudt:value "1.55"^^xsd:float .
+fileid:SamplePreparatation a ns1:Activity ;
+    ns1:generated fileid:ParallelLength,
+        fileid:SpecimenThickness,
+        fileid:SpecimenType,
+        fileid:SpecimenWidth ;
+    ns1:wasAssociatedWith fileid:Material,
+        fileid:TensileTestSpecimen ;
+    ns1:wasInfluencedBy fileid:Project .
 
-fileid:SpecimenType a <https://w3id.org/steel/ProcessOntology/SpecimenType> ;
-    rdfs:label "Probentyp_1" .
-
-fileid:SpecimenWidth a <https://w3id.org/steel/ProcessOntology/SpecimenWidth> ;
-    qudt:hasUnit "http://qudt.org/vocab/unit/MilliM"^^xsd:anyURI ;
-    qudt:value "20.04"^^xsd:float .
-
-fileid:StandardForce a <https://w3id.org/steel/ProcessOntology/StandardForce> ;
-    qudt:hasUnit "http://qudt.org/vocab/unit/N"^^xsd:anyURI .
-
-fileid:Temperature a <https://w3id.org/steel/ProcessOntology/Temperature> ;
+fileid:Temperature a ns1:Entity,
+        <https://w3id.org/steel/ProcessOntology/Temperature> ;
     qudt:hasUnit "http://qudt.org/vocab/unit/DEG_C"^^xsd:anyURI ;
-    qudt:value "22.0"^^xsd:float .
-
-fileid:TestStandard a <https://w3id.org/steel/ProcessOntology/TestStandard> ;
-    rdfs:label "ISO-XX" .
+    qudt:value "22.0"^^xsd:float ;
+    ns1:wasAttributedTo fileid:TestingLab .
 
 fileid:TestTime a <https://w3id.org/steel/ProcessOntology/TestTime> ;
     qudt:hasUnit "http://qudt.org/vocab/unit/SEC"^^xsd:anyURI .
 
-fileid:Tester a <https://w3id.org/steel/ProcessOntology/Tester> ;
-    rdfs:label "abc" .
-
-fileid:TestingFacility a <https://w3id.org/steel/ProcessOntology/TestingFacility> ;
-    rdfs:label "institute_1" .
-
-fileid:TestingRate a <https://w3id.org/steel/ProcessOntology/TestingRate> ;
-    qudt:hasUnit "http://qudt.org/vocab/unit/MilliM-PER-SEC"^^xsd:anyURI ;
-    qudt:value "0.1"^^xsd:float .
-
-fileid:TimeStamp a <https://w3id.org/steel/ProcessOntology/TimeStamp> ;
-    rdfs:label "44335.4" .
-
 fileid:WidthChange a <https://w3id.org/steel/ProcessOntology/WidthChange> ;
-    rdfs:label "Werkstoff_1" ;
-    dcterms:format "https://www.iana.org/assignments/media-types/application/json"^^xsd:anyURI ;
-    dcterms:hasPart _:N03ac0cb06caf4d159a4e518763273079,
-        _:N03ca385642624987bc0291cd1e58f6f5,
-        _:N08da60f44c174f6da9453367eef564d5,
-        _:N0951a1e9bc4d4d87a27584d3ee548521,
-        _:N16c8f8acce5f4f4f9989e67ff5231e98,
-        _:N20c8f83f2219435aa19db04b2fb7ed39,
-        _:N2b244e0700c245d39fac2d151b89793b,
-        _:N2ccbb4f92ebe412097909675805b7297,
-        _:N319137352b9d4fc4abe43dd3ad723b46,
-        _:N5352fad76a604249882a01376a60f5aa,
-        _:N545c474cee864da7b18e60e891b26781,
-        _:N56be0a9937694493ad087ef41a4fb65a,
-        _:N6a27bb77ed174f7eb381a3dbddd27987,
-        _:N6b9ff732d23e4538b32c066676c55340,
-        _:N75191d21016a43e0b38ed26df3a99d95,
-        _:N7d3174fe81da4cbe883c3d667e09725f,
-        _:N83d313e2e92f4dc792bd649eb0968357,
-        _:N93c0ec8061c3441db13e3bd26469123a,
-        _:N97c225285dc04d588fda48c842160a23,
-        _:N9ac92b1fc2d8437d822f538eeb33da5c,
-        _:N9b21050743f14f0c8b5fb68af3d83153,
-        _:Naa807cd2b95440bf8a5428fb11321dbf,
-        _:Nab8cac7af6b745ba9d67eafb14737f7e,
-        _:Nace7030050bb49559ff831461302357d,
-        _:Nb04447890a8d4289aa2811f8d205724d,
-        _:Nb373b6b43c2549dbb6c5c80397220f91,
-        _:Nb61b1316f8c743619a09f2d8f748ed21,
-        _:Nbd33976dca9f47e6a8a9d39fa71080fb,
-        _:Nc3cba7c207804d6bafc827e1fd183aac,
-        _:Nc823452ac5284e6b9f10513d08188b92,
-        _:Ncfab25b0512640fd95e579878c61661c,
-        _:Ndf08695449b34ddd81ad94bf5cd77c2d,
-        _:Ne48e5665a35e48be90d228e4baedc72b,
-        _:Nf72d16defeb347e39d7bf9d824155d62,
-        _:Nffbed5a8662743498d0b7eb9c13b2fbe,
-        fileid:AbsoluteCrossheadTravel,
-        fileid:DisplacementTransducer,
-        fileid:Extension,
-        fileid:ForceMeasuringDevice,
-        fileid:MachineData,
-        fileid:Material,
-        fileid:OriginalGaugeLength,
-        fileid:ParallelLength,
-        fileid:PercentageElongation,
-        fileid:Preload,
-        fileid:ProjectName,
-        fileid:ProjectNumber,
-        fileid:Remark,
-        fileid:SampleIdentifier-2,
-        fileid:SpecimenThickness,
-        fileid:SpecimenType,
-        fileid:SpecimenWidth,
-        fileid:StandardForce,
-        fileid:Temperature,
-        fileid:TestStandard,
-        fileid:TestTime,
-        fileid:Tester,
-        fileid:TestingFacility,
-        fileid:TestingRate,
-        fileid:TimeStamp,
-        fileid:WidthChange,
-        fileid:tableGroup ;
-    dcterms:identifier "https://www.example.org/download//column-5"^^xsd:anyURI ;
-    dcterms:type "http://purl.org/dc/terms/Dataset"^^xsd:anyURI ;
-    qudt:hasUnit "http://qudt.org/vocab/unit/MilliM"^^xsd:anyURI ;
-    qudt:quantity fileid:PercentageElongation ;
-    qudt:value "20.04"^^xsd:float ;
-    csvw:column [ ],
-        [ ],
-        [ ],
-        [ ],
-        [ ],
-        [ ] ;
-    csvw:describes fileid:Remark ;
-    csvw:row [ ],
-        [ ],
-        [ ],
-        [ ],
-        [ ],
-        [ ],
-        [ ],
-        [ ],
-        [ ],
-        [ ],
-        [ ],
-        [ ],
-        [ ],
-        [ ],
-        [ ],
-        [ ],
-        [ ],
-        [ ],
-        [ ],
-        [ ] ;
-    csvw:rownum 19 ;
-    csvw:table [ ],
-        [ ] ;
-    csvw:tableSchema [ ] ;
-    csvw:titles "Dehnung" ;
+    qudt:hasUnit "http://qudt.org/vocab/unit/MilliM"^^xsd:anyURI .
+
+fileid:dataset a dcat:Dataset,
+        ns1:Entity ;
+    dcterms:hasPart fileid:tableGroup ;
     dcat:distribution [ a dcat:Distribution ;
             dcat:accessURL "https://www.example.org/download/"^^xsd:anyURI ;
-            dcat:mediaType "http://www.iana.org/assignments/media-types/text/csv"^^xsd:anyURI ] ;
-    foaf:page [ ] .
+            dcat:mediaType "http://www.iana.org/assignments/media-types/text/csv"^^xsd:anyURI ] .
 
-fileid:PercentageElongation a <https://w3id.org/steel/ProcessOntology/PercentageElongation> ;
-    qudt:hasUnit "http://qudt.org/vocab/unit/MilliM"^^xsd:anyURI .
+fileid:tableGroup a csvw:TableGroup ;
+    csvw:table [ a csvw:Table ;
+            rdfs:label "Time series data" ;
+            csvw:tableSchema [ a csvw:Schema ;
+                    csvw:column [ a csvw:Column ;
+                            qudt:quantity fileid:TestTime ;
+                            csvw:titles "Prüfzeit"^^xsd:string ;
+                            foaf:page [ a foaf:Document ;
+                                    dcterms:format "https://www.iana.org/assignments/media-types/application/json"^^xsd:anyURI ;
+                                    dcterms:identifier "https://www.example.org/download//column-0"^^xsd:anyURI ;
+                                    dcterms:type "http://purl.org/dc/terms/Dataset"^^xsd:anyURI ] ],
+                        [ a csvw:Column ;
+                            qudt:quantity fileid:Elongation ;
+                            csvw:titles "Dehnung"^^xsd:string ;
+                            foaf:page [ a foaf:Document ;
+                                    dcterms:format "https://www.iana.org/assignments/media-types/application/json"^^xsd:anyURI ;
+                                    dcterms:identifier "https://www.example.org/download//column-5"^^xsd:anyURI ;
+                                    dcterms:type "http://purl.org/dc/terms/Dataset"^^xsd:anyURI ] ],
+                        [ a csvw:Column ;
+                            qudt:quantity fileid:WidthChange ;
+                            csvw:titles "Breitenänderung"^^xsd:string ;
+                            foaf:page [ a foaf:Document ;
+                                    dcterms:format "https://www.iana.org/assignments/media-types/application/json"^^xsd:anyURI ;
+                                    dcterms:identifier "https://www.example.org/download//column-4"^^xsd:anyURI ;
+                                    dcterms:type "http://purl.org/dc/terms/Dataset"^^xsd:anyURI ] ],
+                        [ a csvw:Column ;
+                            qudt:quantity fileid:Extension ;
+                            csvw:titles "Standardweg"^^xsd:string ;
+                            foaf:page [ a foaf:Document ;
+                                    dcterms:format "https://www.iana.org/assignments/media-types/application/json"^^xsd:anyURI ;
+                                    dcterms:identifier "https://www.example.org/download//column-3"^^xsd:anyURI ;
+                                    dcterms:type "http://purl.org/dc/terms/Dataset"^^xsd:anyURI ] ],
+                        [ a csvw:Column ;
+                            qudt:quantity fileid:AbsoluteCrossheadTravel ;
+                            csvw:titles "Traversenweg absolut"^^xsd:string ;
+                            foaf:page [ a foaf:Document ;
+                                    dcterms:format "https://www.iana.org/assignments/media-types/application/json"^^xsd:anyURI ;
+                                    dcterms:identifier "https://www.example.org/download//column-2"^^xsd:anyURI ;
+                                    dcterms:type "http://purl.org/dc/terms/Dataset"^^xsd:anyURI ] ],
+                        [ a csvw:Column ;
+                            qudt:quantity fileid:StandardForce ;
+                            csvw:titles "Standardkraft"^^xsd:string ;
+                            foaf:page [ a foaf:Document ;
+                                    dcterms:format "https://www.iana.org/assignments/media-types/application/json"^^xsd:anyURI ;
+                                    dcterms:identifier "https://www.example.org/download//column-1"^^xsd:anyURI ;
+                                    dcterms:type "http://purl.org/dc/terms/Dataset"^^xsd:anyURI ] ] ] ],
+        [ a csvw:Table ;
+            rdfs:label "Metadata" ;
+            csvw:row [ a csvw:Row ;
+                    qudt:quantity fileid:SpecimenThickness ;
+                    csvw:rownum 14 ;
+                    csvw:titles "Probendicke"^^xsd:string ],
+                [ a csvw:Row ;
+                    csvw:describes fileid:ProjectName ;
+                    csvw:rownum 2 ;
+                    csvw:titles "Projektname"^^xsd:string ],
+                [ a csvw:Row ;
+                    qudt:quantity fileid:Preload ;
+                    csvw:rownum 17 ;
+                    csvw:titles "Vorkraft"^^xsd:string ],
+                [ a csvw:Row ;
+                    csvw:describes fileid:ProjectNumber ;
+                    csvw:rownum 1 ;
+                    csvw:titles "Projektnummer"^^xsd:string ],
+                [ a csvw:Row ;
+                    qudt:quantity fileid:SpecimenWidth ;
+                    csvw:rownum 15 ;
+                    csvw:titles "Probenbreite"^^xsd:string ],
+                [ a csvw:Row ;
+                    csvw:describes fileid:TestingFacility ;
+                    csvw:rownum 0 ;
+                    csvw:titles "Prüfinstitut"^^xsd:string ],
+                [ a csvw:Row ;
+                    csvw:describes fileid:SpecimenType ;
+                    csvw:rownum 9 ;
+                    csvw:titles "Probentyp"^^xsd:string ],
+                [ a csvw:Row ;
+                    csvw:describes fileid:TestStandard ;
+                    csvw:rownum 7 ;
+                    csvw:titles "Prüfnorm"^^xsd:string ],
+                [ a csvw:Row ;
+                    qudt:quantity fileid:OriginalGaugeLength ;
+                    csvw:rownum 12 ;
+                    csvw:titles "Messlänge Standardweg"^^xsd:string ],
+                [ a csvw:Row ;
+                    csvw:describes fileid:Remark ;
+                    csvw:rownum 19 ;
+                    csvw:titles "Bemerkung"^^xsd:string ],
+                [ a csvw:Row ;
+                    csvw:describes fileid:Tester ;
+                    csvw:rownum 10 ;
+                    csvw:titles "Prüfer"^^xsd:string ],
+                [ a csvw:Row ;
+                    csvw:describes fileid:DisplacementTransducer ;
+                    csvw:rownum 6 ;
+                    csvw:titles "Wegaufnehmer"^^xsd:string ],
+                [ a csvw:Row ;
+                    csvw:describes fileid:MachineData ;
+                    csvw:rownum 4 ;
+                    csvw:titles "Maschinendaten"^^xsd:string ],
+                [ a csvw:Row ;
+                    csvw:describes fileid:SampleIdentifier-2 ;
+                    csvw:rownum 11 ;
+                    csvw:titles "Probenkennung 2"^^xsd:string ],
+                [ a csvw:Row ;
+                    csvw:describes fileid:Material ;
+                    csvw:rownum 8 ;
+                    csvw:titles "Werkstoff"^^xsd:string ],
+                [ a csvw:Row ;
+                    csvw:describes fileid:TimeStamp ;
+                    csvw:rownum 3 ;
+                    csvw:titles "Datum/Uhrzeit"^^xsd:string ],
+                [ a csvw:Row ;
+                    qudt:quantity fileid:TestingRate ;
+                    csvw:rownum 16 ;
+                    csvw:titles "Prüfgeschwindigkeit"^^xsd:string ],
+                [ a csvw:Row ;
+                    csvw:describes fileid:ForceMeasuringDevice ;
+                    csvw:rownum 5 ;
+                    csvw:titles "Kraftaufnehmer"^^xsd:string ],
+                [ a csvw:Row ;
+                    qudt:quantity fileid:ParallelLength ;
+                    csvw:rownum 13 ;
+                    csvw:titles "Versuchslänge"^^xsd:string ],
+                [ a csvw:Row ;
+                    qudt:quantity fileid:Temperature ;
+                    csvw:rownum 18 ;
+                    csvw:titles "Temperatur"^^xsd:string ] ] .
+
+fileid:AbsoluteCrossheadTravel a ns1:Entity,
+        <https://w3id.org/steel/ProcessOntology/AbsoluteCrossheadTravel> ;
+    qudt:hasUnit "http://qudt.org/vocab/unit/MilliM"^^xsd:anyURI ;
+    ns1:wasDerivedFrom fileid:DisplacementTransducer .
+
+fileid:Extension a ns1:Entity,
+        <https://w3id.org/steel/ProcessOntology/Extension> ;
+    qudt:hasUnit "http://qudt.org/vocab/unit/MilliM"^^xsd:anyURI ;
+    ns1:wasDerivedFrom fileid:DisplacementTransducer .
+
+fileid:Material a ns1:Agent,
+        <https://w3id.org/steel/ProcessOntology/Material> ;
+    rdfs:label "Werkstoff_1" .
+
+fileid:OriginalGaugeLength a ns1:Entity,
+        <https://w3id.org/steel/ProcessOntology/OriginalGaugeLength> ;
+    qudt:hasUnit "http://qudt.org/vocab/unit/MilliM"^^xsd:anyURI ;
+    qudt:value "80.0"^^xsd:float ;
+    ns1:wasAttributedTo fileid:DisplacementTransducer .
+
+fileid:ParallelLength a ns1:Entity,
+        <https://w3id.org/steel/ProcessOntology/ParallelLength> ;
+    qudt:hasUnit "http://qudt.org/vocab/unit/MilliM"^^xsd:anyURI ;
+    qudt:value "120.0"^^xsd:float ;
+    ns1:wasAttributedTo fileid:TensileTestSpecimen .
+
+fileid:Preload a ns1:Entity,
+        <https://w3id.org/steel/ProcessOntology/Preload> ;
+    qudt:hasUnit "http://qudt.org/vocab/unit/MegaPA"^^xsd:anyURI ;
+    qudt:value "2.0"^^xsd:float ;
+    ns1:wasAttributedTo fileid:TensileTestingMachine .
+
+fileid:ProjectName a ns1:Entity,
+        <https://w3id.org/steel/ProcessOntology/ProjectName> ;
+    rdfs:label "proj_name_1" .
+
+fileid:ProjectNumber a ns1:Entity,
+        <https://w3id.org/steel/ProcessOntology/ProjectNumber> ;
+    rdfs:label "123456" .
 
 fileid:Remark a <https://w3id.org/steel/ProcessOntology/Remark> ;
     rdfs:label "" .
 
-_:N03ac0cb06caf4d159a4e518763273079 a csvw:Column ;
-    qudt:quantity fileid:PercentageElongation ;
-    csvw:titles "Dehnung" ;
-    foaf:page _:N83d313e2e92f4dc792bd649eb0968357 .
+fileid:SpecimenThickness a ns1:Entity,
+        <https://w3id.org/steel/ProcessOntology/SpecimenThickness> ;
+    qudt:hasUnit "http://qudt.org/vocab/unit/MilliM"^^xsd:anyURI ;
+    qudt:value "1.55"^^xsd:float ;
+    ns1:wasAttributedTo fileid:TensileTestSpecimen .
 
-_:N03ca385642624987bc0291cd1e58f6f5 a csvw:Row ;
-    csvw:describes fileid:SampleIdentifier-2 ;
-    csvw:rownum 11 ;
-    csvw:titles "Probenkennung 2" .
+fileid:SpecimenType a ns1:Entity,
+        <https://w3id.org/steel/ProcessOntology/SpecimenType> ;
+    rdfs:label "Probentyp_1" ;
+    ns1:wasAttributedTo fileid:TensileTestSpecimen .
 
-_:N08da60f44c174f6da9453367eef564d5 a csvw:Row ;
-    qudt:quantity fileid:Temperature ;
-    csvw:rownum 18 ;
-    csvw:titles "Temperatur" .
+fileid:SpecimenWidth a ns1:Entity,
+        <https://w3id.org/steel/ProcessOntology/SpecimenWidth> ;
+    qudt:hasUnit "http://qudt.org/vocab/unit/MilliM"^^xsd:anyURI ;
+    qudt:value "20.04"^^xsd:float ;
+    ns1:wasAttributedTo fileid:TensileTestSpecimen .
 
-_:N0951a1e9bc4d4d87a27584d3ee548521 a csvw:Table ;
-    rdfs:label "Time series data" ;
-    csvw:tableSchema _:Nbd33976dca9f47e6a8a9d39fa71080fb .
+fileid:StandardForce a ns1:Entity,
+        <https://w3id.org/steel/ProcessOntology/StandardForce> ;
+    qudt:hasUnit "http://qudt.org/vocab/unit/N"^^xsd:anyURI ;
+    ns1:wasDerivedFrom fileid:ForceMeasuringDevice .
 
-_:N16c8f8acce5f4f4f9989e67ff5231e98 a csvw:Row ;
-    qudt:quantity fileid:Preload ;
-    csvw:rownum 17 ;
-    csvw:titles "Vorkraft" .
+fileid:TestStandard a <https://w3id.org/steel/ProcessOntology/TestStandard> ;
+    rdfs:label "ISO-XX" .
 
-_:N20c8f83f2219435aa19db04b2fb7ed39 a csvw:Table ;
-    rdfs:label "Metadata" ;
-    csvw:row _:N03ca385642624987bc0291cd1e58f6f5,
-        _:N08da60f44c174f6da9453367eef564d5,
-        _:N16c8f8acce5f4f4f9989e67ff5231e98,
-        _:N2ccbb4f92ebe412097909675805b7297,
-        _:N319137352b9d4fc4abe43dd3ad723b46,
-        _:N5352fad76a604249882a01376a60f5aa,
-        _:N545c474cee864da7b18e60e891b26781,
-        _:N56be0a9937694493ad087ef41a4fb65a,
-        _:N6a27bb77ed174f7eb381a3dbddd27987,
-        _:N6b9ff732d23e4538b32c066676c55340,
-        _:N75191d21016a43e0b38ed26df3a99d95,
-        _:N7d3174fe81da4cbe883c3d667e09725f,
-        _:N93c0ec8061c3441db13e3bd26469123a,
-        _:N9b21050743f14f0c8b5fb68af3d83153,
-        _:Nb04447890a8d4289aa2811f8d205724d,
-        _:Nb373b6b43c2549dbb6c5c80397220f91,
-        _:Nb61b1316f8c743619a09f2d8f748ed21,
-        _:Nc3cba7c207804d6bafc827e1fd183aac,
-        _:Nc823452ac5284e6b9f10513d08188b92,
-        _:Ne48e5665a35e48be90d228e4baedc72b .
+fileid:TestingRate a ns1:Entity,
+        <https://w3id.org/steel/ProcessOntology/TestingRate> ;
+    qudt:hasUnit "http://qudt.org/vocab/unit/MilliM-PER-SEC"^^xsd:anyURI ;
+    qudt:value "0.1"^^xsd:float ;
+    ns1:wasAttributedTo fileid:TensileTestingMachine .
 
-_:N2b244e0700c245d39fac2d151b89793b a foaf:Document ;
-    dcterms:format "https://www.iana.org/assignments/media-types/application/json"^^xsd:anyURI ;
-    dcterms:identifier "https://www.example.org/download//column-2"^^xsd:anyURI ;
-    dcterms:type "http://purl.org/dc/terms/Dataset"^^xsd:anyURI .
+fileid:TimeStamp a <https://w3id.org/steel/ProcessOntology/TimeStamp> ;
+    rdfs:label "44335.4" .
 
-_:N2ccbb4f92ebe412097909675805b7297 a csvw:Row ;
-    qudt:quantity fileid:SpecimenThickness ;
-    csvw:rownum 14 ;
-    csvw:titles "Probendicke" .
+fileid:Tester a ns1:Agent,
+        <https://w3id.org/steel/ProcessOntology/Tester> ;
+    rdfs:label "abc" ;
+    ns1:actedOnBehalfOf fileid:TestingFacility ;
+    ns1:atLocation fileid:TestingLab .
 
-_:N319137352b9d4fc4abe43dd3ad723b46 a csvw:Row ;
-    csvw:describes fileid:Remark ;
-    csvw:rownum 19 ;
-    csvw:titles "Bemerkung" .
+fileid:ForceMeasuringDevice a ns1:Agent,
+        ns1:Entity,
+        <https://w3id.org/steel/ProcessOntology/ForceMeasuringDevice> ;
+    rdfs:label "Kraftaufnehmer_1" ;
+    ns1:atLocation fileid:TestingLab .
 
-_:N5352fad76a604249882a01376a60f5aa a csvw:Row ;
-    csvw:describes fileid:ProjectNumber ;
-    csvw:rownum 1 ;
-    csvw:titles "Projektnummer" .
+fileid:TensileTestingMachine a ns1:Agent,
+        ns1:Entity ;
+    ns1:atLocation fileid:TestingLab .
 
-_:N545c474cee864da7b18e60e891b26781 a csvw:Row ;
-    qudt:quantity fileid:SpecimenWidth ;
-    csvw:rownum 15 ;
-    csvw:titles "Probenbreite" .
+fileid:TestingFacility a ns1:Location,
+        ns1:Organization,
+        <https://w3id.org/steel/ProcessOntology/TestingFacility> ;
+    rdfs:label "institute_1" .
 
-_:N56be0a9937694493ad087ef41a4fb65a a csvw:Row ;
-    csvw:describes fileid:TimeStamp ;
-    csvw:rownum 3 ;
-    csvw:titles "Datum/Uhrzeit" .
+fileid:DisplacementTransducer a ns1:Agent,
+        ns1:Entity,
+        <https://w3id.org/steel/ProcessOntology/DisplacementTransducer> ;
+    rdfs:label "Wegaufnehmer_1" ;
+    ns1:atLocation fileid:TestingLab .
 
-_:N6a27bb77ed174f7eb381a3dbddd27987 a csvw:Row ;
-    csvw:describes fileid:ProjectName ;
-    csvw:rownum 2 ;
-    csvw:titles "Projektname" .
+fileid:TestingLab a ns1:Agent,
+        ns1:Location ;
+    ns1:atLocation fileid:TestingFacility .
 
-_:N6b9ff732d23e4538b32c066676c55340 a csvw:Row ;
-    csvw:describes fileid:MachineData ;
-    csvw:rownum 4 ;
-    csvw:titles "Maschinendaten" .
-
-_:N75191d21016a43e0b38ed26df3a99d95 a csvw:Row ;
-    csvw:describes fileid:DisplacementTransducer ;
-    csvw:rownum 6 ;
-    csvw:titles "Wegaufnehmer" .
-
-_:N7d3174fe81da4cbe883c3d667e09725f a csvw:Row ;
-    qudt:quantity fileid:OriginalGaugeLength ;
-    csvw:rownum 12 ;
-    csvw:titles "Messlänge Standardweg" .
-
-_:N83d313e2e92f4dc792bd649eb0968357 a foaf:Document ;
-    dcterms:format "https://www.iana.org/assignments/media-types/application/json"^^xsd:anyURI ;
-    dcterms:identifier "https://www.example.org/download//column-5"^^xsd:anyURI ;
-    dcterms:type "http://purl.org/dc/terms/Dataset"^^xsd:anyURI .
-
-_:N93c0ec8061c3441db13e3bd26469123a a csvw:Row ;
-    qudt:quantity fileid:TestingRate ;
-    csvw:rownum 16 ;
-    csvw:titles "Prüfgeschwindigkeit" .
-
-_:N97c225285dc04d588fda48c842160a23 a csvw:Column ;
-    qudt:quantity fileid:AbsoluteCrossheadTravel ;
-    csvw:titles "Traversenweg absolut" ;
-    foaf:page _:N2b244e0700c245d39fac2d151b89793b .
-
-_:N9ac92b1fc2d8437d822f538eeb33da5c a foaf:Document ;
-    dcterms:format "https://www.iana.org/assignments/media-types/application/json"^^xsd:anyURI ;
-    dcterms:identifier "https://www.example.org/download//column-4"^^xsd:anyURI ;
-    dcterms:type "http://purl.org/dc/terms/Dataset"^^xsd:anyURI .
-
-_:N9b21050743f14f0c8b5fb68af3d83153 a csvw:Row ;
-    csvw:describes fileid:SpecimenType ;
-    csvw:rownum 9 ;
-    csvw:titles "Probentyp" .
-
-_:Naa807cd2b95440bf8a5428fb11321dbf a foaf:Document ;
-    dcterms:format "https://www.iana.org/assignments/media-types/application/json"^^xsd:anyURI ;
-    dcterms:identifier "https://www.example.org/download//column-0"^^xsd:anyURI ;
-    dcterms:type "http://purl.org/dc/terms/Dataset"^^xsd:anyURI .
-
-_:Nab8cac7af6b745ba9d67eafb14737f7e a csvw:Column ;
-    qudt:quantity fileid:TestTime ;
-    csvw:titles "Prüfzeit" ;
-    foaf:page _:Naa807cd2b95440bf8a5428fb11321dbf .
-
-_:Nace7030050bb49559ff831461302357d a csvw:Column ;
-    qudt:quantity fileid:WidthChange ;
-    csvw:titles "Breitenänderung" ;
-    foaf:page _:N9ac92b1fc2d8437d822f538eeb33da5c .
-
-_:Nb04447890a8d4289aa2811f8d205724d a csvw:Row ;
-    csvw:describes fileid:TestStandard ;
-    csvw:rownum 7 ;
-    csvw:titles "Prüfnorm" .
-
-_:Nb373b6b43c2549dbb6c5c80397220f91 a csvw:Row ;
-    csvw:describes fileid:ForceMeasuringDevice ;
-    csvw:rownum 5 ;
-    csvw:titles "Kraftaufnehmer" .
-
-_:Nb61b1316f8c743619a09f2d8f748ed21 a csvw:Row ;
-    csvw:describes fileid:Material ;
-    csvw:rownum 8 ;
-    csvw:titles "Werkstoff" .
-
-_:Nbd33976dca9f47e6a8a9d39fa71080fb a csvw:Schema ;
-    csvw:column _:N03ac0cb06caf4d159a4e518763273079,
-        _:N97c225285dc04d588fda48c842160a23,
-        _:Nab8cac7af6b745ba9d67eafb14737f7e,
-        _:Nace7030050bb49559ff831461302357d,
-        _:Ndf08695449b34ddd81ad94bf5cd77c2d,
-        _:Nf72d16defeb347e39d7bf9d824155d62 .
-
-_:Nc3cba7c207804d6bafc827e1fd183aac a csvw:Row ;
-    csvw:describes fileid:TestingFacility ;
-    csvw:rownum 0 ;
-    csvw:titles "Prüfinstitut" .
-
-_:Nc823452ac5284e6b9f10513d08188b92 a csvw:Row ;
-    csvw:describes fileid:Tester ;
-    csvw:rownum 10 ;
-    csvw:titles "Prüfer" .
-
-_:Ncfab25b0512640fd95e579878c61661c a foaf:Document ;
-    dcterms:format "https://www.iana.org/assignments/media-types/application/json"^^xsd:anyURI ;
-    dcterms:identifier "https://www.example.org/download//column-3"^^xsd:anyURI ;
-    dcterms:type "http://purl.org/dc/terms/Dataset"^^xsd:anyURI .
-
-_:Ndf08695449b34ddd81ad94bf5cd77c2d a csvw:Column ;
-    qudt:quantity fileid:StandardForce ;
-    csvw:titles "Standardkraft" ;
-    foaf:page _:Nffbed5a8662743498d0b7eb9c13b2fbe .
-
-_:Ne48e5665a35e48be90d228e4baedc72b a csvw:Row ;
-    qudt:quantity fileid:ParallelLength ;
-    csvw:rownum 13 ;
-    csvw:titles "Versuchslänge" .
-
-_:Nf72d16defeb347e39d7bf9d824155d62 a csvw:Column ;
-    qudt:quantity fileid:Extension ;
-    csvw:titles "Standardweg" ;
-    foaf:page _:Ncfab25b0512640fd95e579878c61661c .
-
-_:Nffbed5a8662743498d0b7eb9c13b2fbe a foaf:Document ;
-    dcterms:format "https://www.iana.org/assignments/media-types/application/json"^^xsd:anyURI ;
-    dcterms:identifier "https://www.example.org/download//column-1"^^xsd:anyURI ;
-    dcterms:type "http://purl.org/dc/terms/Dataset"^^xsd:anyURI .
+fileid:TensileTestSpecimen a ns1:Agent,
+        ns1:Entity .

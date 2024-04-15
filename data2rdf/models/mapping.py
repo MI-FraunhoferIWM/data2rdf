@@ -1,6 +1,7 @@
 """Mapping models for data2rdf"""
 import json
 import warnings
+from abc import abstractmethod
 from typing import Any, Dict, Optional, Union
 
 from pydantic import AnyUrl, BaseModel, Field, ValidationInfo, field_validator
@@ -24,7 +25,9 @@ class BasicConceptMapping(BaseModel):
         default_factory=Config, description="Configuration object"
     )
 
-    def _make_suffix(cls) -> str:
+    @property
+    def suffix(cls) -> str:
+        """Return suffix for individal"""
         return str(cls.iri).split(cls.config.separator)[-1]
 
 
@@ -72,7 +75,24 @@ class ExcelConceptMapping(ClassConceptMapping):
     )
 
 
-class QuantityMapping(BasicConceptMapping):
+class MergedConceptMapping(BasicConceptMapping):
+    """Model for merged data of mapping and the data file"""
+
+    @property
+    @abstractmethod
+    def json_ld(cls) -> Dict[str, Any]:
+        """Return dict for json-ld of graph"""
+
+    @property
+    def graph(cls) -> Graph:
+        """Return graph object based on json-ld"""
+        graph = Graph(identifier=cls.config.graph_identifier)
+        graph.parse(data=json.dumps(cls.json_ld), format="json-ld")
+        print(cls.json_ld)
+        return graph
+
+
+class QuantityMapping(MergedConceptMapping):
     """Mapping for a quantity without a discrete value.
     E.g. a quantity describing a column of a time series or table."""
 
@@ -106,26 +126,24 @@ class QuantityMapping(BasicConceptMapping):
         return value
 
     @property
-    def graph(cls) -> Graph:
-        graph = Graph(identifier=cls.config.graph_identifier)
-        suffix = cls._make_suffix()
-        prefix = make_prefix(cls.config)
-        model = {
+    def json_ld(cls) -> Dict[str, Any]:
+        """Return dict of json-ld for graph"""
+        return {
             "@context": {
-                "fileid": prefix,
+                "fileid": make_prefix(cls.config),
                 "rdfs": "http://www.w3.org/2000/01/rdf-schema#",
                 "xsd": "http://www.w3.org/2001/XMLSchema#",
                 "qudt": "http://qudt.org/schema/qudt/",
             },
-            "@id": f"fileid:{suffix}",
+            "@id": f"fileid:{cls.suffix}",
             "@type": str(cls.iri),
-            **cls._get_unit_json(),
-            **cls._get_value(),
+            **cls.unit_json,
+            **cls.value_json,
         }
-        graph.parse(data=json.dumps(model), format="json-ld")
-        return graph
 
-    def _get_unit_json(self) -> "Dict[str, Any]":
+    @property
+    def unit_json(self) -> "Dict[str, Any]":
+        """Return json with unit definition"""
         if self.unit:
             value = {
                 "qudt:hasUnit": {"@value": self.unit, "@type": "xsd:anyURI"}
@@ -134,7 +152,9 @@ class QuantityMapping(BasicConceptMapping):
             value = {}
         return value
 
-    def _get_value(self) -> "Dict[str, Any]":
+    @property
+    def value_json(self) -> "Dict[str, Any]":
+        """Return json with value definition"""
         if self.value:
             if is_float(self.value):
                 dtype = "xsd:float"
@@ -154,7 +174,7 @@ class QuantityMapping(BasicConceptMapping):
         return value
 
 
-class PropertyMapping(BasicConceptMapping):
+class PropertyMapping(MergedConceptMapping):
     """Mapping for a non-quantitative property. E.g. the
     name of a tester or a testing facility."""
 
@@ -166,19 +186,15 @@ class PropertyMapping(BasicConceptMapping):
     )
 
     @property
-    def graph(cls) -> Graph:
-        graph = Graph(identifier=cls.config.graph_identifier)
-        suffix = cls._make_suffix()
-        prefix = make_prefix(cls.config)
-        model = {
+    def json_ld(cls) -> Dict[str, Any]:
+        """Return dict of json-ld for graph"""
+        return {
             "@context": {
-                "fileid": prefix,
+                "fileid": make_prefix(cls.config),
                 "rdfs": "http://www.w3.org/2000/01/rdf-schema#",
                 "xsd": "http://www.w3.org/2001/XMLSchema#",
             },
-            "@id": f"fileid:{suffix}",
+            "@id": f"fileid:{cls.suffix}",
             "@type": str(cls.iri),
             "rdfs:label": cls.value,
         }
-        graph.parse(data=json.dumps(model), format="json-ld")
-        return graph

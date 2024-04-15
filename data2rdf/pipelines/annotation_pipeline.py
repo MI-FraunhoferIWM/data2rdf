@@ -15,7 +15,7 @@ from rdflib import Graph
 
 from data2rdf.config import Config
 from data2rdf.parsers import Parser
-from data2rdf.utils import get_as_jsonld, make_prefix
+from data2rdf.utils import make_prefix
 
 if TYPE_CHECKING:
     from typing import List
@@ -98,10 +98,9 @@ class AnnotationPipeline(BaseModel):
         return self
 
     @property
-    def graph(cls) -> Graph:
-        """Return graph object"""
-
-        model = {
+    def json_ld(cls) -> Dict[str, Any]:
+        """Return dict of json-ld for graph"""
+        return {
             "@context": {
                 "fileid": make_prefix(cls.config),
                 "csvw": "http://www.w3.org/ns/csvw#",
@@ -126,22 +125,23 @@ class AnnotationPipeline(BaseModel):
                     "@value": str(cls.config.data_download_uri),
                 },
             },
-            "dcterms:hasPart": get_as_jsonld(cls.parser.graph),
+            "dcterms:hasPart": cls.parser.json_ld,
         }
-        if cls.extra_triples:
-            extra_triples = get_as_jsonld(cls.parser.graph)
-            if isinstance(extra_triples, list):
-                for triple in extra_triples:
-                    model.update(triple)
-            elif isinstance(extra_triples, dict):
-                model.update(extra_triples)
-            else:
-                raise TypeError(
-                    f"Extra triples have an invalid parsed type: {type(extra_triples)}"
-                )
 
+    @property
+    def graph(cls) -> Graph:
+        """Return graph object"""
         graph = Graph(identifier=cls.config.graph_identifier)
-        graph.parse(data=json.dumps(model), format="json-ld")
+        graph.parse(data=json.dumps(cls.json_ld), format="json-ld")
+        if cls.extra_triples:
+            with open(cls.extra_triples, encoding=cls.config.encoding) as file:
+                content = file.read()
+            data = content.replace(
+                str(cls.config.namespace_placeholder), make_prefix(cls.config)
+            )
+            extra_triples = Graph(identifier=cls.config.graph_identifier)
+            extra_triples.parse(data=data)
+            graph += extra_triples
         return graph
 
     @property

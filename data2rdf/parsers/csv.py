@@ -1,19 +1,17 @@
 """CSV Parser for data2rdf"""
 
-import json
 from io import StringIO
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
 import pandas as pd
 from pydantic import Field, model_validator
-from rdflib import Graph
 
 from data2rdf.models.mapping import (
     ClassConceptMapping,
     PropertyMapping,
     QuantityMapping,
 )
-from data2rdf.utils import get_as_jsonld, make_prefix
+from data2rdf.utils import make_prefix
 
 from .base import DataParser
 from .utils import _load_mapping_file, _strip_unit
@@ -37,7 +35,8 @@ class CSVParser(DataParser):
         return "http://www.iana.org/assignments/media-types/text/csv"
 
     @property
-    def graph(cls) -> Graph:
+    def json_ld(cls) -> "Dict[str, Any]":
+        """Return dict for json-ld for the graph"""
         meta_table = {
             "@type": "csvw:Table",
             "rdfs:label": "Metadata",
@@ -79,7 +78,7 @@ class CSVParser(DataParser):
                         "@value": mapping.key,
                     },
                     "csvw:rownum": {"@type": "xsd:integer", "@value": n},
-                    "qudt:quantity": get_as_jsonld(mapping.graph),
+                    "qudt:quantity": mapping.json_ld,
                 }
                 meta_table["csvw:row"].append(row)
             elif isinstance(mapping, PropertyMapping):
@@ -90,7 +89,7 @@ class CSVParser(DataParser):
                         "@value": mapping.key,
                     },
                     "csvw:rownum": {"@type": "xsd:integer", "@value": n},
-                    "csvw:describes": get_as_jsonld(mapping.graph),
+                    "csvw:describes": mapping.json_ld,
                 }
                 meta_table["csvw:row"].append(row)
             else:
@@ -120,7 +119,7 @@ class CSVParser(DataParser):
                     "@type": "xsd:string",
                     "@value": mapping.key,
                 },
-                "qudt:quantity": get_as_jsonld(mapping.graph),
+                "qudt:quantity": mapping.json_ld,
                 "foaf:page": {
                     "@type": "foaf:Document",
                     "dcterms:format": {
@@ -136,9 +135,7 @@ class CSVParser(DataParser):
             }
             column_schema["csvw:column"].append(column)
 
-        graph = Graph(identifier=cls.config.graph_identifier)
-        graph.parse(data=json.dumps(triples), format="json-ld")
-        return graph
+        return triples
 
     @model_validator(mode="after")
     @classmethod
