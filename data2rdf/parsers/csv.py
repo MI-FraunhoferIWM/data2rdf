@@ -1,6 +1,6 @@
 import json
 from io import StringIO
-from typing import TYPE_CHECKING, Any, Union
+from typing import TYPE_CHECKING
 
 import pandas as pd
 from pydantic import Field, model_validator
@@ -12,7 +12,7 @@ from data2rdf.models.mapping import (
     QuantityMapping,
 )
 from data2rdf.parsers.base import DataParser
-from data2rdf.utils import get_as_jsonld, is_float, is_integer, make_prefix
+from data2rdf.utils import get_as_jsonld, make_prefix
 
 if TYPE_CHECKING:
     from typing import Dict, List
@@ -26,6 +26,11 @@ class CSVParser(DataParser):
     header_sep: str = Field(..., description="Header separator")
     column_sep: str = Field(..., description="Column separator")
     header_length: int = Field(..., description="Length of header")
+
+    @property
+    def media_type(cls) -> str:
+        """IANA Media type definition of the resource to be parsed."""
+        return "http://www.iana.org/assignments/media-types/text/csv"
 
     @property
     def graph(cls) -> Graph:
@@ -193,7 +198,7 @@ class CSVParser(DataParser):
     @classmethod
     def _load_mapping_file(
         cls, self: "CSVParser"
-    ) -> "Dict[str, Union[PropertyMapping, QuantityMapping]]":
+    ) -> "Dict[str, ClassConceptMapping]":
         if isinstance(self.mapping, str):
             if self.mapping.endswith("xlsx"):
                 mapping_df = pd.read_excel(
@@ -219,8 +224,6 @@ class CSVParser(DataParser):
                 f"""Mapping file must be of type `{str}` or `{dict}`,
                 not `{type(self.mapping)}`."""
             )
-        from pprint import pprint
-
         return {
             key: ClassConceptMapping(**row) for key, row in mapping.items()
         }

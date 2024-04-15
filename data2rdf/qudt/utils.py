@@ -1,14 +1,11 @@
-import json
+"""Data2RDF utils"""
 import tempfile
 import warnings
 from functools import lru_cache
-from typing import TYPE_CHECKING, List, Optional
+from typing import List, Optional
 
 import requests
 from rdflib import Graph
-
-if TYPE_CHECKING:
-    from data2rdf.config import Config
 
 
 def _qudt_sparql(symbol: str) -> str:
@@ -31,7 +28,7 @@ def _get_qudt_ontology(qudt_iri: str) -> requests.Response:
     response = requests.get(qudt_iri)
     if response.status_code != 200:
         raise RuntimeError(
-            f"Could not download QUDT ontology. Please check URI: {url}"
+            f"Could not download QUDT ontology. Please check URI: {qudt_iri}"
         )
     response.encoding = "utf-8"
     return response

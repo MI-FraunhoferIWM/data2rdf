@@ -1,6 +1,8 @@
 # The csv2rdf conversion requires a set of relations and classes to use for
 # the annotation these are defined separately, so that they can be easily
 # adapted.
+from typing import Optional, Union
+
 from pydantic import AnyUrl, Field
 from pydantic_settings import BaseSettings
 
@@ -31,4 +33,13 @@ class Config(BaseSettings):
     data_download_uri: AnyUrl = Field(
         "https://www.example.org/download/",
         description="General base iri for downloading the time series after uploading",
+    )
+
+    graph_identifier: Optional[Union[str, AnyUrl]] = Field(
+        None, description="Identifier of the graph to be produced."
+    )
+
+    namespace_placeholder: Union[str, AnyUrl] = Field(
+        "http://abox-namespace-placeholder.org/",
+        description="Placeholder of the extra triples to be replaced with the `base_iri` during the pipeline run.",
     )

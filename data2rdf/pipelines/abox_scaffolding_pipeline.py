@@ -5,8 +5,6 @@ from pathlib import Path
 from rdflib import Graph, Literal, URIRef
 from rdflib.namespace import OWL, RDF, RDFS, SKOS
 
-from data2rdf.chowlk.utils import add_emmo_name_to_diagrams
-
 
 def run_chowlk(inputfile, outputfile):
     from chowlk.transformations import transform_ontology
@@ -149,9 +147,6 @@ class ABoxScaffoldPipeline:
         # self.ttl_path = os.path.join(out_path, filename.replace('.xml','.ttl'))
         # self.ttl_path_ns = os.path.join(out_path, filename.replace('.xml','.ns.ttl'))
 
-    def xml_conversion(self):
-        add_emmo_name_to_diagrams(self.xml_path, self.mod_xml_path)
-
     def run_chowlk(self):
         run_chowlk(self.mod_xml_path, self.ttl_path)
 
@@ -162,11 +157,6 @@ class ABoxScaffoldPipeline:
         convert_abox_namespace(self.ttl_path, ttl_path_ns)
 
     def run_pipeline(self):
-        try:
-            self.xml_conversion()
-        except Exception as e:
-            logging.error(e, exc_info=True)
-
         try:
             self.run_chowlk()
         except Exception as e:

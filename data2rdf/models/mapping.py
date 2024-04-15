@@ -1,7 +1,7 @@
 """Mapping models for data2rdf"""
 import json
 import warnings
-from typing import Any, Dict, Optional, Tuple, Union
+from typing import Any, Dict, Optional, Union
 
 from pydantic import AnyUrl, BaseModel, Field, ValidationInfo, field_validator
 from rdflib import Graph

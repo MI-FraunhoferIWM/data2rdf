@@ -20,29 +20,10 @@ class ExcelParser(DataParser):
 
     """
 
-    def __init__(
-        self,
-        f_path,
-        location_mapping_f_path,
-        # when a file is stored on a server it makes sense to store this path
-        # (e.g. http access) instead of the local path
-        server_f_path=None,
-        # the columns get stored in a dedicated format (hdf5 by default)
-        data_storage_path=None,
-        # one hdf5 store is probaby enough for our current setup (use different
-        # groups (folders), for each file)
-        data_storage_group_name="df",
-        namespace="http://www.test.de",
-    ):
-        super().__init__(
-            f_path,
-            server_f_path,
-            data_storage_path,
-            data_storage_group_name,
-            namespace,
-        )
-
-        self.location_mapping_f_path = location_mapping_f_path
+    @property
+    def media_type(cls) -> str:
+        """IANA Media type definition of the resource to be parsed."""
+        return "https://www.iana.org/assignments/media-types/application/vnd.ms-excel"
 
     def parser_data(self):
         self.load_file()
