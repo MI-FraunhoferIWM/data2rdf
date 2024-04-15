@@ -33,8 +33,10 @@ class AnnotationPipeline(BaseModel):
     raw_data: str = Field(
         ..., description="File path to the data file to be parsed."
     )
-    mapping: Union[str, ClassConceptMapping] = Field(
-        ..., description="File path to the mapping file to be parsed."
+    mapping: Union[str, Dict[str, ClassConceptMapping]] = Field(
+        ...,
+        description="""File path to the mapping file to be parsed or
+        a dictionary with the mapping.""",
     )
 
     parser: Parser = Field(
@@ -142,6 +144,12 @@ class AnnotationPipeline(BaseModel):
         graph = Graph(identifier=cls.config.graph_identifier)
         graph.parse(data=json.dumps(model), format="json-ld")
         return graph
+
+    @property
+    def plain_metadata(cls) -> Dict[str, Any]:
+        """Metadata as flat json - without units and iris.
+        Useful e.g. for the custom properties of the DSMS."""
+        return cls.parser.plain_metadata
 
     @property
     def general_metadata(cls) -> "List[BasicConceptMapping]":

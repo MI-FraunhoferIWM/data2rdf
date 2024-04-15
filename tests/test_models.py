@@ -4,7 +4,7 @@ from rdflib import Graph
 
 
 def test_valued_quantity():
-    from data2rdf.models.mapping import QuantityMapping
+    from data2rdf import QuantityMapping
 
     expected = """@prefix fileid: <https://www.example.org/> .
     @prefix qudt: <http://qudt.org/schema/qudt/> .

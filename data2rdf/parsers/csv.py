@@ -1,3 +1,5 @@
+"""CSV Parser for data2rdf"""
+
 import json
 from io import StringIO
 from typing import TYPE_CHECKING
@@ -16,7 +18,7 @@ from data2rdf.utils import get_as_jsonld, make_prefix
 from .base import DataParser
 
 if TYPE_CHECKING:
-    from typing import Dict, List
+    from typing import Any, Dict
 
 
 class CSVParser(DataParser):
@@ -32,6 +34,15 @@ class CSVParser(DataParser):
     def media_type(cls) -> str:
         """IANA Media type definition of the resource to be parsed."""
         return "http://www.iana.org/assignments/media-types/text/csv"
+
+    @property
+    def plain_metadata(cls) -> "Dict[str, Any]":
+        """Metadata as flat json - without units and iris.
+        Useful e.g. for the custom properties of the DSMS."""
+        return {
+            metadatum.key: metadatum.value
+            for metadatum in cls.general_metadata
+        }
 
     @property
     def graph(cls) -> Graph:
@@ -145,7 +156,9 @@ class CSVParser(DataParser):
         """
 
         datafile: str = cls._load_data_file(self)
-        mapping: List[ClassConceptMapping] = cls._load_mapping_file(self)
+        mapping: "Dict[str, ClassConceptMapping]" = cls._load_mapping_file(
+            self
+        )
         time_series: pd.DataFrame = cls._parse_time_series(self).dropna()
 
         # parse general metadata
@@ -200,6 +213,11 @@ class CSVParser(DataParser):
     def _load_mapping_file(
         cls, self: "CSVParser"
     ) -> "Dict[str, ClassConceptMapping]":
+        if not isinstance(self.mapping, (str, dict)):
+            raise TypeError(
+                f"""Mapping file must be of type `{str}` or `{dict}`,
+                not `{type(self.mapping)}`."""
+            )
         if isinstance(self.mapping, str):
             if self.mapping.endswith("xlsx"):
                 mapping_df = pd.read_excel(
@@ -214,20 +232,16 @@ class CSVParser(DataParser):
                     for n, row in mapping_df.iterrows()
                 }
             elif self.mapping.endswith("json"):
-                with open(self.mapping):
-                    mapping = json.read(self.mapping)
+                with open(self.mapping, encoding=self.config.encoding) as file:
+                    mapping = json.load(file)
             else:
                 raise TypeError("File type for mapping not supported!")
+            result = {
+                key: ClassConceptMapping(**row) for key, row in mapping.items()
+            }
         if isinstance(self.mapping, dict):
-            mapping = self.mapping
-        if not isinstance(mapping, dict):
-            raise TypeError(
-                f"""Mapping file must be of type `{str}` or `{dict}`,
-                not `{type(self.mapping)}`."""
-            )
-        return {
-            key: ClassConceptMapping(**row) for key, row in mapping.items()
-        }
+            result = self.mapping
+        return result
 
     @classmethod
     def _parse_time_series(cls, self: "CSVParser") -> pd.DataFrame:
