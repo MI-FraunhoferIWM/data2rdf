@@ -1,197 +1,217 @@
-import pandas as pd
+import json
+from typing import Dict, Union
+
 from openpyxl import load_workbook
+from pydantic import Field, model_validator
+from rdflib import Graph
+
+from data2rdf.models.mapping import (
+    ExcelConceptMapping,
+    PropertyMapping,
+    QuantityMapping,
+)
+from data2rdf.utils import get_as_jsonld, make_prefix
 
 from .base import DataParser
+from .utils import _load_mapping_file, _strip_unit
 
 
 class ExcelParser(DataParser):
     """
-    Generates the excel input sheet that can be used
-    as input for abox skeleton files.
-
-    Attributes:
-        f_path (str): The file path for the csv file used as input for the parser. This path gets also stored as dcat:downloadURL attribute for the created dcat:Dataset individual by the rdf_generation class.
-        location_mapping_f_path (str): Path to the excel file, that holds the location of the meta data and column data cells that should be extracted.
-        server_f_path (str): By default the file path for the csv file (f_path) gets used as dcat:downloadURL attribute for the created dcat:Dataset individual. On a server the actual download url of the file should be used
-        (e.g. on the DSMS https://127.0.0.1/api/knowledge/data-files/764f6e51-a244-42f9-a754-c3e2861f63e4/raw_data/excel_file.xlsx).
-        data_storage_path (str): Optional different storage location for the hdf5 file holding the data. Default is the same location as the input file.
-        data_storage_group_name (str): Name of the group in the hdf5 to store the data. Using the data_storage_path and the data_storage_group_name multiple datasets can be stored in the same hdf5 file.
-        namespace (str): The namespace that will be used by the rdf_generation class to construct the abox individuals.
-
+    Parses a data file of type CSV
     """
+
+    # OVERRIDE
+    mapping: Union[str, Dict[str, ExcelConceptMapping]] = Field(
+        ...,
+        description="""File path to the mapping file to be parsed or
+        a dictionary with the mapping.""",
+    )
 
     @property
     def media_type(cls) -> str:
         """IANA Media type definition of the resource to be parsed."""
         return "https://www.iana.org/assignments/media-types/application/vnd.ms-excel"
 
-    def parser_data(self):
-        self.load_file()
-        self.load_mapping_file()
-        self.parse_meta_data()
-        self.generate_column_df()
-        self.parse_table()
+    @property
+    def graph(cls) -> Graph:
+        meta_table = {
+            "@type": "csvw:Table",
+            "rdfs:label": "Metadata",
+            "csvw:row": [],
+        }
 
-    def load_mapping_file(self):
-        self.meta_mapping_df = pd.read_excel(
-            self.location_mapping_f_path,
-            engine="openpyxl",
-            sheet_name="meta",
-        )
-        self.meta_mapping_df.fillna("", inplace=True)
-        self.column_mapping_df = pd.read_excel(
-            self.location_mapping_f_path,
-            engine="openpyxl",
-            sheet_name="columns",
-        )
-        self.column_mapping_df.fillna("", inplace=True)
+        column_schema = {"@type": "csvw:Schema", "csvw:column": []}
 
-    def load_file(self):
-        # self.file = open(self.f_path, 'r', encoding=self.encoding).read()
-        self.workbook = load_workbook(filename=self.f_path, data_only=True)
-        # some datasets do have the unit encoded as macro of the cell, in order
-        # to extract this unit, the unformatted workbook is needed
-        self.workbook_macros = load_workbook(filename=self.f_path)
-
-    def parse_meta_data(self):
-        """
-        Extracts meta data from the excel worksheet using the location mapping
-        information from the meta_mapping_df
-        """
-
-        meta_data = []
-        for _, row in self.meta_mapping_df.iterrows():
-            if not row["Excel worksheet"]:
-                continue
-
-            # get worksheet from mapping
-            worksheet = self.workbook[row["Excel worksheet"]]
-
-            cell_location_name = row["Variable name cell location"]
-            cell_location_value = row["Variable value cell location"]
-            cell_location_unit = row["Variable unit cell location"]
-
-            if cell_location_value == "":
-                continue
-
-            meta_name = worksheet[cell_location_name].value
-            meta_value = worksheet[cell_location_value].value
-
-            if cell_location_unit == "":
-                macro_worksheet = self.workbook_macros[row["Excel worksheet"]]
-                macro_value_cell = macro_worksheet[
-                    cell_location_value
-                ].number_format
-
-                if len(macro_value_cell.split(" ")) != 1:
-                    meta_unit = macro_value_cell.split(" ")[1].strip('"')
-                else:
-                    meta_unit = ""
-
-            else:
-                meta_unit = worksheet[cell_location_unit].value
-
-            meta_name = meta_name.strip(":").strip("=")
-
-            meta_data.append(
-                {"index": meta_name, "value": meta_value, "unit": meta_unit}
-            )
-
-        self.meta_df = pd.DataFrame(meta_data)
-
-    def split_meta_df(self):
-        """
-        Split the meta data into basic description and quantities
-        """
-        self.meta_quantity_df = self.meta_df.loc[
-            (self.meta_df["unit"] != ""), :
-        ]
-        self.meta_description_df = self.meta_df.loc[
-            (self.meta_df["unit"] == ""), :
-        ]
-
-    def parse_table(self):
-        self.df_table = pd.DataFrame()
-        for _, row in self.column_df.iterrows():
-            # print(self.workbook[row["worksheet"]][row["start"]:row["end"]])
-            column = [
-                cell[0].value
-                for cell in self.workbook[row["worksheet"]][
-                    row["start"] : row["end"]
-                ]
-            ]
-            if not len(column):
-                column = ""
-            self.df_table[row["index"]] = column
-
-        self.df_table = self.df_table.apply(pd.to_numeric, errors="coerce")
-
-        # print(self.df_table)
-
-    def generate_column_df(self):
-        """
-        Extracts meta data from the excel worksheet using the location mapping
-        information from the meta_mapping_df
-        """
-
-        column_data = []
-        for _, row in self.column_mapping_df.iterrows():
-            sheet = row["Excel worksheet"]
-
-            if not sheet:
-                continue
-
-            # get worksheet from mapping
-            worksheet = self.workbook[sheet]
-
-            # get name and unit from location
-            cell_location_name = row["Column name cell location"]
-            cell_location_unit = row["Column unit cell location"]
-
-            col_name = worksheet[cell_location_name].value
-
-            if cell_location_unit == "":
-                col_unit = ""
-            else:
-                col_unit = worksheet[cell_location_unit].value
-
-            col_unit = col_unit.strip("[").strip("]")
-            col_name = col_name.strip(":").strip("=")
-
-            # auto fill column end
-            # column names are always letters, row names are always numbers
-            column_name = row["Column cell location start"].rstrip(
-                "0123456789"
-            )
-            row_name = int(
-                row["Column cell location start"].lstrip(column_name)
-            )
-
-            # go trough the rows and check when the value is empty to get the
-            # location end
-            while True:
-                cell_name = f"{column_name}{row_name}"
-                cell = worksheet[cell_name]
-
-                if cell.value == "" or cell.value is None:
-                    row_name -= 1
-                    col_end_pos = f"{column_name}{row_name}"
-                    break
-
-                row_name += 1
-
-            # get column start from location
-            col_start_pos = row["Column cell location start"]
-
-            column_data.append(
+        triples = {
+            "@context": {
+                "fileid": make_prefix(cls.config),
+                "csvw": "http://www.w3.org/ns/csvw#",
+                "rdfs": "http://www.w3.org/2000/01/rdf-schema#",
+                "dcat": "http://www.w3.org/ns/dcat#",
+                "xsd": "http://www.w3.org/2001/XMLSchema#",
+                "dcterms": "http://purl.org/dc/terms/",
+                "qudt": "http://qudt.org/schema/qudt/",
+                "csvw": "http://www.w3.org/ns/csvw#",
+                "foaf": "http://xmlns.com/foaf/spec/",
+            },
+            "@id": "fileid:tableGroup",
+            "@type": "csvw:TableGroup",
+            "csvw:table": [
+                meta_table,
                 {
-                    "index": col_name,
-                    "titles": col_name,
-                    "unit": col_unit,
-                    "start": col_start_pos,
-                    "end": col_end_pos,
-                    "worksheet": sheet,
-                }
-            )
+                    "@type": "csvw:Table",
+                    "rdfs:label": "Time series data",
+                    "csvw:tableSchema": column_schema,
+                },
+            ],
+        }
 
-        self.column_df = pd.DataFrame(column_data)
+        for mapping in cls.general_metadata:
+            if isinstance(mapping, QuantityMapping):
+                row = {
+                    "@type": "csvw:Row",
+                    "csvw:titles": {
+                        "@type": "xsd:string",
+                        "@value": mapping.key,
+                    },
+                    "qudt:quantity": get_as_jsonld(mapping.graph),
+                }
+                meta_table["csvw:row"].append(row)
+            elif isinstance(mapping, PropertyMapping):
+                row = {
+                    "@type": "csvw:Row",
+                    "csvw:titles": {
+                        "@type": "xsd:string",
+                        "@value": mapping.key,
+                    },
+                    "csvw:describes": get_as_jsonld(mapping.graph),
+                }
+                meta_table["csvw:row"].append(row)
+            else:
+                raise TypeError(
+                    f"Mapping must be of type {QuantityMapping} or {PropertyMapping}, not {type(mapping)}"
+                )
+
+        for idx, mapping in enumerate(cls.time_series_metadata):
+            if not isinstance(mapping, QuantityMapping):
+                raise TypeError(
+                    f"Mapping must be of type {QuantityMapping}, not {type(mapping)}"
+                )
+
+            if cls.config.data_download_uri:
+                download_url = {
+                    "dcterms:identifier": {
+                        "@type": "xsd:anyURI",
+                        "@value": f"{cls.config.data_download_uri}/column-{idx}",
+                    }
+                }
+            else:
+                download_url = {}
+
+            column = {
+                "@type": "csvw:Column",
+                "csvw:titles": {
+                    "@type": "xsd:string",
+                    "@value": mapping.key,
+                },
+                "qudt:quantity": get_as_jsonld(mapping.graph),
+                "foaf:page": {
+                    "@type": "foaf:Document",
+                    "dcterms:format": {
+                        "@type": "xsd:anyURI",
+                        "@value": "https://www.iana.org/assignments/media-types/application/json",
+                    },
+                    "dcterms:type": {
+                        "@type": "xsd:anyURI",
+                        "@value": "http://purl.org/dc/terms/Dataset",
+                    },
+                    **download_url,
+                },
+            }
+            column_schema["csvw:column"].append(column)
+
+        graph = Graph(identifier=cls.config.graph_identifier)
+        graph.parse(data=json.dumps(triples), format="json-ld")
+        return graph
+
+    @model_validator(mode="after")
+    @classmethod
+    def run_parser(cls, self: "ExcelParser") -> "ExcelParser":
+        """
+        Parse metadata, time series metadata and time series
+        """
+
+        datafile = load_workbook(filename=self.raw_data, data_only=True)
+        macros = load_workbook(filename=self.raw_data)
+        mapping: "Dict[str, ExcelConceptMapping]" = _load_mapping_file(
+            self.mapping, self.config, ExcelConceptMapping
+        )
+
+        self._general_metadata = []
+        self._time_series_metadata = []
+        self._time_series = {}
+        for key, datum in mapping.items():
+            worksheet = datafile[datum.worksheet]
+
+            # check if mapping is time series
+            if datum.time_series_start and datum.time_series_end:
+                self.time_series[key] = [
+                    cell[0].value
+                    for cell in worksheet[
+                        datum.time_series_start : datum.time_series_end
+                    ]
+                ]
+
+            # check if there is a macro for the unit of the entity
+            if datum.value_location:
+                macro_worksheet = macros[datum.worksheet]
+                macro_value_cell = macro_worksheet[
+                    datum.value_location
+                ].number_format.split()
+                if len(macro_value_cell) != 1:
+                    macro_unit = macro_value_cell[
+                        self.config.unit_macro_location
+                    ]
+                else:
+                    macro_unit = None
+            else:
+                macro_unit = None
+
+            # check if there is a unit somewhere in the sheet
+            if datum.unit_location:
+                unit_location = worksheet[datum.unit_location].value
+            else:
+                unit_location = None
+
+            # decide which unit to take
+            unit = datum.unit or unit_location or macro_unit
+            if unit:
+                unit = _strip_unit(unit, self.config.remove_from_unit)
+
+            # make model
+            model_data = {
+                "key": datum.key,
+                "unit": unit,
+                "iri": datum.iri,
+                "annotation": datum.annotation or None,
+            }
+
+            if datum.value_location:
+                value = worksheet[datum.value_location].value
+                if model_data.get("unit"):
+                    model_data["value"] = value
+                else:
+                    model_data["value"] = str(value)
+
+            if model_data.get("unit"):
+                model = QuantityMapping(**model_data)
+            else:
+                model = PropertyMapping(**model_data)
+
+            if model_data.get("value"):
+                self._general_metadata.append(model)
+            else:
+                self._time_series_metadata.append(model)
+
+        return self

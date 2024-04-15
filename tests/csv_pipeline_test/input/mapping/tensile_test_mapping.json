@@ -12,7 +12,7 @@
     "key": "Datum/Uhrzeit"
   },
   "Dehnung": {
-    "iri": "https://w3id.org/steel/ProcessOntology/PercentageElongation",
+    "iri": "https://w3id.org/steel/ProcessOntology/Elongation",
     "key": "Dehnung"
   },
   "Kraftaufnehmer": {

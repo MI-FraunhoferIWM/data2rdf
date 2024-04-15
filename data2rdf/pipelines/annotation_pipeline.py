@@ -14,7 +14,6 @@ from pydantic import (
 from rdflib import Graph
 
 from data2rdf.config import Config
-from data2rdf.models.mapping import ClassConceptMapping
 from data2rdf.parsers import Parser
 from data2rdf.utils import get_as_jsonld, make_prefix
 
@@ -33,7 +32,7 @@ class AnnotationPipeline(BaseModel):
     raw_data: str = Field(
         ..., description="File path to the data file to be parsed."
     )
-    mapping: Union[str, Dict[str, ClassConceptMapping]] = Field(
+    mapping: Union[str, Dict[str, Any]] = Field(
         ...,
         description="""File path to the mapping file to be parsed or
         a dictionary with the mapping.""",

@@ -1,7 +1,7 @@
 # The csv2rdf conversion requires a set of relations and classes to use for
 # the annotation these are defined separately, so that they can be easily
 # adapted.
-from typing import Optional, Union
+from typing import List, Optional, Union
 
 from pydantic import AnyUrl, Field
 from pydantic_settings import BaseSettings
@@ -42,4 +42,14 @@ class Config(BaseSettings):
     namespace_placeholder: Union[str, AnyUrl] = Field(
         "http://abox-namespace-placeholder.org/",
         description="Placeholder of the extra triples to be replaced with the `base_iri` during the pipeline run.",
+    )
+
+    remove_from_unit: List[str] = Field(
+        ["[", "]", '"', " "],
+        description="Characters which should be removed from the input value for the unit",
+    )
+
+    unit_macro_location: int = Field(
+        -1,
+        description="Index where the marco for the unit in an excel cell might be located.",
     )

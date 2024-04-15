@@ -50,6 +50,15 @@ class DataParser(BaseModel):
         """Return list object with general metadata"""
         return cls._time_series
 
+    @property
+    def plain_metadata(cls) -> "Dict[str, Any]":
+        """Metadata as flat json - without units and iris.
+        Useful e.g. for the custom properties of the DSMS."""
+        return {
+            str(metadatum.iri).split(cls.config.separator)[-1]: metadatum.value
+            for metadatum in cls.general_metadata
+        }
+
     @classmethod
     @abstractmethod
     def run_parser(cls, self) -> "DataParser":
@@ -59,12 +68,6 @@ class DataParser(BaseModel):
     @abstractmethod
     def media_type(cls) -> "Union[str, AnyUrl]":
         """IANA Media type definition of the resources to be parsed."""
-
-    @property
-    @abstractmethod
-    def plain_metadata(cls) -> "Dict[str, Any]":
-        """Metadata as flat json - without units and iris.
-        Useful e.g. for the custom properties of the DSMS."""
 
     @property
     @abstractmethod

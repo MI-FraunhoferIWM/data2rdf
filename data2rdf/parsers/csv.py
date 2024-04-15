@@ -16,9 +16,10 @@ from data2rdf.models.mapping import (
 from data2rdf.utils import get_as_jsonld, make_prefix
 
 from .base import DataParser
+from .utils import _load_mapping_file, _strip_unit
 
 if TYPE_CHECKING:
-    from typing import Any, Dict
+    from typing import Dict
 
 
 class CSVParser(DataParser):
@@ -34,15 +35,6 @@ class CSVParser(DataParser):
     def media_type(cls) -> str:
         """IANA Media type definition of the resource to be parsed."""
         return "http://www.iana.org/assignments/media-types/text/csv"
-
-    @property
-    def plain_metadata(cls) -> "Dict[str, Any]":
-        """Metadata as flat json - without units and iris.
-        Useful e.g. for the custom properties of the DSMS."""
-        return {
-            metadatum.key: metadatum.value
-            for metadatum in cls.general_metadata
-        }
 
     @property
     def graph(cls) -> Graph:
@@ -144,7 +136,7 @@ class CSVParser(DataParser):
             }
             column_schema["csvw:column"].append(column)
 
-        graph = Graph()
+        graph = Graph(identifier=cls.config.graph_identifier)
         graph.parse(data=json.dumps(triples), format="json-ld")
         return graph
 
@@ -156,25 +148,38 @@ class CSVParser(DataParser):
         """
 
         datafile: str = cls._load_data_file(self)
-        mapping: "Dict[str, ClassConceptMapping]" = cls._load_mapping_file(
-            self
+        mapping: "Dict[str, ClassConceptMapping]" = _load_mapping_file(
+            self.mapping, self.config, ClassConceptMapping
         )
+
         time_series: pd.DataFrame = cls._parse_time_series(self).dropna()
 
-        # parse general metadata
+        # iterate over general metadata
         header = ["key", "value", "unit"]
         self._general_metadata = []
         for l_count, line in enumerate(datafile):
+            # remove unneeded characters
             line = line.strip("\n")
             line = line.replace('"', "")
+
+            # merge with header keys
             row = line.split(self.header_sep)
             metadatum = dict(zip(header, row))
+
+            # get the match from the mapping
             key = metadatum.get("key")
             mapping_match = mapping.get(key)
+
+            # get unit
+            unit = mapping_match.unit or metadatum.get("unit") or None
+            if unit:
+                unit = _strip_unit(unit, self.config.remove_from_unit)
+
+            # instanciate model
             model_data = {
                 "key": key,
                 "value": metadatum.get("value"),
-                "unit": mapping_match.unit or metadatum.get("unit") or None,
+                "unit": unit,
                 "iri": mapping_match.iri,
                 "annotation": mapping_match.annotation or None,
             }
@@ -187,61 +192,34 @@ class CSVParser(DataParser):
             if l_count == self.header_length - 1:
                 break
 
+        # parse time series data and meta data
         self._time_series_metadata = []
         self._time_series = {}
         for key in time_series:
-            # parse time series meta data
-            unit = time_series[key].iloc[0]
+            # get matching mapping
             mapping_match = mapping.get(key)
+
+            # get unit
+            unit = mapping_match.unit or time_series[key].iloc[0] or None
+            if unit:
+                unit = _strip_unit(unit, self.config.remove_from_unit)
+
+            # assign model
             model_data = {
                 "key": key,
-                "unit": mapping_match.unit or unit or None,
+                "unit": unit,
                 "iri": mapping_match.iri,
                 "annotation": mapping_match.annotation or None,
             }
             self.time_series_metadata.append(QuantityMapping(**model_data))
 
-            # set time series data
+            # assign time series data
             self._time_series[key] = time_series[key][1:].to_list()
 
     @classmethod
     def _load_data_file(cls, self: "CSVParser") -> StringIO:
         with open(self.raw_data, encoding=self.config.encoding) as file:
             return StringIO(file.read())
-
-    @classmethod
-    def _load_mapping_file(
-        cls, self: "CSVParser"
-    ) -> "Dict[str, ClassConceptMapping]":
-        if not isinstance(self.mapping, (str, dict)):
-            raise TypeError(
-                f"""Mapping file must be of type `{str}` or `{dict}`,
-                not `{type(self.mapping)}`."""
-            )
-        if isinstance(self.mapping, str):
-            if self.mapping.endswith("xlsx"):
-                mapping_df = pd.read_excel(
-                    self.mapping,
-                    sheet_name="sameas",
-                    engine="openpyxl",
-                )
-                mapping_df.fillna("", inplace=True)
-                mapping_df = mapping_df.apply(lambda s: s.str.replace('"', ""))
-                mapping = {
-                    row["key"]: row.to_dict()
-                    for n, row in mapping_df.iterrows()
-                }
-            elif self.mapping.endswith("json"):
-                with open(self.mapping, encoding=self.config.encoding) as file:
-                    mapping = json.load(file)
-            else:
-                raise TypeError("File type for mapping not supported!")
-            result = {
-                key: ClassConceptMapping(**row) for key, row in mapping.items()
-            }
-        if isinstance(self.mapping, dict):
-            result = self.mapping
-        return result
 
     @classmethod
     def _parse_time_series(cls, self: "CSVParser") -> pd.DataFrame:

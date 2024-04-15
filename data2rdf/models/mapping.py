@@ -14,7 +14,9 @@ from data2rdf.utils import is_float, is_integer, make_prefix
 class BasicConceptMapping(BaseModel):
     """Basic mapping for any entity"""
 
-    key: str = Field(..., description="Key of the concept in the file")
+    key: Optional[str] = Field(
+        None, description="Key of the concept in the file"
+    )
     iri: AnyUrl = Field(
         ..., description="Ontological class related to this concept"
     )
@@ -27,7 +29,7 @@ class BasicConceptMapping(BaseModel):
 
 
 class ClassConceptMapping(BasicConceptMapping):
-    """Mapping for a concept comming from the mapping file"""
+    """Mapping for a concept coming from the mapping file"""
 
     unit: Optional[Union[str, AnyUrl]] = Field(
         None, description="Symbol or QUDT IRI for the mapping"
@@ -45,6 +47,29 @@ class ClassConceptMapping(BasicConceptMapping):
             value, AnyUrl
         ):
             return value
+
+
+class ExcelConceptMapping(ClassConceptMapping):
+    """A special model for mapping from excel files to semantic concepts"""
+
+    value_location: Optional[str] = Field(
+        None, description="Cell location for the value of the quantity"
+    )
+    unit_location: Optional[str] = Field(
+        None, description="Cell location for the unit of the quantity"
+    )
+    time_series_start: Optional[str] = Field(
+        None,
+        description="Cell location for the start of the time series quantity",
+    )
+    time_series_end: Optional[str] = Field(
+        None,
+        description="Cell location for the end of the time series quantity",
+    )
+    worksheet: Optional[str] = Field(
+        None,
+        description="Name of the worksheet where the entity is located in the excel file",
+    )
 
 
 class QuantityMapping(BasicConceptMapping):
@@ -82,7 +107,7 @@ class QuantityMapping(BasicConceptMapping):
 
     @property
     def graph(cls) -> Graph:
-        graph = Graph()
+        graph = Graph(identifier=cls.config.graph_identifier)
         suffix = cls._make_suffix()
         prefix = make_prefix(cls.config)
         model = {
@@ -142,7 +167,7 @@ class PropertyMapping(BasicConceptMapping):
 
     @property
     def graph(cls) -> Graph:
-        graph = Graph()
+        graph = Graph(identifier=cls.config.graph_identifier)
         suffix = cls._make_suffix()
         prefix = make_prefix(cls.config)
         model = {

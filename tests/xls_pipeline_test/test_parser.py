@@ -10,32 +10,23 @@ working_folder = os.path.join(test_folder, "input")
 output_folder = os.path.join(test_folder, "output")
 
 mapping_folder = os.path.join(working_folder, "mapping")
-raw_data = os.path.join(working_folder, "data", "DX56_D_FZ2_WR00_43.TXT")
+raw_data = os.path.join(working_folder, "data", "AFZ1-Fz-S1Q.xlsm")
 expected = os.path.join(output_folder, "output_csv_parser.ttl")
 
-parser_args = {"header_sep": "\t", "column_sep": "\t", "header_length": 20}
-
 metadata = {
-    "TestingFacility": "institute_1",
-    "ProjectNumber": "123456",
-    "ProjectName": "proj_name_1",
-    "TimeStamp": "44335.4",
-    "MachineData": "maschine_1",
-    "ForceMeasuringDevice": "Kraftaufnehmer_1",
-    "DisplacementTransducer": "Wegaufnehmer_1",
-    "TestStandard": "ISO-XX",
+    "ProjectNumber": "Projekt_1",
+    "TimeStamp": "2016-10-11 00:00:00",
+    "MachineData": "M_1",
     "Material": "Werkstoff_1",
-    "SpecimenType": "Probentyp_1",
-    "Tester": "abc",
-    "SampleIdentifier-2": "Probentyp_2",
-    "OriginalGaugeLength": 80,
-    "ParallelLength": 120,
-    "SpecimenThickness": 1.55,
-    "SpecimenWidth": 20.04,
-    "TestingRate": 0.1,
-    "Preload": 2,
-    "Temperature": 22,
-    "Remark": "",
+    "SpecimenType": "Fz 10x20",
+    "Tester": "Fe",
+    "SampleIdentifier-2": "123456",
+    "OriginalGaugeLength": 15,
+    "SpecimenThickness": 1.5,
+    "SpecimenWidth": 9.5,
+    "TestingRate": 0.02,
+    "Temperature": 25,
+    "Remark": "None",
 }
 
 
@@ -44,7 +35,7 @@ def test_parser(extension) -> None:
     from rdflib import Graph
 
     from data2rdf.models.mapping import PropertyMapping, QuantityMapping
-    from data2rdf.parsers.csv import CSVParser
+    from data2rdf.parsers.excel import ExcelParser
 
     if isinstance(extension, str):
         mapping = os.path.join(
@@ -56,9 +47,9 @@ def test_parser(extension) -> None:
         with open(path, encoding="utf-8") as file:
             mapping = json.load(file)
 
-    parser = CSVParser(raw_data=raw_data, mapping=mapping, **parser_args)
+    parser = ExcelParser(raw_data=raw_data, mapping=mapping)
 
-    assert len(parser.general_metadata) == 20
+    assert len(parser.general_metadata) == 13
     for row in parser.general_metadata:
         assert isinstance(row, QuantityMapping) or isinstance(
             row, PropertyMapping
@@ -70,7 +61,7 @@ def test_parser(extension) -> None:
 
     assert len(parser.time_series) == 6
     for row in parser.time_series.values():
-        assert len(row) == 5734
+        assert len(row) == 460
         assert isinstance(row, list)
 
     expected_graph = Graph()
