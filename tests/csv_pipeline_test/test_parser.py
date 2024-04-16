@@ -42,6 +42,86 @@ normal_config = {"graph_identifier": "https://www.example.org"}
 bad_config = {"graph_identifier": "https://www.example.org", "foorbar": 123}
 
 
+def test_csv_parser_bad_mapping() -> None:
+    from rdflib import Graph
+
+    from data2rdf.models import PropertyMapping, QuantityMapping
+    from data2rdf.parsers import CSVParser
+
+    parser = CSVParser(
+        raw_data=raw_data,
+        mapping=os.path.join(mapping_folder, "bad_tensile_test_mapping.json"),
+        **parser_args,
+    )
+    expected_graph = Graph()
+    expected_graph.parse(expected)
+
+    assert len(parser.general_metadata) == 20
+    for row in parser.general_metadata:
+        assert isinstance(row, QuantityMapping) or isinstance(
+            row, PropertyMapping
+        )
+
+    assert len(parser.time_series_metadata) == 6
+    for row in parser.time_series_metadata:
+        assert isinstance(row, QuantityMapping)
+
+    assert len(parser.time_series) == 6
+    for row in parser.time_series.values():
+        assert len(row) == 5734
+        assert isinstance(row, list)
+
+    assert parser.graph.isomorphic(expected_graph)
+
+
+def test_csv_parser_no_match_in_mapping() -> None:
+    from rdflib import Graph
+
+    from data2rdf.models import PropertyMapping, QuantityMapping
+    from data2rdf.parsers import CSVParser
+    from data2rdf.warnings import MappingMissmatchWarning
+
+    with pytest.warns(
+        MappingMissmatchWarning, match="No match found"
+    ) as warnings:
+        parser = CSVParser(
+            raw_data=os.path.join(
+                working_folder, "data", "BAD_DX56_D_FZ2_WR00_43.TXT"
+            ),
+            mapping=os.path.join(mapping_folder, "tensile_test_mapping.json"),
+            header_sep="\t",
+            column_sep="\t",
+            header_length=21,
+        )
+
+    missmatches = [
+        warning
+        for warning in warnings
+        if warning.category == MappingMissmatchWarning
+    ]
+    assert len(missmatches) == 1
+
+    expected_graph = Graph()
+    expected_graph.parse(expected)
+
+    assert len(parser.general_metadata) == 20
+    for row in parser.general_metadata:
+        assert isinstance(row, QuantityMapping) or isinstance(
+            row, PropertyMapping
+        )
+
+    assert len(parser.time_series_metadata) == 6
+    for row in parser.time_series_metadata:
+        assert isinstance(row, QuantityMapping)
+
+    assert len(parser.time_series) == 6
+    for row in parser.time_series.values():
+        assert len(row) == 5734
+        assert isinstance(row, list)
+
+    assert parser.graph.isomorphic(expected_graph)
+
+
 @pytest.mark.parametrize("config", [normal_config, bad_config])
 def test_csv_parser_config(config) -> None:
     from rdflib import Graph

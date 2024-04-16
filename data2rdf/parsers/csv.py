@@ -1,5 +1,6 @@
 """CSV Parser for data2rdf"""
 
+import warnings
 from io import StringIO
 from typing import TYPE_CHECKING, Any
 
@@ -12,6 +13,7 @@ from data2rdf.models.mapping import (
     QuantityMapping,
 )
 from data2rdf.utils import make_prefix
+from data2rdf.warnings import MappingMissmatchWarning
 
 from .base import DataParser
 from .utils import _load_mapping_file, _strip_unit
@@ -167,24 +169,31 @@ class CSVParser(DataParser):
             key = metadatum.get("key")
             mapping_match = mapping.get(key)
 
-            # get unit
-            unit = mapping_match.unit or metadatum.get("unit") or None
-            if unit:
-                unit = _strip_unit(unit, self.config.remove_from_unit)
+            # only map the data if a match is found
+            if mapping_match:
+                # get unit
+                unit = mapping_match.unit or metadatum.get("unit") or None
+                if unit:
+                    unit = _strip_unit(unit, self.config.remove_from_unit)
 
-            # instanciate model
-            model_data = {
-                "key": key,
-                "value": metadatum.get("value"),
-                "unit": unit,
-                "iri": mapping_match.iri,
-                "annotation": mapping_match.annotation or None,
-            }
-            if model_data.get("unit"):
-                model = QuantityMapping(**model_data)
+                # instanciate model
+                model_data = {
+                    "key": key,
+                    "value": metadatum.get("value"),
+                    "unit": unit,
+                    "iri": mapping_match.iri,
+                    "annotation": mapping_match.annotation or None,
+                }
+                if model_data.get("unit"):
+                    model = QuantityMapping(**model_data)
+                else:
+                    model = PropertyMapping(**model_data)
+                self._general_metadata.append(model)
             else:
-                model = PropertyMapping(**model_data)
-            self._general_metadata.append(model)
+                warnings.warn(
+                    f"No match found in mapping for key `{key}`",
+                    MappingMissmatchWarning,
+                )
 
             if l_count == self.header_length - 1:
                 break
@@ -196,22 +205,29 @@ class CSVParser(DataParser):
             # get matching mapping
             mapping_match = mapping.get(key)
 
-            # get unit
-            unit = mapping_match.unit or time_series[key].iloc[0] or None
-            if unit:
-                unit = _strip_unit(unit, self.config.remove_from_unit)
+            if mapping_match:
+                # get unit
+                unit = mapping_match.unit or time_series[key].iloc[0] or None
+                if unit:
+                    unit = _strip_unit(unit, self.config.remove_from_unit)
 
-            # assign model
-            model_data = {
-                "key": key,
-                "unit": unit,
-                "iri": mapping_match.iri,
-                "annotation": mapping_match.annotation or None,
-            }
-            self.time_series_metadata.append(QuantityMapping(**model_data))
+                # assign model
+                model_data = {
+                    "key": key,
+                    "unit": unit,
+                    "iri": mapping_match.iri,
+                    "annotation": mapping_match.annotation or None,
+                }
+                self.time_series_metadata.append(QuantityMapping(**model_data))
 
-            # assign time series data
-            self._time_series[key] = time_series[key][1:].to_list()
+                # assign time series data
+                self._time_series[key] = time_series[key][1:].to_list()
+
+            else:
+                warnings.warn(
+                    f"No match found in mapping for key `{key}`",
+                    MappingMissmatchWarning,
+                )
 
     @classmethod
     def _load_data_file(cls, self: "CSVParser") -> StringIO:

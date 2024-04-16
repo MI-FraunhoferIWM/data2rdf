@@ -45,6 +45,58 @@ normal_config = {"graph_identifier": "https://www.example.org"}
 bad_config = {"graph_identifier": "https://www.example.org", "foorbar": 123}
 
 
+def test_csv_pipeline_bad_mapping() -> None:
+    from rdflib import Graph
+
+    from data2rdf import AnnotationPipeline, Parser
+
+    parser = AnnotationPipeline(
+        raw_data=raw_data,
+        mapping=os.path.join(mapping_folder, "bad_tensile_test_mapping.json"),
+        parser=Parser.csv,
+        parser_args=parser_args,
+        extra_triples=template,
+    )
+    expected_graph = Graph()
+    expected_graph.parse(expected)
+
+    assert parser.graph.isomorphic(expected_graph)
+
+
+def test_csv_pipeline_no_match_in_mapping() -> None:
+    from rdflib import Graph
+
+    from data2rdf import AnnotationPipeline, Parser
+    from data2rdf.warnings import MappingMissmatchWarning
+
+    with pytest.warns(UserWarning, match="No match found") as warnings:
+        parser = AnnotationPipeline(
+            raw_data=os.path.join(
+                working_folder, "data", "BAD_DX56_D_FZ2_WR00_43.TXT"
+            ),
+            parser=Parser.csv,
+            extra_triples=template,
+            mapping=os.path.join(mapping_folder, "tensile_test_mapping.json"),
+            parser_args={
+                "header_sep": "\t",
+                "column_sep": "\t",
+                "header_length": 21,
+            },
+        )
+
+    missmatches = [
+        warning
+        for warning in warnings
+        if warning.category == MappingMissmatchWarning
+    ]
+    assert len(missmatches) == 1
+
+    expected_graph = Graph()
+    expected_graph.parse(expected)
+
+    assert parser.graph.isomorphic(expected_graph)
+
+
 @pytest.mark.parametrize("config", [normal_config, bad_config])
 def test_csv_pipeline_config(config) -> None:
     from rdflib import Graph

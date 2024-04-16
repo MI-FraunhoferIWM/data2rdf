@@ -31,7 +31,6 @@ metadata = {
     "SpecimenWidth": 9.5,
     "TestingRate": 0.02,
     "Temperature": 25,
-    "Remark": "None",
 }
 
 
@@ -43,28 +42,44 @@ bad_config = {"graph_identifier": "https://www.example.org", "foorbar": 123}
 def test_csv_pipeline_config(config) -> None:
     from rdflib import Graph
 
+    from data2rdf.warnings import MappingMissmatchWarning
+
     from data2rdf import (  # isort:skip
         AnnotationPipeline,
         Parser,
     )
 
-    pipeline = AnnotationPipeline(
-        raw_data=raw_data,
-        mapping=os.path.join(mapping_folder, "tensile_test_mapping.json"),
-        parser=Parser.excel,
-        extra_triples=template,
-        config=config,
-    )
+    with pytest.warns(
+        MappingMissmatchWarning, match="Concept with key"
+    ) as warnings:
+        pipeline = AnnotationPipeline(
+            raw_data=raw_data,
+            mapping=os.path.join(mapping_folder, "tensile_test_mapping.json"),
+            parser=Parser.excel,
+            extra_triples=template,
+            config=config,
+        )
+
+    missmatches = [
+        warning
+        for warning in warnings
+        if warning.category == MappingMissmatchWarning
+    ]
+    assert len(missmatches) == 1
+
     expected_graph = Graph()
     expected_graph.parse(expected)
 
     assert pipeline.graph.isomorphic(expected_graph)
     assert str(pipeline.graph.identifier) == config["graph_identifier"]
+    assert pipeline.plain_metadata == metadata
 
 
 @pytest.mark.parametrize("extension", ["xlsx", "json", dict])
 def test_excel_pipeline(extension) -> None:
     from rdflib import Graph
+
+    from data2rdf.warnings import MappingMissmatchWarning
 
     from data2rdf import (  # isort:skip
         AnnotationPipeline,
@@ -83,14 +98,24 @@ def test_excel_pipeline(extension) -> None:
         with open(path, encoding="utf-8") as file:
             mapping = json.load(file)
 
-    pipeline = AnnotationPipeline(
-        raw_data=raw_data,
-        mapping=mapping,
-        parser=Parser.excel,
-        extra_triples=template,
-    )
+    with pytest.warns(
+        MappingMissmatchWarning, match="Concept with key"
+    ) as warnings:
+        pipeline = AnnotationPipeline(
+            raw_data=raw_data,
+            mapping=mapping,
+            parser=Parser.excel,
+            extra_triples=template,
+        )
 
-    assert len(pipeline.general_metadata) == 13
+    missmatches = [
+        warning
+        for warning in warnings
+        if warning.category == MappingMissmatchWarning
+    ]
+    assert len(missmatches) == 1
+
+    assert len(pipeline.general_metadata) == 12
     for row in pipeline.general_metadata:
         assert isinstance(row, QuantityMapping) or isinstance(
             row, PropertyMapping

@@ -1,5 +1,6 @@
 """Data2rdf excel parser"""
 
+import warnings
 from typing import Any, Dict, Union
 
 from openpyxl import load_workbook
@@ -11,6 +12,7 @@ from data2rdf.models.mapping import (
     QuantityMapping,
 )
 from data2rdf.utils import make_prefix
+from data2rdf.warnings import MappingMissmatchWarning
 
 from .base import DataParser
 from .utils import _load_mapping_file, _strip_unit
@@ -152,14 +154,41 @@ class ExcelParser(DataParser):
         for key, datum in mapping.items():
             worksheet = datafile[datum.worksheet]
 
-            # check if mapping is time series
+            if datum.value_location and (
+                datum.time_series_start and datum.time_series_end
+            ):
+                raise RuntimeError(
+                    """Both, `value_location` and `time_series_start + `time_series_end`
+                       are set. Only one of them must be set."""
+                )
+            if (
+                not datum.value_location
+                and datum.time_series_start
+                and not datum.time_series_end
+            ):
+                raise RuntimeError("Please also set `time_series_end`.")
+
+            if (
+                not datum.value_location
+                and not datum.time_series_start
+                and datum.time_series_end
+            ):
+                raise RuntimeError("Please also set `time_series_start`.")
+
+            # find data for time series
             if datum.time_series_start and datum.time_series_end:
-                self.time_series[key] = [
-                    cell[0].value
-                    for cell in worksheet[
-                        datum.time_series_start : datum.time_series_end
-                    ]
+                column = worksheet[
+                    datum.time_series_start : datum.time_series_end
                 ]
+                if column:
+                    self.time_series[key] = [cell[0].value for cell in column]
+                else:
+                    message = f"""Concept with key `{key}`
+                                  does not have a time series from `{datum.time_series_start}`
+                                  until ``{datum.time_series_end}` .
+                                  Concept will be omitted in graph.
+                                  """
+                    warnings.warn(message, MappingMissmatchWarning)
 
             # check if there is a macro for the unit of the entity
             if datum.value_location:
@@ -179,6 +208,12 @@ class ExcelParser(DataParser):
             # check if there is a unit somewhere in the sheet
             if datum.unit_location:
                 unit_location = worksheet[datum.unit_location].value
+                if not unit_location:
+                    message = f"""Concept with key `{key}`
+                                  does not have a unit at location `{datum.unit_location}`.
+                                  This mapping for the unit will be omitted in graph.
+                                  """
+                    warnings.warn(message, MappingMissmatchWarning)
             else:
                 unit_location = None
 
@@ -192,24 +227,33 @@ class ExcelParser(DataParser):
                 "key": datum.key,
                 "unit": unit,
                 "iri": datum.iri,
-                "annotation": datum.annotation or None,
+                "annotation": datum.annotation,
             }
 
-            if datum.value_location:
+            if datum.value_location and not (
+                datum.time_series_start and datum.time_series_end
+            ):
                 value = worksheet[datum.value_location].value
-                if model_data.get("unit"):
+                if model_data.get("unit") and value:
                     model_data["value"] = value
-                else:
+                elif not model_data.get("unit") and value:
                     model_data["value"] = str(value)
+                else:
+                    message = f"""Concept with key `{key}`
+                                  does not have a value at location `{datum.value_location}`.
+                                  Concept will be omitted in graph.
+                                  """
+                    warnings.warn(message, MappingMissmatchWarning)
 
-            if model_data.get("unit"):
-                model = QuantityMapping(**model_data)
-            else:
-                model = PropertyMapping(**model_data)
+            if model_data.get("value") or key in self.time_series:
+                if model_data.get("unit"):
+                    model = QuantityMapping(**model_data)
+                else:
+                    model = PropertyMapping(**model_data)
 
-            if model_data.get("value"):
-                self._general_metadata.append(model)
-            else:
-                self._time_series_metadata.append(model)
+                if model_data.get("value"):
+                    self._general_metadata.append(model)
+                else:
+                    self._time_series_metadata.append(model)
 
         return self
