@@ -183,6 +183,7 @@ class CSVParser(DataParser):
                     "unit": unit,
                     "iri": mapping_match.iri,
                     "annotation": mapping_match.annotation or None,
+                    "config": self.config,
                 }
                 if model_data.get("unit"):
                     model = QuantityMapping(**model_data)
@@ -217,6 +218,7 @@ class CSVParser(DataParser):
                     unit=unit,
                     iri=mapping_match.iri,
                     annotation=mapping_match.annotation or None,
+                    config=self.config,
                 )
 
                 # append model

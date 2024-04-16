@@ -221,6 +221,7 @@ class ExcelParser(DataParser):
                 "unit": unit,
                 "iri": datum.iri,
                 "annotation": datum.annotation,
+                "config": self.config,
             }
 
             if datum.value_location and not datum.time_series_start:
