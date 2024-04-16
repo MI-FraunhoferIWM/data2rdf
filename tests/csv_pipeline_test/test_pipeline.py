@@ -50,7 +50,7 @@ def test_csv_pipeline_bad_mapping() -> None:
 
     from data2rdf import AnnotationPipeline, Parser
 
-    parser = AnnotationPipeline(
+    pipeline = AnnotationPipeline(
         raw_data=raw_data,
         mapping=os.path.join(mapping_folder, "bad_tensile_test_mapping.json"),
         parser=Parser.csv,
@@ -60,7 +60,7 @@ def test_csv_pipeline_bad_mapping() -> None:
     expected_graph = Graph()
     expected_graph.parse(expected)
 
-    assert parser.graph.isomorphic(expected_graph)
+    assert pipeline.graph.isomorphic(expected_graph)
 
 
 def test_csv_pipeline_no_match_in_mapping() -> None:
@@ -70,7 +70,7 @@ def test_csv_pipeline_no_match_in_mapping() -> None:
     from data2rdf.warnings import MappingMissmatchWarning
 
     with pytest.warns(UserWarning, match="No match found") as warnings:
-        parser = AnnotationPipeline(
+        pipeline = AnnotationPipeline(
             raw_data=os.path.join(
                 working_folder, "data", "BAD_DX56_D_FZ2_WR00_43.TXT"
             ),
@@ -94,7 +94,7 @@ def test_csv_pipeline_no_match_in_mapping() -> None:
     expected_graph = Graph()
     expected_graph.parse(expected)
 
-    assert parser.graph.isomorphic(expected_graph)
+    assert pipeline.graph.isomorphic(expected_graph)
 
 
 @pytest.mark.parametrize("config", [normal_config, bad_config])

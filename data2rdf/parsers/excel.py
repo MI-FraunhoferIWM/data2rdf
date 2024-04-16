@@ -15,7 +15,7 @@ from data2rdf.utils import make_prefix
 from data2rdf.warnings import MappingMissmatchWarning
 
 from .base import DataParser
-from .utils import _strip_unit, load_mapping_file
+from .utils import _find_end_of_series, _strip_unit, load_mapping_file
 
 
 class ExcelParser(DataParser):
@@ -154,38 +154,27 @@ class ExcelParser(DataParser):
         for key, datum in mapping.items():
             worksheet = datafile[datum.worksheet]
 
-            if datum.value_location and (
-                datum.time_series_start and datum.time_series_end
-            ):
+            if datum.value_location and datum.time_series_start:
                 raise RuntimeError(
-                    """Both, `value_location` and `time_series_start + `time_series_end`
+                    """Both, `value_location` and `time_series_start
                        are set. Only one of them must be set."""
                 )
-            if (
-                not datum.value_location
-                and datum.time_series_start
-                and not datum.time_series_end
-            ):
-                raise RuntimeError("Please also set `time_series_end`.")
-
-            if (
-                not datum.value_location
-                and not datum.time_series_start
-                and datum.time_series_end
-            ):
-                raise RuntimeError("Please also set `time_series_start`.")
 
             # find data for time series
-            if datum.time_series_start and datum.time_series_end:
-                column = worksheet[
-                    datum.time_series_start : datum.time_series_end
-                ]
+            if datum.time_series_start:
+                time_series_end = _find_end_of_series(
+                    worksheet,
+                    datum.time_series_start,
+                    self.config.max_row_iteration,
+                )
+
+                column = worksheet[datum.time_series_start : time_series_end]
                 if column:
                     self.time_series[key] = [cell[0].value for cell in column]
                 else:
                     message = f"""Concept with key `{key}`
                                   does not have a time series from `{datum.time_series_start}`
-                                  until ``{datum.time_series_end}` .
+                                  until ``{time_series_end}` .
                                   Concept will be omitted in graph.
                                   """
                     warnings.warn(message, MappingMissmatchWarning)
@@ -230,9 +219,7 @@ class ExcelParser(DataParser):
                 "annotation": datum.annotation,
             }
 
-            if datum.value_location and not (
-                datum.time_series_start and datum.time_series_end
-            ):
+            if datum.value_location and not datum.time_series_start:
                 value = worksheet[datum.value_location].value
                 if model_data.get("unit") and value:
                     model_data["value"] = value

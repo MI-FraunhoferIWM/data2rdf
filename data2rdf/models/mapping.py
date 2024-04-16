@@ -73,10 +73,6 @@ class ExcelConceptMapping(ClassConceptMapping):
         None,
         description="Cell location for the start of the time series quantity",
     )
-    time_series_end: Optional[str] = Field(
-        None,
-        description="Cell location for the end of the time series quantity",
-    )
     worksheet: Optional[str] = Field(
         None,
         description="Name of the worksheet where the entity is located in the excel file",
@@ -96,7 +92,6 @@ class MergedConceptMapping(BasicConceptMapping):
         """Return graph object based on json-ld"""
         graph = Graph(identifier=cls.config.graph_identifier)
         graph.parse(data=json.dumps(cls.json_ld), format="json-ld")
-        print(cls.json_ld)
         return graph
 
 
@@ -203,6 +198,26 @@ class PropertyMapping(MergedConceptMapping):
                 "xsd": "http://www.w3.org/2001/XMLSchema#",
             },
             "@id": f"fileid:{cls.suffix}",
-            "@type": str(cls.iri),
             "rdfs:label": cls.value,
+            **cls.types_json,
         }
+
+    @property
+    def types_json(cls) -> "Dict[str, Any]":
+        """Dict of json-ld for class types of the individual"""
+        if cls.annotation:
+            if str(cls.annotation).endswith(cls.config.separator):
+                annotation = str(cls.annotation) + cls.value
+            else:
+                annotation = (
+                    str(cls.annotation) + cls.config.separator + cls.value
+                )
+            types = {
+                "@type": [
+                    str(cls.iri),
+                    annotation,
+                ]
+            }
+        else:
+            types = {"@type": str(cls.iri)}
+        return types

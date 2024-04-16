@@ -8,7 +8,6 @@
   "Breiten\u00e4nderung": {
     "iri": "https://w3id.org/steel/ProcessOntology/WidthChange",
     "key": "Breiten\u00e4nderung",
-    "time_series_end": "E474",
     "time_series_start": "E15",
     "unit_location": "E14",
     "worksheet": "Messdaten"
@@ -22,7 +21,6 @@
   "Dehnung": {
     "iri": "https://w3id.org/steel/ProcessOntology/PercentageElongation",
     "key": "Dehnung",
-    "time_series_end": "Q474",
     "time_series_start": "Q15",
     "unit": "\u00f7",
     "worksheet": "Messdaten"
@@ -93,7 +91,6 @@
   "Standardkraft": {
     "iri": "https://w3id.org/steel/ProcessOntology/StandardForce",
     "key": "Standardkraft",
-    "time_series_end": "C474",
     "time_series_start": "C15",
     "unit_location": "C14",
     "worksheet": "Messdaten"
@@ -101,7 +98,6 @@
   "Standardweg": {
     "iri": "https://w3id.org/steel/ProcessOntology/Extension",
     "key": "Standardweg",
-    "time_series_end": "D474",
     "time_series_start": "D15",
     "unit_location": "D14",
     "worksheet": "Messdaten"
@@ -109,7 +105,6 @@
   "Traversenweg absolut": {
     "iri": "https://w3id.org/steel/ProcessOntology/AbsoluteCrossheadTravel",
     "key": "Traversenweg absolut",
-    "time_series_end": "B474",
     "time_series_start": "B15",
     "unit_location": "B14",
     "worksheet": "Messdaten"
@@ -124,7 +119,6 @@
   "Zeit": {
     "iri": "https://w3id.org/steel/ProcessOntology/TestTime",
     "key": "Zeit",
-    "time_series_end": "A474",
     "time_series_start": "A15",
     "unit_location": "A14",
     "worksheet": "Messdaten"
