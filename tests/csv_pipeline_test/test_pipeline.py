@@ -42,6 +42,30 @@ metadata = {
 }
 
 
+def test_csv_pipeline_config() -> None:
+    from rdflib import Graph
+
+    from data2rdf import (  # isort:skip
+        AnnotationPipeline,
+        Parser,
+    )
+
+    identifier = "https://www.example.org"
+    pipeline = AnnotationPipeline(
+        raw_data=raw_data,
+        mapping=os.path.join(mapping_folder, "tensile_test_mapping.json"),
+        parser=Parser.csv,
+        parser_args=parser_args,
+        extra_triples=template,
+        config={"graph_identifier": identifier},
+    )
+    expected_graph = Graph()
+    expected_graph.parse(expected)
+
+    assert pipeline.graph.isomorphic(expected_graph)
+    assert str(pipeline.graph.identifier) == identifier
+
+
 @pytest.mark.parametrize("extension", ["xlsx", "json", dict])
 def test_csv_pipeline(extension) -> None:
     from rdflib import Graph

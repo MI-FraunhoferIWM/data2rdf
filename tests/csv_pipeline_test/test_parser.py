@@ -40,7 +40,7 @@ metadata = {
 
 
 @pytest.mark.parametrize("extension", ["xlsx", "json", dict])
-def test_parser(extension) -> None:
+def test_parser_csv(extension) -> None:
     from rdflib import Graph
 
     from data2rdf.models.mapping import PropertyMapping, QuantityMapping
