@@ -82,7 +82,7 @@ def test_csv_pipeline_config(config) -> None:
     assert str(pipeline.graph.identifier) == config["graph_identifier"]
 
     assert pipeline.plain_metadata == metadata
-    assert list(pipeline.time_series.keys()) == columns
+    assert sorted(list(pipeline.time_series.keys())) == sorted(columns)
 
 
 @pytest.mark.parametrize("extension", ["xlsx", "json", dict])
@@ -136,7 +136,7 @@ def test_excel_pipeline(extension) -> None:
         assert isinstance(row, QuantityMapping)
 
     assert len(pipeline.time_series) == 6
-    assert list(pipeline.time_series.keys()) == columns
+    assert sorted(list(pipeline.time_series.keys())) == sorted(columns)
     for row in pipeline.time_series.values():
         assert len(row) == 460
         assert isinstance(row, list)

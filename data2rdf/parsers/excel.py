@@ -154,6 +154,8 @@ class ExcelParser(DataParser):
         for key, datum in mapping.items():
             worksheet = datafile[datum.worksheet]
 
+            suffix = str(datum.iri).split(self.config.separator)[-1]
+
             if datum.value_location and datum.time_series_start:
                 raise RuntimeError(
                     """Both, `value_location` and `time_series_start
@@ -167,7 +169,6 @@ class ExcelParser(DataParser):
                     datum.time_series_start,
                     self.config.max_row_iteration,
                 )
-                suffix = str(datum.iri).split(self.config.separator)[-1]
 
                 column = worksheet[datum.time_series_start : time_series_end]
                 if column:
@@ -177,7 +178,7 @@ class ExcelParser(DataParser):
                 else:
                     message = f"""Concept with key `{key}`
                                   does not have a time series from `{datum.time_series_start}`
-                                  until ``{time_series_end}` .
+                                  until `{time_series_end}` .
                                   Concept will be omitted in graph.
                                   """
                     warnings.warn(message, MappingMissmatchWarning)
@@ -235,7 +236,7 @@ class ExcelParser(DataParser):
                                   """
                     warnings.warn(message, MappingMissmatchWarning)
 
-            if model_data.get("value") or key in self.time_series:
+            if model_data.get("value") or suffix in self.time_series:
                 if model_data.get("unit"):
                     model = QuantityMapping(**model_data)
                 else:

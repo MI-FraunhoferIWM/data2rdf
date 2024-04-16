@@ -212,20 +212,20 @@ class CSVParser(DataParser):
                     unit = _strip_unit(unit, self.config.remove_from_unit)
 
                 # assign model
-                model_data = {
-                    "key": key,
-                    "unit": unit,
-                    "iri": mapping_match.iri,
-                    "annotation": mapping_match.annotation or None,
-                }
-                self.time_series_metadata.append(QuantityMapping(**model_data))
+                model = QuantityMapping(
+                    key=key,
+                    unit=unit,
+                    iri=mapping_match.iri,
+                    annotation=mapping_match.annotation or None,
+                )
 
-                suffix = str(mapping_match.iri).split(self.config.separator)[
-                    -1
-                ]
+                # append model
+                self.time_series_metadata.append(model)
 
                 # assign time series data
-                self._time_series[suffix] = time_series[key][1:].to_list()
+                self._time_series[model.suffix] = time_series[key][
+                    1:
+                ].to_list()
 
             else:
                 warnings.warn(

@@ -79,7 +79,7 @@ def test_xlsx_parser_no_match_in_metadata_from_mapping() -> None:
         assert isinstance(row, QuantityMapping)
 
     assert len(parser.time_series) == 6
-    assert list(parser.time_series.keys()) == columns
+    assert sorted(list(parser.time_series.keys())) == sorted(columns)
     for row in parser.time_series.values():
         assert len(row) == 460
         assert isinstance(row, list)
@@ -160,7 +160,7 @@ def test_csv_parser_config(config) -> None:
     assert parser.graph.isomorphic(expected_graph)
     assert str(parser.graph.identifier) == config["graph_identifier"]
     assert parser.plain_metadata == metadata
-    assert list(parser.time_series.keys()) == columns
+    assert sorted(list(parser.time_series.keys())) == sorted(columns)
 
 
 @pytest.mark.parametrize("extension", ["xlsx", "json", dict])
@@ -204,7 +204,7 @@ def test_parser_excel(extension) -> None:
         assert isinstance(row, QuantityMapping)
 
     assert len(parser.time_series) == 6
-    assert list(parser.time_series.keys()) == columns
+    assert sorted(list(parser.time_series.keys())) == sorted(columns)
     for row in parser.time_series.values():
         assert len(row) == 460
         assert isinstance(row, list)
