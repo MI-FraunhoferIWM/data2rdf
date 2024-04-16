@@ -16,7 +16,7 @@ from data2rdf.utils import make_prefix
 from data2rdf.warnings import MappingMissmatchWarning
 
 from .base import DataParser
-from .utils import _load_mapping_file, _strip_unit
+from .utils import _strip_unit, load_mapping_file
 
 if TYPE_CHECKING:
     from typing import Dict
@@ -147,7 +147,7 @@ class CSVParser(DataParser):
         """
 
         datafile: str = cls._load_data_file(self)
-        mapping: "Dict[str, ClassConceptMapping]" = _load_mapping_file(
+        mapping: "Dict[str, ClassConceptMapping]" = load_mapping_file(
             self.mapping, self.config, ClassConceptMapping
         )
 

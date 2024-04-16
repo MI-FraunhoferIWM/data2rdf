@@ -15,7 +15,7 @@ from data2rdf.utils import make_prefix
 from data2rdf.warnings import MappingMissmatchWarning
 
 from .base import DataParser
-from .utils import _load_mapping_file, _strip_unit
+from .utils import _strip_unit, load_mapping_file
 
 
 class ExcelParser(DataParser):
@@ -144,7 +144,7 @@ class ExcelParser(DataParser):
 
         datafile = load_workbook(filename=self.raw_data, data_only=True)
         macros = load_workbook(filename=self.raw_data)
-        mapping: "Dict[str, ExcelConceptMapping]" = _load_mapping_file(
+        mapping: "Dict[str, ExcelConceptMapping]" = load_mapping_file(
             self.mapping, self.config, ExcelConceptMapping
         )
 
