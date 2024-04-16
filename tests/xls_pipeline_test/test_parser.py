@@ -28,6 +28,15 @@ metadata = {
     "Temperature": 25,
 }
 
+columns = [
+    "TestTime",
+    "StandardForce",
+    "Extension",
+    "PercentageElongation",
+    "AbsoluteCrossheadTravel",
+    "WidthChange",
+]
+
 
 normal_config = {"graph_identifier": "https://www.example.org"}
 bad_config = {"graph_identifier": "https://www.example.org", "foorbar": 123}
@@ -70,6 +79,7 @@ def test_xlsx_parser_no_match_in_metadata_from_mapping() -> None:
         assert isinstance(row, QuantityMapping)
 
     assert len(parser.time_series) == 6
+    assert list(parser.time_series.keys()) == columns
     for row in parser.time_series.values():
         assert len(row) == 460
         assert isinstance(row, list)
@@ -113,7 +123,8 @@ def test_xlsx_parser_no_match_in_timeseries_from_mapping() -> None:
         assert isinstance(row, QuantityMapping)
 
     assert len(parser.time_series) == 5
-    for row in parser.time_series.values():
+    for key, row in parser.time_series.items():
+        assert key in columns
         assert len(row) == 460
         assert isinstance(row, list)
 
@@ -149,6 +160,7 @@ def test_csv_parser_config(config) -> None:
     assert parser.graph.isomorphic(expected_graph)
     assert str(parser.graph.identifier) == config["graph_identifier"]
     assert parser.plain_metadata == metadata
+    assert list(parser.time_series.keys()) == columns
 
 
 @pytest.mark.parametrize("extension", ["xlsx", "json", dict])
@@ -192,6 +204,7 @@ def test_parser_excel(extension) -> None:
         assert isinstance(row, QuantityMapping)
 
     assert len(parser.time_series) == 6
+    assert list(parser.time_series.keys()) == columns
     for row in parser.time_series.values():
         assert len(row) == 460
         assert isinstance(row, list)

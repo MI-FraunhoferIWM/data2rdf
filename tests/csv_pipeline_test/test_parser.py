@@ -38,6 +38,15 @@ metadata = {
     "Remark": "",
 }
 
+columns = [
+    "TestTime",
+    "StandardForce",
+    "Extension",
+    "Elongation",
+    "AbsoluteCrossheadTravel",
+    "WidthChange",
+]
+
 normal_config = {"graph_identifier": "https://www.example.org"}
 bad_config = {"graph_identifier": "https://www.example.org", "foorbar": 123}
 
@@ -67,6 +76,7 @@ def test_csv_parser_bad_mapping() -> None:
         assert isinstance(row, QuantityMapping)
 
     assert len(parser.time_series) == 6
+    assert list(parser.time_series.keys()) == columns
     for row in parser.time_series.values():
         assert len(row) == 5734
         assert isinstance(row, list)
@@ -115,6 +125,7 @@ def test_csv_parser_no_match_in_mapping() -> None:
         assert isinstance(row, QuantityMapping)
 
     assert len(parser.time_series) == 6
+    assert list(parser.time_series.keys()) == columns
     for row in parser.time_series.values():
         assert len(row) == 5734
         assert isinstance(row, list)
@@ -139,6 +150,7 @@ def test_csv_parser_config(config) -> None:
 
     assert parser.graph.isomorphic(expected_graph)
     assert str(parser.graph.identifier) == config["graph_identifier"]
+    assert list(parser.time_series.keys()) == columns
 
 
 @pytest.mark.parametrize("extension", ["xlsx", "json", dict])
@@ -171,6 +183,7 @@ def test_parser_csv(extension) -> None:
         assert isinstance(row, QuantityMapping)
 
     assert len(parser.time_series) == 6
+    assert list(parser.time_series.keys()) == columns
     for row in parser.time_series.values():
         assert len(row) == 5734
         assert isinstance(row, list)

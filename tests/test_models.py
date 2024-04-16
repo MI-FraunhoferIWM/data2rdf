@@ -7,7 +7,7 @@ bad_config = {"graph_identifier": "https://www.example.org", "foorbar": 123}
 
 
 @pytest.mark.parametrize("config", [normal_config, bad_config])
-def test_csv_parser_config(config) -> None:
+def test_quantity_model(config) -> None:
     from rdflib import Graph
 
     from data2rdf import QuantityMapping

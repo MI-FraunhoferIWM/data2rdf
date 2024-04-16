@@ -33,6 +33,14 @@ metadata = {
     "Temperature": 25,
 }
 
+columns = [
+    "TestTime",
+    "StandardForce",
+    "Extension",
+    "PercentageElongation",
+    "AbsoluteCrossheadTravel",
+    "WidthChange",
+]
 
 normal_config = {"graph_identifier": "https://www.example.org"}
 bad_config = {"graph_identifier": "https://www.example.org", "foorbar": 123}
@@ -72,7 +80,9 @@ def test_csv_pipeline_config(config) -> None:
 
     assert pipeline.graph.isomorphic(expected_graph)
     assert str(pipeline.graph.identifier) == config["graph_identifier"]
+
     assert pipeline.plain_metadata == metadata
+    assert list(pipeline.time_series.keys()) == columns
 
 
 @pytest.mark.parametrize("extension", ["xlsx", "json", dict])
@@ -126,6 +136,7 @@ def test_excel_pipeline(extension) -> None:
         assert isinstance(row, QuantityMapping)
 
     assert len(pipeline.time_series) == 6
+    assert list(pipeline.time_series.keys()) == columns
     for row in pipeline.time_series.values():
         assert len(row) == 460
         assert isinstance(row, list)

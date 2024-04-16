@@ -167,10 +167,13 @@ class ExcelParser(DataParser):
                     datum.time_series_start,
                     self.config.max_row_iteration,
                 )
+                suffix = str(datum.iri).split(self.config.separator)[-1]
 
                 column = worksheet[datum.time_series_start : time_series_end]
                 if column:
-                    self.time_series[key] = [cell[0].value for cell in column]
+                    self.time_series[suffix] = [
+                        cell[0].value for cell in column
+                    ]
                 else:
                     message = f"""Concept with key `{key}`
                                   does not have a time series from `{datum.time_series_start}`

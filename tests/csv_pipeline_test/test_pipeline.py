@@ -41,6 +41,15 @@ metadata = {
     "Remark": "",
 }
 
+columns = [
+    "TestTime",
+    "StandardForce",
+    "Extension",
+    "Elongation",
+    "AbsoluteCrossheadTravel",
+    "WidthChange",
+]
+
 normal_config = {"graph_identifier": "https://www.example.org"}
 bad_config = {"graph_identifier": "https://www.example.org", "foorbar": 123}
 
@@ -95,6 +104,7 @@ def test_csv_pipeline_no_match_in_mapping() -> None:
     expected_graph.parse(expected)
 
     assert pipeline.graph.isomorphic(expected_graph)
+    assert list(pipeline.time_series.keys()) == columns
 
 
 @pytest.mark.parametrize("config", [normal_config, bad_config])
@@ -119,6 +129,7 @@ def test_csv_pipeline_config(config) -> None:
 
     assert pipeline.graph.isomorphic(expected_graph)
     assert str(pipeline.graph.identifier) == config["graph_identifier"]
+    assert list(pipeline.time_series.keys()) == columns
 
 
 @pytest.mark.parametrize("extension", ["xlsx", "json", dict])
@@ -161,6 +172,7 @@ def test_csv_pipeline(extension) -> None:
         assert isinstance(row, QuantityMapping)
 
     assert len(pipeline.time_series) == 6
+    assert list(pipeline.time_series.keys()) == columns
     for row in pipeline.time_series.values():
         assert len(row) == 5734
         assert isinstance(row, list)

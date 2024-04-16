@@ -220,8 +220,12 @@ class CSVParser(DataParser):
                 }
                 self.time_series_metadata.append(QuantityMapping(**model_data))
 
+                suffix = str(mapping_match.iri).split(self.config.separator)[
+                    -1
+                ]
+
                 # assign time series data
-                self._time_series[key] = time_series[key][1:].to_list()
+                self._time_series[suffix] = time_series[key][1:].to_list()
 
             else:
                 warnings.warn(
