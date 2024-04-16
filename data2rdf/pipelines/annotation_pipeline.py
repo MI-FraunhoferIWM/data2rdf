@@ -48,7 +48,7 @@ class AnnotationPipeline(BaseModel):
         description="A dict with specific arguments for the parser. Is passed to the parser as kwargs.",
     )
 
-    config: Config = Field(
+    config: Union[Dict[str, Any], Config] = Field(
         default_factory=Config, description="Configuration object"
     )
 
@@ -60,6 +60,14 @@ class AnnotationPipeline(BaseModel):
     model_config = ConfigDict(
         arbitrary_types_allowed=True, use_enum_values=True
     )
+
+    @field_validator("config")
+    @classmethod
+    def validate_config(cls, value: Union[Dict[str, Any], Config]) -> Config:
+        """Validate configuration"""
+        if isinstance(value, dict):
+            value = Config(**value)
+        return value
 
     @field_validator("extra_triples")
     @classmethod

@@ -30,6 +30,14 @@ class BasicConceptMapping(BaseModel):
         """Return suffix for individal"""
         return str(cls.iri).split(cls.config.separator)[-1]
 
+    @field_validator("config")
+    @classmethod
+    def validate_config(cls, value: Union[Dict[str, Any], Config]) -> Config:
+        """Validate configuration"""
+        if isinstance(value, dict):
+            value = Config(**value)
+        return value
+
 
 class ClassConceptMapping(BasicConceptMapping):
     """Mapping for a concept coming from the mapping file"""

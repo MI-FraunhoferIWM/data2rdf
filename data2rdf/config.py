@@ -3,7 +3,7 @@
 # adapted.
 from typing import List, Optional, Union
 
-from pydantic import AnyUrl, Field
+from pydantic import AnyUrl, ConfigDict, Field
 from pydantic_settings import BaseSettings
 
 
@@ -53,3 +53,5 @@ class Config(BaseSettings):
         -1,
         description="Index where the marco for the unit in an excel cell might be located.",
     )
+
+    model_config = ConfigDict(extra="ignore")

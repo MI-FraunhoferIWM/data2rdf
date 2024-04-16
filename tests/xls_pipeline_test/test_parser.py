@@ -30,12 +30,34 @@ metadata = {
 }
 
 
+normal_config = {"graph_identifier": "https://www.example.org"}
+bad_config = {"graph_identifier": "https://www.example.org", "foorbar": 123}
+
+
+@pytest.mark.parametrize("config", [normal_config, bad_config])
+def test_csv_parser_config(config) -> None:
+    from rdflib import Graph
+
+    from data2rdf.parsers import ExcelParser
+
+    parser = ExcelParser(
+        raw_data=raw_data,
+        mapping=os.path.join(mapping_folder, "tensile_test_mapping.json"),
+        config=config,
+    )
+    expected_graph = Graph()
+    expected_graph.parse(expected)
+
+    assert parser.graph.isomorphic(expected_graph)
+    assert str(parser.graph.identifier) == config["graph_identifier"]
+
+
 @pytest.mark.parametrize("extension", ["xlsx", "json", dict])
 def test_parser_excel(extension) -> None:
     from rdflib import Graph
 
-    from data2rdf.models.mapping import PropertyMapping, QuantityMapping
-    from data2rdf.parsers.excel import ExcelParser
+    from data2rdf.models import PropertyMapping, QuantityMapping
+    from data2rdf.parsers import ExcelParser
 
     if isinstance(extension, str):
         mapping = os.path.join(

@@ -4,7 +4,7 @@ import json
 from abc import abstractmethod
 from typing import TYPE_CHECKING, Any, Dict, Union
 
-from pydantic import BaseModel, Field, PrivateAttr
+from pydantic import BaseModel, Field, PrivateAttr, field_validator
 from rdflib import Graph
 
 from data2rdf import ClassConceptMapping, Config
@@ -68,6 +68,14 @@ class DataParser(BaseModel):
             str(metadatum.iri).split(cls.config.separator)[-1]: metadatum.value
             for metadatum in cls.general_metadata
         }
+
+    @field_validator("config")
+    @classmethod
+    def validate_config(cls, value: Union[Dict[str, Any], Config]) -> Config:
+        """Validate configuration"""
+        if isinstance(value, dict):
+            value = Config(**value)
+        return value
 
     @classmethod
     @abstractmethod

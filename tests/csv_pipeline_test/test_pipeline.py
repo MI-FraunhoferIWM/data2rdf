@@ -41,8 +41,12 @@ metadata = {
     "Remark": "",
 }
 
+normal_config = {"graph_identifier": "https://www.example.org"}
+bad_config = {"graph_identifier": "https://www.example.org", "foorbar": 123}
 
-def test_csv_pipeline_config() -> None:
+
+@pytest.mark.parametrize("config", [normal_config, bad_config])
+def test_csv_pipeline_config(config) -> None:
     from rdflib import Graph
 
     from data2rdf import (  # isort:skip
@@ -50,20 +54,19 @@ def test_csv_pipeline_config() -> None:
         Parser,
     )
 
-    identifier = "https://www.example.org"
     pipeline = AnnotationPipeline(
         raw_data=raw_data,
         mapping=os.path.join(mapping_folder, "tensile_test_mapping.json"),
         parser=Parser.csv,
         parser_args=parser_args,
         extra_triples=template,
-        config={"graph_identifier": identifier},
+        config=config,
     )
     expected_graph = Graph()
     expected_graph.parse(expected)
 
     assert pipeline.graph.isomorphic(expected_graph)
-    assert str(pipeline.graph.identifier) == identifier
+    assert str(pipeline.graph.identifier) == config["graph_identifier"]
 
 
 @pytest.mark.parametrize("extension", ["xlsx", "json", dict])
