@@ -22,7 +22,7 @@ class DataParser(BaseModel):
     generic parser abstract class with common parser attrubutes and functionalities
     """
 
-    raw_data: str = Field(
+    raw_data: Union[str, Dict[str, Any]] = Field(
         ..., description="File path to the data file to be parsed."
     )
     mapping: Union[str, Dict[str, ClassConceptMapping]] = Field(

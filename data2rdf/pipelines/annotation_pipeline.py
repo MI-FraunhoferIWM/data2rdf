@@ -29,8 +29,9 @@ class AnnotationPipeline(BaseModel):
     Runs the complete data2rdf pipeline.
     """
 
-    raw_data: str = Field(
-        ..., description="File path to the data file to be parsed."
+    raw_data: Union[str, Dict[str, Any]] = Field(
+        ...,
+        description="File path to the data file to be parsed or in case of a json file: the parsed data as `dict`.",
     )
     mapping: Union[str, Dict[str, Any]] = Field(
         ...,

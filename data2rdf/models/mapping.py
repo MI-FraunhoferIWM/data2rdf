@@ -221,3 +221,14 @@ class PropertyMapping(MergedConceptMapping):
         else:
             types = {"@type": str(cls.iri)}
         return types
+
+
+class JsonConceptMapping(ClassConceptMapping):
+    """A special model for mapping from json files to semantic concepts"""
+
+    value_location: str = Field(
+        ..., description="Json path for the value of the quantity or property"
+    )
+    unit_location: Optional[str] = Field(
+        None, description="Json path to the unit of the property"
+    )
