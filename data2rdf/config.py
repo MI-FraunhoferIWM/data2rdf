@@ -49,15 +49,4 @@ class Config(BaseSettings):
         description="Characters which should be removed from the input value for the unit",
     )
 
-    unit_macro_location: int = Field(
-        -1,
-        description="Index where the marco for the unit in an excel cell might be located.",
-    )
-
-    max_row_iteration: int = Field(
-        1e12,
-        description="""In Excel files, the parser is scanning for the end of the time series.
-        In order to prevent a frozen process, this maximum row number is set.""",
-    )
-
     model_config = ConfigDict(extra="ignore")

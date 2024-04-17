@@ -20,8 +20,24 @@ from .utils import _find_end_of_series, _strip_unit, load_mapping_file
 
 class ExcelParser(DataParser):
     """
-    Parses a data file of type CSV
+    Parses a data file of type excel
     """
+
+    unit_from_macro: bool = Field(
+        True,
+        description="When disabled, units coming from excel macros are neglected.",
+    )
+
+    unit_macro_location: int = Field(
+        -1,
+        description="Index where the marco for the unit in an excel cell might be located.",
+    )
+
+    max_row_iteration: int = Field(
+        1e12,
+        description="""In Excel files, the parser is scanning for the end of the time series.
+        In order to prevent a frozen process, this maximum row number is set.""",
+    )
 
     # OVERRIDE
     mapping: Union[str, Dict[str, ExcelConceptMapping]] = Field(
@@ -167,7 +183,7 @@ class ExcelParser(DataParser):
                 time_series_end = _find_end_of_series(
                     worksheet,
                     datum.time_series_start,
-                    self.config.max_row_iteration,
+                    self.max_row_iteration,
                 )
 
                 column = worksheet[datum.time_series_start : time_series_end]
@@ -184,15 +200,13 @@ class ExcelParser(DataParser):
                     warnings.warn(message, MappingMissmatchWarning)
 
             # check if there is a macro for the unit of the entity
-            if datum.value_location:
+            if self.unit_from_macro and datum.value_location:
                 macro_worksheet = macros[datum.worksheet]
                 macro_value_cell = macro_worksheet[
                     datum.value_location
                 ].number_format.split()
                 if len(macro_value_cell) != 1:
-                    macro_unit = macro_value_cell[
-                        self.config.unit_macro_location
-                    ]
+                    macro_unit = macro_value_cell[self.unit_macro_location]
                 else:
                     macro_unit = None
             else:
