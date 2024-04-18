@@ -1,0 +1,20 @@
+key;iri;value_location;unit_location;worksheet;time_series_start;unit;annotation
+Projekt;https://w3id.org/steel/ProcessOntology/ProjectNumber;F6;;Protokoll;;;
+Datum;https://w3id.org/steel/ProcessOntology/TimeStamp;AD6;;Protokoll;;;
+Prüfmaschine;https://w3id.org/steel/ProcessOntology/MachineData;I8;;Protokoll;;;
+Werkstoff;https://w3id.org/steel/ProcessOntology/Material;H7;;Protokoll;;;https://w3id.org/steel/ProcessOntology
+Probenform;https://w3id.org/steel/ProcessOntology/SpecimenType;AE7;;Protokoll;;;
+Prüfer;https://w3id.org/steel/ProcessOntology/Tester;U6;;Protokoll;;;
+Probenkennung 2;https://w3id.org/steel/ProcessOntology/SampleIdentifier-2;U7;;Protokoll;;;
+Messlänge Standardweg;https://w3id.org/steel/ProcessOntology/OriginalGaugeLength;M16;P16;Protokoll;;;
+Probendicke a;https://w3id.org/steel/ProcessOntology/SpecimenThickness;M14;P14;Protokoll;;;
+Probenbreite b;https://w3id.org/steel/ProcessOntology/SpecimenWidth;M15;P15;Protokoll;;;
+Prüfgeschwindigkeit;https://w3id.org/steel/ProcessOntology/TestingRate;J9;;Protokoll;;;
+Prüftemperatur;https://w3id.org/steel/ProcessOntology/Temperature;U8;;Protokoll;;;
+Bemerkungen;https://w3id.org/steel/ProcessOntology/Remark;UU31;;Protokoll;;;
+Zeit;https://w3id.org/steel/ProcessOntology/TestTime;;A14;Messdaten;A15;;
+Standardkraft;https://w3id.org/steel/ProcessOntology/StandardForce;;C14;Messdaten;C15;;
+Traversenweg absolut;https://w3id.org/steel/ProcessOntology/AbsoluteCrossheadTravel;;B14;Messdaten;B15;;
+Standardweg;https://w3id.org/steel/ProcessOntology/Extension;;D14;Messdaten;D15;;
+Breitenänderung;https://w3id.org/steel/ProcessOntology/WidthChange;;E14;Messdaten;E15;;
+Dehnung;https://w3id.org/steel/ProcessOntology/PercentageElongation;;;Messdaten;Q15;÷;

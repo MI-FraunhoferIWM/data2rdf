@@ -33,8 +33,10 @@ def load_mapping_file(
     Note:
         - For Excel files (.xlsx), the 'sameas' sheet is read from the Excel file.
         The contents are then transformed into a dictionary where each row corresponds to a key-value pair.
+        - For CSV files (.csv) please take care of the correct separator to be set in the config under `mapping_csv_separator`.
         - For JSON files (.json), the entire file is loaded as a dictionary.
         - If `mapping` is already a dictionary, it is returned as is.
+
     """
     if not isinstance(mapping, (str, dict)):
         raise TypeError(
@@ -56,6 +58,13 @@ def load_mapping_file(
         elif mapping.endswith("json"):
             with open(mapping, encoding=config.encoding) as file:
                 model = json.load(file)
+        elif mapping.endswith("csv"):
+            mapping_df = pd.read_csv(mapping, sep=config.mapping_csv_separator)
+            mapping_df.fillna("", inplace=True)
+            mapping_df = mapping_df.apply(lambda s: s.str.replace('"', ""))
+            model = {
+                row["key"]: row.to_dict() for n, row in mapping_df.iterrows()
+            }
         else:
             raise TypeError("File type for mapping not supported!")
 

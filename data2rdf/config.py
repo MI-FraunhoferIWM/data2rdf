@@ -49,4 +49,9 @@ class Config(BaseSettings):
         description="Characters which should be removed from the input value for the unit",
     )
 
+    mapping_csv_separator: str = Field(
+        ";",
+        description="When the mapping file is a csv, the separator to be used for parsing",
+    )
+
     model_config = ConfigDict(extra="ignore")

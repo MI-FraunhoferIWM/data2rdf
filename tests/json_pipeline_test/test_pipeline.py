@@ -73,3 +73,54 @@ def test_pipeline_json(mapping_format, data_format) -> None:
     assert pipeline.graph.isomorphic(expected_graph)
 
     assert pipeline.plain_metadata == metadata
+
+
+@pytest.mark.parametrize("extension", ["xlsx", "json", "csv", dict])
+def test_json_pipeline_different_mapping_types(extension) -> None:
+    from rdflib import Graph
+
+    from data2rdf import (  # isort:skip
+        AnnotationPipeline,
+        Parser,
+        PropertyMapping,
+        QuantityMapping,
+    )
+
+    if isinstance(extension, str):
+        mapping = os.path.join(
+            mapping_folder, f"tensile_test_mapping.{extension}"
+        )
+
+    else:
+        path = os.path.join(mapping_folder, "tensile_test_mapping.json")
+        with open(path, encoding="utf-8") as file:
+            mapping = json.load(file)
+
+    pipeline = AnnotationPipeline(
+        raw_data=raw_data_file,
+        mapping=mapping,
+        parser=Parser.json,
+    )
+
+    assert len(pipeline.general_metadata) == 2
+    for row in pipeline.general_metadata:
+        assert isinstance(row, QuantityMapping) or isinstance(
+            row, PropertyMapping
+        )
+
+    assert len(pipeline.time_series_metadata) == 2
+    for row in pipeline.time_series_metadata:
+        assert isinstance(row, QuantityMapping)
+
+    assert len(pipeline.time_series) == 2
+    assert sorted(series) == sorted(pipeline.time_series)
+    for row in pipeline.time_series.values():
+        assert len(row) == 3
+        assert isinstance(row, list)
+
+    expected_graph = Graph()
+    expected_graph.parse(expected)
+
+    assert pipeline.graph.isomorphic(expected_graph)
+
+    assert pipeline.plain_metadata == metadata

@@ -85,7 +85,7 @@ def test_csv_pipeline_config(config) -> None:
     assert sorted(list(pipeline.time_series.keys())) == sorted(columns)
 
 
-@pytest.mark.parametrize("extension", ["xlsx", "json", dict])
+@pytest.mark.parametrize("extension", ["xlsx", "json", "csv", dict])
 def test_excel_pipeline(extension) -> None:
     from rdflib import Graph
 

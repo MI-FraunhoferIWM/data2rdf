@@ -153,7 +153,7 @@ def test_csv_parser_config(config) -> None:
     assert sorted(list(parser.time_series.keys())) == sorted(columns)
 
 
-@pytest.mark.parametrize("extension", ["xlsx", "json", dict])
+@pytest.mark.parametrize("extension", ["xlsx", "json", "csv", dict])
 def test_parser_csv(extension) -> None:
     from rdflib import Graph
 
