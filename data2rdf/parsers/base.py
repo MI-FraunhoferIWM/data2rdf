@@ -22,8 +22,12 @@ class DataParser(BaseModel):
     generic parser abstract class with common parser attrubutes and functionalities
     """
 
-    raw_data: Union[str, Dict[str, Any]] = Field(
-        ..., description="File path to the data file to be parsed."
+    raw_data: Union[str, bytes, Dict[str, Any]] = Field(
+        ...,
+        description="""
+        In case of a csv: `str` with the file path or the content of the file itself.
+        In case of a json file: `dict` for the content of the file of `str` for the file content or file path.
+        In case of an excel file: `btyes` for the content or `str` for the file path""",
     )
     mapping: Union[str, Dict[str, ClassConceptMapping]] = Field(
         ...,

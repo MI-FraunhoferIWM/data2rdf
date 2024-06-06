@@ -2,6 +2,7 @@
 
 import json
 import warnings
+from pathlib import Path
 from typing import Any, Dict, Union
 
 from jsonpath_ng import parse
@@ -235,8 +236,16 @@ class JsonParser(DataParser):
     @classmethod
     def _parse_data(cls, self: "JsonParser") -> "Dict[str, Any]":
         if isinstance(self.raw_data, str):
-            with open(self.raw_data, encoding=self.config.encoding) as file:
-                content = json.load(file)
+            path = Path(self.raw_data)
+
+            if path.is_file():
+                with open(
+                    self.raw_data, encoding=self.config.encoding
+                ) as file:
+                    content = json.load(file)
+            else:
+                content = json.loads(self.raw_data)
+
         if isinstance(self.raw_data, dict):
             content = self.raw_data
         if not isinstance(self.raw_data, (str, dict)):

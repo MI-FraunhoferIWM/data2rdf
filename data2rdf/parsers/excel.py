@@ -1,6 +1,7 @@
 """Data2rdf excel parser"""
 
 import warnings
+from io import BytesIO
 from typing import Any, Dict, Union
 
 from openpyxl import load_workbook
@@ -158,8 +159,11 @@ class ExcelParser(DataParser):
         Parse metadata, time series metadata and time series
         """
 
-        datafile = load_workbook(filename=self.raw_data, data_only=True)
-        macros = load_workbook(filename=self.raw_data)
+        io: BytesIO = cls._load_data_file(self)
+
+        datafile = load_workbook(filename=io, data_only=True)
+        io.seek(0)
+        macros = load_workbook(filename=io)
         mapping: "Dict[str, ExcelConceptMapping]" = load_mapping_file(
             self.mapping, self.config, ExcelConceptMapping
         )
@@ -263,3 +267,16 @@ class ExcelParser(DataParser):
                     self._time_series_metadata.append(model)
 
         return self
+
+    @classmethod
+    def _load_data_file(cls, self: "DataParser") -> BytesIO:
+        if isinstance(self.raw_data, str):
+            with open(self.raw_data, mode="rb") as file:
+                content = BytesIO(file.read())
+        elif isinstance(self.raw_data, bytes):
+            content = BytesIO(self.raw_data)
+        else:
+            raise TypeError(
+                f"`raw_data` must be of type `str` or `btyes`, not `{type(self.raw_data)}`"
+            )
+        return content

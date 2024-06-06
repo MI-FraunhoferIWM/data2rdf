@@ -8,11 +8,10 @@ from .models import (
     QuantityMapping,
 )
 from .parsers import Parser
-from .pipelines import ABoxScaffoldPipeline, AnnotationPipeline
+from .pipelines import AnnotationPipeline
 
 __all__ = [
     "AnnotationPipeline",
-    "ABoxScaffoldPipeline",
     "Config",
     "QuantityMapping",
     "PropertyMapping",

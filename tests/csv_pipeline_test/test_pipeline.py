@@ -183,3 +183,52 @@ def test_csv_pipeline(extension) -> None:
     assert pipeline.graph.isomorphic(expected_graph)
 
     assert pipeline.plain_metadata == metadata
+
+
+@pytest.mark.parametrize("input_kind", ["path", "content"])
+def test_csv_pipeline_inputs(input_kind) -> None:
+    from rdflib import Graph
+
+    from data2rdf import (  # isort:skip
+        AnnotationPipeline,
+        Parser,
+        PropertyMapping,
+        QuantityMapping,
+    )
+
+    if input_kind == "path":
+        input_obj = raw_data
+    elif input_kind == "content":
+        with open(raw_data, encoding="utf-8") as file:
+            input_obj = file.read()
+
+    pipeline = AnnotationPipeline(
+        raw_data=input_obj,
+        mapping=os.path.join(mapping_folder, "tensile_test_mapping.json"),
+        parser=Parser.csv,
+        parser_args=parser_args,
+        extra_triples=template,
+    )
+
+    assert len(pipeline.general_metadata) == 20
+    for row in pipeline.general_metadata:
+        assert isinstance(row, QuantityMapping) or isinstance(
+            row, PropertyMapping
+        )
+
+    assert len(pipeline.time_series_metadata) == 6
+    for row in pipeline.time_series_metadata:
+        assert isinstance(row, QuantityMapping)
+
+    assert len(pipeline.time_series) == 6
+    assert sorted(list(pipeline.time_series.keys())) == sorted(columns)
+    for row in pipeline.time_series.values():
+        assert len(row) == 5734
+        assert isinstance(row, list)
+
+    expected_graph = Graph()
+    expected_graph.parse(expected)
+
+    assert pipeline.graph.isomorphic(expected_graph)
+
+    assert pipeline.plain_metadata == metadata

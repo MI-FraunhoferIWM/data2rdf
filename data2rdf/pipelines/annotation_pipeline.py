@@ -29,8 +29,10 @@ class AnnotationPipeline(BaseModel):
     Runs the complete data2rdf pipeline.
 
     Parameters:
-    - raw_data (Union[str, Dict[str, Any]]): File path to the data file to be parsed or, in case of a JSON file,
-    the parsed data as a dictionary.
+    - raw_data (Union[str, bytes, Dict[str, Any]]):
+        In case of a csv: `str` with the file path or the content of the file itself.
+        In case of a json file: `dict` for the content of the file of `str` for the file content or file path.
+        In case of an excel file: `btyes` for the content or `str` for the file path
     - mapping (Union[str, Dict[str, Any]]): File path to the mapping file to be parsed or a dictionary with the mapping.
     - parser (Parser): Parser to be used depending on the type of raw data file.
     - parser_args (Dict[str, Any]): A dictionary with specific arguments for the parser. These are passed to the parser
@@ -40,9 +42,12 @@ class AnnotationPipeline(BaseModel):
     resulting pipeline graph.
     """
 
-    raw_data: Union[str, Dict[str, Any]] = Field(
+    raw_data: Union[str, bytes, Dict[str, Any]] = Field(
         ...,
-        description="File path to the data file to be parsed or in case of a json file: the parsed data as `dict`.",
+        description="""
+        In case of a csv: `str` with the file path or the content of the file itself.
+        In case of a json file: `dict` for the content of the file of `str` for the file content or file path.
+        In case of an excel file: `btyes` for the content or `str` for the file path""",
     )
     mapping: Union[str, Dict[str, Any]] = Field(
         ...,

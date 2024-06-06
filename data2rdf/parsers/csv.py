@@ -2,6 +2,7 @@
 
 import warnings
 from io import StringIO
+from pathlib import Path
 from typing import TYPE_CHECKING, Any
 
 import pandas as pd
@@ -146,17 +147,19 @@ class CSVParser(DataParser):
         Parse metadata, time series metadata and time series
         """
 
-        datafile: str = cls._load_data_file(self)
+        datafile: StringIO = cls._load_data_file(self)
         mapping: "Dict[str, ClassConceptMapping]" = load_mapping_file(
             self.mapping, self.config, ClassConceptMapping
         )
-
-        time_series: pd.DataFrame = cls._parse_time_series(self).dropna()
+        time_series: pd.DataFrame = cls._parse_time_series(
+            self, datafile
+        ).dropna()
+        datafile.seek(0)
 
         # iterate over general metadata
         header = ["key", "value", "unit"]
         self._general_metadata = []
-        for l_count, line in enumerate(datafile):
+        for l_count, line in enumerate(datafile.readlines()):
             # remove unneeded characters
             line = line.strip("\n")
             line = line.replace('"', "")
@@ -236,14 +239,28 @@ class CSVParser(DataParser):
                 )
 
     @classmethod
-    def _load_data_file(cls, self: "CSVParser") -> StringIO:
-        with open(self.raw_data, encoding=self.config.encoding) as file:
-            return StringIO(file.read())
+    def _load_data_file(cls, self: "DataParser") -> StringIO:
+        if isinstance(self.raw_data, str):
+            path = Path(self.raw_data)
+            if path.is_file():
+                with open(
+                    self.raw_data, encoding=self.config.encoding
+                ) as file:
+                    content = StringIO(file.read())
+            else:
+                content = StringIO(self.raw_data)
+        else:
+            raise TypeError(
+                f"`raw_data` must be of type `str`, not `{type(self.raw_data)}`"
+            )
+        return content
 
     @classmethod
-    def _parse_time_series(cls, self: "CSVParser") -> pd.DataFrame:
+    def _parse_time_series(
+        cls, self: "CSVParser", datafile: "StringIO"
+    ) -> pd.DataFrame:
         return pd.read_csv(
-            self.raw_data,
+            datafile,
             encoding=self.config.encoding,
             sep=self.column_sep,
             skiprows=self.header_length,
