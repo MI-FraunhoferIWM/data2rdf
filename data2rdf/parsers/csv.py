@@ -1,8 +1,8 @@
 """CSV Parser for data2rdf"""
 
+import os
 import warnings
 from io import StringIO
-from pathlib import Path
 from typing import TYPE_CHECKING, Any
 
 import pandas as pd
@@ -241,8 +241,7 @@ class CSVParser(DataParser):
     @classmethod
     def _load_data_file(cls, self: "DataParser") -> StringIO:
         if isinstance(self.raw_data, str):
-            path = Path(self.raw_data)
-            if path.is_file():
+            if os.path.isfile(self.raw_data):
                 with open(
                     self.raw_data, encoding=self.config.encoding
                 ) as file:

@@ -1,8 +1,8 @@
 """Data2rdf excel parser"""
 
 import json
+import os
 import warnings
-from pathlib import Path
 from typing import Any, Dict, Union
 
 from jsonpath_ng import parse
@@ -236,9 +236,7 @@ class JsonParser(DataParser):
     @classmethod
     def _parse_data(cls, self: "JsonParser") -> "Dict[str, Any]":
         if isinstance(self.raw_data, str):
-            path = Path(self.raw_data)
-
-            if path.is_file():
+            if os.path.isfile(self.raw_data):
                 with open(
                     self.raw_data, encoding=self.config.encoding
                 ) as file:
