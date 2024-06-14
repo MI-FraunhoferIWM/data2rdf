@@ -98,15 +98,18 @@ class AnnotationPipeline(BaseModel):
                 extra_triples = file.read()
         elif isinstance(value, Graph):
             extra_triples = value.serialize()
+        elif isinstance(value, type(None)):
+            extra_triples = None
         else:
             raise TypeError(
-                f"`extra_triples` must be of type {str} or {Graph}, not {type(value)}."
+                f"`extra_triples` must be of type {str}, {Graph} or {type(None)}, not {type(value)}."
             )
-        extra_triples = extra_triples.replace(
-            config.namespace_placeholder, str(config.base_iri)
-        )
-        graph = Graph(identifier=config.graph_identifier)
-        graph.parse(data=extra_triples)
+        if extra_triples:
+            extra_triples = extra_triples.replace(
+                config.namespace_placeholder, str(config.base_iri)
+            )
+            graph = Graph(identifier=config.graph_identifier)
+            graph.parse(data=extra_triples)
         return value
 
     @model_validator(mode="after")
