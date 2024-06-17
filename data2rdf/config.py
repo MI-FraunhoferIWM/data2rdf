@@ -54,4 +54,10 @@ class Config(BaseSettings):
         description="When the mapping file is a csv, the separator to be used for parsing",
     )
 
+    remove_from_datafile: List[str] = Field(
+        ['"', "\r", "\n"],
+        description="""In plain text parsers, e.g. the CSV-parser,
+        there might be the need to remove certain characters when parsing""",
+    )
+
     model_config = ConfigDict(extra="ignore")

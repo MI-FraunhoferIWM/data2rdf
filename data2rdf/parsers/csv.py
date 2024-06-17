@@ -161,8 +161,8 @@ class CSVParser(DataParser):
         self._general_metadata = []
         for l_count, line in enumerate(datafile.readlines()):
             # remove unneeded characters
-            line = line.strip("\n")
-            line = line.replace('"', "")
+            for char in self.config.remove_from_datafile:
+                line = line.replace(char, "")
 
             # merge with header keys
             row = line.split(self.header_sep)
