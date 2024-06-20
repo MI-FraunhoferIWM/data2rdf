@@ -15,42 +15,42 @@ fileid:tableGroup a csvw:TableGroup ;
                             csvw:titles "Standardweg"^^xsd:string ;
                             foaf:page [ a foaf:Document ;
                                     dcterms:format "https://www.iana.org/assignments/media-types/application/json"^^xsd:anyURI ;
-                                    dcterms:identifier "https://www.example.org/download//column-3"^^xsd:anyURI ;
+                                    dcterms:identifier "https://www.example.org/download/column-3"^^xsd:anyURI ;
                                     dcterms:type "http://purl.org/dc/terms/Dataset"^^xsd:anyURI ] ],
                         [ a csvw:Column ;
                             qudt:quantity fileid:StandardForce ;
                             csvw:titles "Standardkraft"^^xsd:string ;
                             foaf:page [ a foaf:Document ;
                                     dcterms:format "https://www.iana.org/assignments/media-types/application/json"^^xsd:anyURI ;
-                                    dcterms:identifier "https://www.example.org/download//column-2"^^xsd:anyURI ;
+                                    dcterms:identifier "https://www.example.org/download/column-2"^^xsd:anyURI ;
                                     dcterms:type "http://purl.org/dc/terms/Dataset"^^xsd:anyURI ] ],
                         [ a csvw:Column ;
                             qudt:quantity fileid:AbsoluteCrossheadTravel ;
                             csvw:titles "Traversenweg absolut"^^xsd:string ;
                             foaf:page [ a foaf:Document ;
                                     dcterms:format "https://www.iana.org/assignments/media-types/application/json"^^xsd:anyURI ;
-                                    dcterms:identifier "https://www.example.org/download//column-4"^^xsd:anyURI ;
+                                    dcterms:identifier "https://www.example.org/download/column-4"^^xsd:anyURI ;
                                     dcterms:type "http://purl.org/dc/terms/Dataset"^^xsd:anyURI ] ],
                         [ a csvw:Column ;
                             qudt:quantity fileid:WidthChange ;
                             csvw:titles "Breitenänderung"^^xsd:string ;
                             foaf:page [ a foaf:Document ;
                                     dcterms:format "https://www.iana.org/assignments/media-types/application/json"^^xsd:anyURI ;
-                                    dcterms:identifier "https://www.example.org/download//column-0"^^xsd:anyURI ;
+                                    dcterms:identifier "https://www.example.org/download/column-0"^^xsd:anyURI ;
                                     dcterms:type "http://purl.org/dc/terms/Dataset"^^xsd:anyURI ] ],
                         [ a csvw:Column ;
                             qudt:quantity fileid:PercentageElongation ;
                             csvw:titles "Dehnung"^^xsd:string ;
                             foaf:page [ a foaf:Document ;
                                     dcterms:format "https://www.iana.org/assignments/media-types/application/json"^^xsd:anyURI ;
-                                    dcterms:identifier "https://www.example.org/download//column-1"^^xsd:anyURI ;
+                                    dcterms:identifier "https://www.example.org/download/column-1"^^xsd:anyURI ;
                                     dcterms:type "http://purl.org/dc/terms/Dataset"^^xsd:anyURI ] ],
                         [ a csvw:Column ;
                             qudt:quantity fileid:TestTime ;
                             csvw:titles "Zeit"^^xsd:string ;
                             foaf:page [ a foaf:Document ;
                                     dcterms:format "https://www.iana.org/assignments/media-types/application/json"^^xsd:anyURI ;
-                                    dcterms:identifier "https://www.example.org/download//column-5"^^xsd:anyURI ;
+                                    dcterms:identifier "https://www.example.org/download/column-5"^^xsd:anyURI ;
                                     dcterms:type "http://purl.org/dc/terms/Dataset"^^xsd:anyURI ] ] ] ],
         [ a csvw:Table ;
             rdfs:label "Metadata" ;

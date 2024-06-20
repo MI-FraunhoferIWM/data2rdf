@@ -24,11 +24,23 @@ class BasicConceptMapping(BaseModel):
     config: Config = Field(
         default_factory=Config, description="Configuration object"
     )
+    suffix: Optional[str] = Field(
+        None,
+        description="""Optional suffix of the individual
+        which will be constructed. If not set, the suffix of the iri
+        of the ontological class will be taken""",
+        validate_default=True,
+    )
 
-    @property
-    def suffix(cls) -> str:
+    @field_validator("suffix")
+    @classmethod
+    def validate_suffix(
+        cls, value: Optional[str], info: ValidationInfo
+    ) -> str:
         """Return suffix for individal"""
-        return str(cls.iri).split(cls.config.separator)[-1]
+        iri = info.data["iri"]
+        config = info.data["config"]
+        return value or str(iri).split(config.separator)[-1]
 
     @field_validator("config")
     @classmethod
@@ -99,7 +111,7 @@ class QuantityMapping(MergedConceptMapping):
     """Mapping for a quantity without a discrete value.
     E.g. a quantity describing a column of a time series or table."""
 
-    unit: Union[str, AnyUrl] = Field(
+    unit: Optional[Union[str, AnyUrl]] = Field(
         ..., description="Symbol or QUDT IRI for the mapping"
     )
     value: Optional[Union[int, float]] = Field(

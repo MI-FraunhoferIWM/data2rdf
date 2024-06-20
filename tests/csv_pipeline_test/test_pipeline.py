@@ -17,7 +17,7 @@ mapping_folder = os.path.join(working_folder, "mapping")
 raw_data = os.path.join(working_folder, "data", "DX56_D_FZ2_WR00_43.TXT")
 expected = os.path.join(output_folder, "output_pipeline.ttl")
 
-parser_args = {"header_sep": "\t", "column_sep": "\t", "header_length": 20}
+parser_args = {"header_sep": "\t", "column_sep": "\t", "metadata_length": 20}
 metadata = {
     "TestingFacility": "institute_1",
     "ProjectNumber": "123456",
@@ -89,7 +89,7 @@ def test_csv_pipeline_no_match_in_mapping() -> None:
             parser_args={
                 "header_sep": "\t",
                 "column_sep": "\t",
-                "header_length": 21,
+                "metadata_length": 21,
             },
         )
 

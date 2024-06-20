@@ -31,7 +31,7 @@ class Config(BaseSettings):
     encoding: str = Field("utf-8", description="Encoding used while parsing.")
 
     data_download_uri: AnyUrl = Field(
-        "https://www.example.org/download/",
+        "https://www.example.org/download",
         description="General base iri for downloading the time series after uploading",
     )
 

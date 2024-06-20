@@ -4,6 +4,7 @@ import json
 import os
 import warnings
 from typing import Any, Dict, Union
+from urllib.parse import urljoin
 
 from jsonpath_ng import parse
 from pydantic import Field, model_validator
@@ -99,7 +100,9 @@ class JsonParser(DataParser):
                 download_url = {
                     "dcterms:identifier": {
                         "@type": "xsd:anyURI",
-                        "@value": f"{cls.config.data_download_uri}/column-{idx}",
+                        "@value": urljoin(
+                            str(cls.config.data_download_uri), f"column-{idx}"
+                        ),
                     }
                 }
             else:
@@ -168,8 +171,6 @@ class JsonParser(DataParser):
                 value = results
 
             if value:
-                suffix = str(datum.iri).split(self.config.separator)[-1]
-
                 # check if there is a unit somewhere in the sheet
                 if datum.unit_location:
                     unit_expression = parse(datum.unit_location)
@@ -205,6 +206,7 @@ class JsonParser(DataParser):
                 model_data = {
                     "key": datum.key,
                     "iri": datum.iri,
+                    "suffix": datum.suffix,
                     "annotation": datum.annotation,
                     "config": self.config,
                 }
@@ -212,7 +214,7 @@ class JsonParser(DataParser):
                     model_data["unit"] = unit
                     model = QuantityMapping(**model_data)
 
-                    self._time_series[suffix] = value
+                    self._time_series[datum.suffix] = value
                     self._time_series_metadata.append(model)
                 if not isinstance(value, numericals) and not unit:
                     message = f"""Series with with key `{key}`

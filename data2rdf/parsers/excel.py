@@ -3,6 +3,7 @@
 import warnings
 from io import BytesIO
 from typing import Any, Dict, Union
+from urllib.parse import urljoin
 
 from openpyxl import load_workbook
 from pydantic import Field, model_validator
@@ -122,7 +123,9 @@ class ExcelParser(DataParser):
                 download_url = {
                     "dcterms:identifier": {
                         "@type": "xsd:anyURI",
-                        "@value": f"{cls.config.data_download_uri}/column-{idx}",
+                        "@value": urljoin(
+                            str(cls.config.data_download_uri), f"column-{idx}"
+                        ),
                     }
                 }
             else:
@@ -238,6 +241,7 @@ class ExcelParser(DataParser):
                 "key": datum.key,
                 "unit": unit,
                 "iri": datum.iri,
+                "suffix": datum.suffix,
                 "annotation": datum.annotation,
                 "config": self.config,
             }

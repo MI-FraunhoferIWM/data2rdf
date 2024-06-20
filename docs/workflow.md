@@ -49,7 +49,7 @@ parser = "csv"
 parser_args = {
       "header_sep":"\t",
       "column_sep":"\t",
-      "header_length":20
+      "metadata_legnth":20
    }
 
 pipeline = Annotation_Pipeline(

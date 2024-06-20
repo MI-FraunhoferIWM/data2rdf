@@ -4,6 +4,7 @@ import os
 import warnings
 from io import StringIO
 from typing import TYPE_CHECKING, Any
+from urllib.parse import urljoin
 
 import pandas as pd
 from pydantic import Field, model_validator
@@ -30,7 +31,12 @@ class CSVParser(DataParser):
 
     header_sep: str = Field(..., description="Header separator")
     column_sep: str = Field(..., description="Column separator")
-    header_length: int = Field(..., description="Length of header")
+    metadata_length: int = Field(
+        ..., description="Length of header with the metadata"
+    )
+    time_series_header_length: int = Field(
+        2, description="Length of header of the time series"
+    )
 
     @property
     def media_type(cls) -> str:
@@ -110,7 +116,9 @@ class CSVParser(DataParser):
                 download_url = {
                     "dcterms:identifier": {
                         "@type": "xsd:anyURI",
-                        "@value": f"{cls.config.data_download_uri}/column-{idx}",
+                        "@value": urljoin(
+                            str(cls.config.data_download_uri), f"column-{idx}"
+                        ),
                     }
                 }
             else:
@@ -159,48 +167,50 @@ class CSVParser(DataParser):
         # iterate over general metadata
         header = ["key", "value", "unit"]
         self._general_metadata = []
-        for l_count, line in enumerate(datafile.readlines()):
-            # remove unneeded characters
-            for char in self.config.remove_from_datafile:
-                line = line.replace(char, "")
+        if self.metadata_length > 0:
+            for l_count, line in enumerate(datafile.readlines()):
+                # remove unneeded characters
+                for char in self.config.remove_from_datafile:
+                    line = line.replace(char, "")
 
-            # merge with header keys
-            row = line.split(self.header_sep)
-            metadatum = dict(zip(header, row))
+                # merge with header keys
+                row = line.split(self.header_sep)
+                metadatum = dict(zip(header, row))
 
-            # get the match from the mapping
-            key = metadatum.get("key")
-            mapping_match = mapping.get(key)
+                # get the match from the mapping
+                key = metadatum.get("key")
+                mapping_match = mapping.get(key)
 
-            # only map the data if a match is found
-            if mapping_match:
-                # get unit
-                unit = mapping_match.unit or metadatum.get("unit") or None
-                if unit:
-                    unit = _strip_unit(unit, self.config.remove_from_unit)
+                # only map the data if a match is found
+                if mapping_match:
+                    # get unit
+                    unit = mapping_match.unit or metadatum.get("unit") or None
+                    if unit:
+                        unit = _strip_unit(unit, self.config.remove_from_unit)
 
-                # instanciate model
-                model_data = {
-                    "key": key,
-                    "value": metadatum.get("value"),
-                    "unit": unit,
-                    "iri": mapping_match.iri,
-                    "annotation": mapping_match.annotation or None,
-                    "config": self.config,
-                }
-                if model_data.get("unit"):
-                    model = QuantityMapping(**model_data)
+                    # instanciate model
+                    model_data = {
+                        "key": key,
+                        "value": metadatum.get("value"),
+                        "unit": unit,
+                        "iri": mapping_match.iri,
+                        "suffix": mapping_match.suffix,
+                        "annotation": mapping_match.annotation or None,
+                        "config": self.config,
+                    }
+                    if model_data.get("unit"):
+                        model = QuantityMapping(**model_data)
+                    else:
+                        model = PropertyMapping(**model_data)
+                    self._general_metadata.append(model)
                 else:
-                    model = PropertyMapping(**model_data)
-                self._general_metadata.append(model)
-            else:
-                warnings.warn(
-                    f"No match found in mapping for key `{key}`",
-                    MappingMissmatchWarning,
-                )
+                    warnings.warn(
+                        f"No match found in mapping for key `{key}`",
+                        MappingMissmatchWarning,
+                    )
 
-            if l_count == self.header_length - 1:
-                break
+                if l_count == self.metadata_length - 1:
+                    break
 
         # parse time series data and meta data
         self._time_series_metadata = []
@@ -220,6 +230,7 @@ class CSVParser(DataParser):
                     key=key,
                     unit=unit,
                     iri=mapping_match.iri,
+                    suffix=mapping_match.suffix,
                     annotation=mapping_match.annotation or None,
                     config=self.config,
                 )
@@ -229,7 +240,7 @@ class CSVParser(DataParser):
 
                 # assign time series data
                 self._time_series[model.suffix] = time_series[key][
-                    1:
+                    self.time_series_header_length - 1 :
                 ].to_list()
 
             else:
@@ -262,5 +273,5 @@ class CSVParser(DataParser):
             datafile,
             encoding=self.config.encoding,
             sep=self.column_sep,
-            skiprows=self.header_length,
+            skiprows=self.metadata_length,
         )

@@ -16,7 +16,7 @@ fileid:Dictionary a ns1:Dictionary ;
                     qudt:quantity fileid:PercentageElongation ;
                     foaf:page [ a foaf:Document ;
                             dcterms:format "https://www.iana.org/assignments/media-types/application/json"^^xsd:anyURI ;
-                            dcterms:identifier "https://www.example.org/download//column-0"^^xsd:anyURI ;
+                            dcterms:identifier "https://www.example.org/download/column-0"^^xsd:anyURI ;
                             dcterms:type "http://purl.org/dc/terms/Dataset"^^xsd:anyURI ] ] ;
             ns1:pairKey "Dehnung"^^xsd:string ],
         [ a ns1:KeyEntityPair ;
@@ -24,7 +24,7 @@ fileid:Dictionary a ns1:Dictionary ;
                     qudt:quantity fileid:Force ;
                     foaf:page [ a foaf:Document ;
                             dcterms:format "https://www.iana.org/assignments/media-types/application/json"^^xsd:anyURI ;
-                            dcterms:identifier "https://www.example.org/download//column-1"^^xsd:anyURI ;
+                            dcterms:identifier "https://www.example.org/download/column-1"^^xsd:anyURI ;
                             dcterms:type "http://purl.org/dc/terms/Dataset"^^xsd:anyURI ] ] ;
             ns1:pairKey "Standardkraft"^^xsd:string ],
         [ a ns1:KeyEntityPair ;

@@ -13,7 +13,7 @@ mapping_folder = os.path.join(working_folder, "mapping")
 raw_data = os.path.join(working_folder, "data", "DX56_D_FZ2_WR00_43.TXT")
 expected = os.path.join(output_folder, "output_csv_parser.ttl")
 
-parser_args = {"header_sep": "\t", "column_sep": "\t", "header_length": 20}
+parser_args = {"header_sep": "\t", "column_sep": "\t", "metadata_length": 20}
 
 metadata = {
     "TestingFacility": "institute_1",
@@ -101,7 +101,7 @@ def test_csv_parser_no_match_in_mapping() -> None:
             mapping=os.path.join(mapping_folder, "tensile_test_mapping.json"),
             header_sep="\t",
             column_sep="\t",
-            header_length=21,
+            metadata_length=21,
         )
 
     missmatches = [
