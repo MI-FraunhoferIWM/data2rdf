@@ -37,9 +37,7 @@ fileid:tableGroup a csvw:TableGroup ;
                             foaf1:page [ a foaf1:Document ;
                                     dcterms:format "https://www.iana.org/assignments/media-types/application/json"^^xsd:anyURI ;
                                     dcterms:identifier "https://www.example.org/download/column-2"^^xsd:anyURI ;
-                                    dcterms:type "http://purl.org/dc/terms/Dataset"^^xsd:anyURI ] ] ] ],
-        [ a csvw:Table ;
-            rdfs:label "Metadata" ] .
+                                    dcterms:type "http://purl.org/dc/terms/Dataset"^^xsd:anyURI ] ] ] ] .
 
 fileid:Sensor1 a <https://w3id.org/steel/ProcessOntology/Sensor> .
 

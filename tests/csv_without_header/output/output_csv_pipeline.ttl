@@ -23,8 +23,6 @@ fileid:TestTime a <https://w3id.org/steel/ProcessOntology/TestTime> .
 
 fileid:tableGroup a csvw:TableGroup ;
     csvw:table [ a csvw:Table ;
-            rdfs:label "Metadata" ],
-        [ a csvw:Table ;
             rdfs:label "Time series data" ;
             csvw:tableSchema [ a csvw:Schema ;
                     csvw:column [ a csvw:Column ;
