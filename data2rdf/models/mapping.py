@@ -125,19 +125,22 @@ class QuantityMapping(MergedConceptMapping):
     ) -> Optional[AnyUrl]:
         config = info.data.get("config")
         if isinstance(value, str):
-            match = _get_query_match(value, config.qudt_units)
-            if len(match) == 0:
-                warnings.warn(
-                    f"No QUDT Mapping found for unit with symbol `{value}`."
-                )
-                value = None
-            elif len(match) > 1:
-                warnings.warn(
-                    f"Multiple QUDT Mappings found for unit with symbol `{value}`."
-                )
-                value = match.pop()
-            else:
-                value = match.pop()
+            if not (value.startswith("https:") or value.startswith("http:")):
+                match = _get_query_match(value, config.qudt_units)
+                if len(match) == 0:
+                    warnings.warn(
+                        f"No QUDT Mapping found for unit with symbol `{value}`."
+                    )
+                    value = None
+                elif len(match) > 1:
+                    warnings.warn(
+                        f"Multiple QUDT Mappings found for unit with symbol `{value}`."
+                    )
+                    value = match.pop()
+                else:
+                    value = match.pop()
+        elif isinstance(value, AnyUrl):
+            value = str(value)
         return value
 
     @property
