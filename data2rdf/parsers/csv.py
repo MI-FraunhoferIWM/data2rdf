@@ -228,13 +228,23 @@ class CSVParser(DataParser):
         # parse time series data and meta data
         self._time_series_metadata = []
         self._time_series = {}
+
         for key in time_series:
             # get matching mapping
             mapping_match = mapping.get(key)
 
             if mapping_match:
                 # get unit
-                unit = mapping_match.unit or time_series[key].iloc[0] or None
+                unit = (
+                    mapping_match.unit
+                    or (
+                        time_series[key].iloc[0]
+                        if self.time_series_header_length == 2
+                        else None
+                    )
+                    or None
+                )
+
                 if unit:
                     unit = _strip_unit(unit, self.config.remove_from_unit)
 
