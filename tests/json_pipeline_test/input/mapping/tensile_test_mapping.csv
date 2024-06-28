@@ -1,0 +1,5 @@
+key;iri;value_location;unit_location;unit
+Bemerkungen;https://w3id.org/steel/ProcessOntology/Remark;details.Bemerkungen;;
+Breitenaenderung;https://w3id.org/steel/ProcessOntology/WidthChange;data.Breitenaenderung.value;data.Breitenaenderung.unit;
+Dehnung;https://w3id.org/steel/ProcessOntology/PercentageElongation;data.Dehnung;;%
+Standardkraft;https://w3id.org/steel/ProcessOntology/Force;data.Standardkraft.array;data.Standardkraft.unit;

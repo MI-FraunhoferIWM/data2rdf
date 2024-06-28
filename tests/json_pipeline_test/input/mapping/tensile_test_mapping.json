@@ -1,0 +1,25 @@
+{
+  "Bemerkungen": {
+    "iri": "https://w3id.org/steel/ProcessOntology/Remark",
+    "key": "Bemerkungen",
+    "value_location": "details.Bemerkungen"
+  },
+  "Breitenaenderung": {
+    "iri": "https://w3id.org/steel/ProcessOntology/WidthChange",
+    "key": "Breitenaenderung",
+    "unit_location": "data.Breitenaenderung.unit",
+    "value_location": "data.Breitenaenderung.value"
+  },
+  "Dehnung": {
+    "iri": "https://w3id.org/steel/ProcessOntology/PercentageElongation",
+    "key": "Dehnung",
+    "unit": "%",
+    "value_location": "data.Dehnung"
+  },
+  "Standardkraft": {
+    "iri": "https://w3id.org/steel/ProcessOntology/Force",
+    "key": "Standardkraft",
+    "unit_location": "data.Standardkraft.unit",
+    "value_location": "data.Standardkraft.array"
+  }
+}

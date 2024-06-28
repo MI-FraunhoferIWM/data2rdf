@@ -1,21 +1,15 @@
-"""Data2RDF"""
+"""Data2RDF models"""
 
-from .config import Config
-from .models import (
+from .mapping import (
     BasicConceptMapping,
     ClassConceptMapping,
     PropertyMapping,
     QuantityMapping,
 )
-from .parsers import Parser
-from .pipelines import AnnotationPipeline
 
 __all__ = [
-    "AnnotationPipeline",
-    "Config",
     "QuantityMapping",
     "PropertyMapping",
     "ClassConceptMapping",
     "BasicConceptMapping",
-    "Parser",
 ]

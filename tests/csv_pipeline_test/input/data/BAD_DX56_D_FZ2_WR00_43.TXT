@@ -18,6 +18,7 @@
 "Vorkraft"	2	"MPa"
 "Temperatur"	22	"°C"
 "Bemerkung"	""
+"foo" "bar"
 "Prüfzeit"	"Standardkraft"	"Traversenweg absolut"	"Standardweg"	"Breitenänderung"	"Dehnung"
 "s"	"N"	"mm"	"mm"	"mm"	"mm"
 0.902359827	0.576537916	0.261094396	0.767421407	0.950183725	0.035807567
