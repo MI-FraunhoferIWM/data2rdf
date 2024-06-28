@@ -7,22 +7,31 @@ working_folder = os.path.join(test_folder, "input")
 output_folder = os.path.join(test_folder, "output")
 
 mapping_folder = os.path.join(working_folder, "mapping")
-raw_data = os.path.join(working_folder, "data", "test.csv")
+raw_data = os.path.join(working_folder, "data", "data.csv")
 expected = os.path.join(output_folder, "output_csv_pipeline.ttl")
 
 
 parser_args = {
-    "time_series_sep": ",",
+    "time_series_sep": ";",
     "metadata_length": 0,
     "time_series_header_length": 1,
+    "drop_na": False,
 }
 
+columns = [
+    "Temperature",
+    "ThermalExpansionCoefficient",
+    "SpecificHeatCapacity",
+    "ModulusOfElasticity",
+    "PoissonRatio",
+    "ThermalConductivity",
+    "MassDensity",
+]
 
-columns = ["TestTime", "Sensor1", "Sensor2", "Sensor3"]
 config = {"graph_identifier": "https://www.example.org"}
 
 
-def test_csv_wo_header_pipeline() -> None:
+def test_csv_na_values_pipeline() -> None:
     from rdflib import Graph
 
     from data2rdf import (  # isort:skip
@@ -48,14 +57,14 @@ def test_csv_wo_header_pipeline() -> None:
 
     assert len(pipeline.general_metadata) == 0
 
-    assert len(pipeline.time_series_metadata) == 4
+    assert len(pipeline.time_series_metadata) == 7
     for row in pipeline.time_series_metadata:
         assert isinstance(row, QuantityMapping)
 
-    assert len(pipeline.time_series) == 4
+    assert len(pipeline.time_series) == 7
     assert sorted(list(pipeline.time_series.keys())) == sorted(columns)
     for row in pipeline.time_series.values():
-        assert len(row) == 4
+        assert len(row) == 31
         assert isinstance(row, list)
 
     expected_graph = Graph()

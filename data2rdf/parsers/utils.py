@@ -59,7 +59,11 @@ def load_mapping_file(
             with open(mapping, encoding=config.encoding) as file:
                 model = json.load(file)
         elif mapping.endswith("csv"):
-            mapping_df = pd.read_csv(mapping, sep=config.mapping_csv_separator)
+            mapping_df = pd.read_csv(
+                mapping,
+                sep=config.mapping_csv_separator,
+                encoding=config.encoding,
+            )
             mapping_df.fillna("", inplace=True)
             mapping_df = mapping_df.apply(lambda s: s.str.replace('"', ""))
             model = {

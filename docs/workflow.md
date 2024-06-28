@@ -35,7 +35,7 @@ It's a quick fix but for the moment a workaround is to add a mock-up column with
 ![details](assets/img/docu/CSV-Parser.png)
 
 The CSV Parser parses the meta data represented in rows on top of the actual column data. The parser expects the meta data to be represented as 3 columns [Name/Value/Unit(Optional)] where the unit does not have to be present. After the meta data the column data is parsed.
-The number of columns is variable. The parser requires, that the column separator of the meta data **header_sep**, the number of meta data rows **column_sep** and the separator of the columns **column_sep** are supplied as arguments as shown in the example below.
+The number of columns is variable. The parser requires, that the column separator of the meta data **metadata_sep**, the number of meta data rows **time_series_sep** and the separator of the columns **time_series_sep** are supplied as arguments as shown in the example below.
 
 ```python
 working_folder = os.path.join("tests", "tensile_test_example")
@@ -47,8 +47,8 @@ raw_data = os.path.join(working_folder,"DX56_D_FZ2_WR00_43.TXT")
 
 parser = "csv"
 parser_args = {
-      "header_sep":"\t",
-      "column_sep":"\t",
+      "metadata_sep":"\t",
+      "time_series_sep":"\t",
       "metadata_legnth":20
    }
 

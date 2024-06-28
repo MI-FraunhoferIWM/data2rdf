@@ -3,7 +3,7 @@
 import os
 import warnings
 from io import StringIO
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Any, List, Optional, Union
 from urllib.parse import urljoin
 
 import pandas as pd
@@ -15,7 +15,7 @@ from data2rdf.models.mapping import (
     QuantityMapping,
 )
 from data2rdf.utils import make_prefix
-from data2rdf.warnings import MappingMissmatchWarning
+from data2rdf.warnings import MappingMissmatchWarning, ParserWarning
 
 from .base import DataParser
 from .utils import _strip_unit, load_mapping_file
@@ -29,13 +29,18 @@ class CSVParser(DataParser):
     Parses the csv file
     """
 
-    header_sep: str = Field(..., description="Header separator")
-    column_sep: str = Field(..., description="Column separator")
-    metadata_length: int = Field(
-        ..., description="Length of header with the metadata"
+    metadata_sep: Optional[str] = Field(
+        None, description="Metadata column separator"
+    )
+    metadata_length: int = Field(..., description="Length of the metadata")
+    time_series_sep: Optional[str] = Field(
+        None, description="Column separator of the time series header"
     )
     time_series_header_length: int = Field(
         2, description="Length of header of the time series"
+    )
+    drop_na: Optional[bool] = Field(
+        True, description="Whether NA-values shall be dropped or not"
     )
 
     @property
@@ -172,22 +177,28 @@ class CSVParser(DataParser):
         mapping: "Dict[str, ClassConceptMapping]" = load_mapping_file(
             self.mapping, self.config, ClassConceptMapping
         )
-        time_series: pd.DataFrame = cls._parse_time_series(
+        time_series: Union[pd.DataFrame, List[None]] = cls._parse_time_series(
             self, datafile
-        ).dropna()
+        )
+        if self.drop_na:
+            time_series.dropna(inplace=True)
         datafile.seek(0)
 
         # iterate over general metadata
         header = ["key", "value", "unit"]
         self._general_metadata = []
         if self.metadata_length > 0:
+            if not self.metadata_sep:
+                raise ValueError(
+                    "`metadata_length` is > 0 but `metadata_sep` is not set"
+                )
             for l_count, line in enumerate(datafile.readlines()):
                 # remove unneeded characters
                 for char in self.config.remove_from_datafile:
                     line = line.replace(char, "")
 
                 # merge with header keys
-                row = line.split(self.header_sep)
+                row = line.split(self.metadata_sep)
                 metadatum = dict(zip(header, row))
 
                 # get the match from the mapping
@@ -291,10 +302,18 @@ class CSVParser(DataParser):
     @classmethod
     def _parse_time_series(
         cls, self: "CSVParser", datafile: "StringIO"
-    ) -> pd.DataFrame:
-        return pd.read_csv(
-            datafile,
-            encoding=self.config.encoding,
-            sep=self.column_sep,
-            skiprows=self.metadata_length,
-        )
+    ) -> Union[pd.DataFrame, List[None]]:
+        if self.time_series_sep:
+            response = pd.read_csv(
+                datafile,
+                encoding=self.config.encoding,
+                sep=self.time_series_sep,
+                skiprows=self.metadata_length,
+            )
+        else:
+            warnings.warn(
+                "`time_series_sep` is not set. Any potential time series in the data file will be skipped.",
+                ParserWarning,
+            )
+            response = []
+        return response
