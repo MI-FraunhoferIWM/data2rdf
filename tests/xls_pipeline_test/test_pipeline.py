@@ -65,7 +65,7 @@ def test_csv_pipeline_config(config) -> None:
             mapping=os.path.join(mapping_folder, "tensile_test_mapping.json"),
             parser=Parser.excel,
             extra_triples=template,
-            parser_args={"dropna": True},
+            parser_args={"dropna": True, "unit_from_macro": True},
             config=config,
         )
 
@@ -117,7 +117,7 @@ def test_excel_pipeline(extension) -> None:
             mapping=mapping,
             parser=Parser.excel,
             extra_triples=template,
-            parser_args={"dropna": True},
+            parser_args={"dropna": True, "unit_from_macro": True},
         )
 
     missmatches = [
@@ -177,7 +177,7 @@ def test_excel_pipeline_inputs(input_kind) -> None:
             mapping=os.path.join(mapping_folder, "tensile_test_mapping.json"),
             parser=Parser.excel,
             extra_triples=template,
-            parser_args={"dropna": True},
+            parser_args={"dropna": True, "unit_from_macro": True},
         )
 
     missmatches = [

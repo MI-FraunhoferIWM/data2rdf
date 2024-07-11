@@ -27,8 +27,8 @@ class ExcelParser(DataParser):
     """
 
     unit_from_macro: bool = Field(
-        True,
-        description="When disabled, units coming from excel macros are neglected.",
+        False,
+        description="When enabled, units coming from excel macros will be taken into account.",
     )
 
     unit_macro_location: int = Field(

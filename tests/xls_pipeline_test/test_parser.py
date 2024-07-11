@@ -58,6 +58,7 @@ def test_xlsx_parser_no_match_in_metadata_from_mapping() -> None:
                 mapping_folder, "bad_metadata_tensile_test_mapping.json"
             ),
             dropna=True,
+            unit_from_macro=True,
         )
     missmatches = [
         warning
@@ -101,6 +102,7 @@ def test_xlsx_parser_no_match_in_timeseries_from_mapping() -> None:
                 mapping_folder, "bad_timeseries_tensile_test_mapping.json"
             ),
             dropna=True,
+            unit_from_macro=True,
         )
 
     missmatches = [
@@ -144,6 +146,7 @@ def test_csv_parser_config(config) -> None:
             raw_data=raw_data,
             mapping=os.path.join(mapping_folder, "tensile_test_mapping.json"),
             dropna=True,
+            unit_from_macro=True,
             config=config,
         )
 
@@ -184,7 +187,12 @@ def test_parser_excel(extension) -> None:
     with pytest.warns(
         MappingMissmatchWarning, match="Concept with key `Bemerkungen`"
     ) as warnings:
-        parser = ExcelParser(raw_data=raw_data, mapping=mapping, dropna=True)
+        parser = ExcelParser(
+            raw_data=raw_data,
+            mapping=mapping,
+            dropna=True,
+            unit_from_macro=True,
+        )
 
     missmatches = [
         warning
@@ -237,6 +245,7 @@ def test_parser_excel_inputs(input_kind) -> None:
             raw_data=input_obj,
             mapping=os.path.join(mapping_folder, "tensile_test_mapping.json"),
             dropna=True,
+            unit_from_macro=True,
         )
     missmatches = [
         warning
