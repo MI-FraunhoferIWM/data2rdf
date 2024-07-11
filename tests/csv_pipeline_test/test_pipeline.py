@@ -108,7 +108,7 @@ def test_csv_pipeline_no_match_in_mapping() -> None:
     expected_graph.parse(expected)
 
     assert pipeline.graph.isomorphic(expected_graph)
-    assert sorted(list(pipeline.time_series.keys())) == sorted(columns)
+    assert sorted(list(pipeline.time_series.columns)) == sorted(columns)
 
 
 @pytest.mark.parametrize("config", [normal_config, bad_config])
@@ -133,7 +133,7 @@ def test_csv_pipeline_config(config) -> None:
 
     assert pipeline.graph.isomorphic(expected_graph)
     assert str(pipeline.graph.identifier) == config["graph_identifier"]
-    assert sorted(list(pipeline.time_series.keys())) == sorted(columns)
+    assert sorted(list(pipeline.time_series.columns)) == sorted(columns)
 
 
 @pytest.mark.parametrize("extension", ["xlsx", "json", "csv", dict])
@@ -175,11 +175,10 @@ def test_csv_pipeline(extension) -> None:
     for row in pipeline.time_series_metadata:
         assert isinstance(row, QuantityMapping)
 
-    assert len(pipeline.time_series) == 6
-    assert sorted(list(pipeline.time_series.keys())) == sorted(columns)
-    for row in pipeline.time_series.values():
-        assert len(row) == 5734
-        assert isinstance(row, list)
+    assert len(pipeline.time_series.columns) == 6
+    assert sorted(list(pipeline.time_series.columns)) == sorted(columns)
+    for name, column in pipeline.time_series.items():
+        assert len(column) == 5734
 
     expected_graph = Graph()
     expected_graph.parse(expected)
@@ -224,11 +223,10 @@ def test_csv_pipeline_inputs(input_kind) -> None:
     for row in pipeline.time_series_metadata:
         assert isinstance(row, QuantityMapping)
 
-    assert len(pipeline.time_series) == 6
-    assert sorted(list(pipeline.time_series.keys())) == sorted(columns)
-    for row in pipeline.time_series.values():
-        assert len(row) == 5734
-        assert isinstance(row, list)
+    assert len(pipeline.time_series.columns) == 6
+    assert sorted(list(pipeline.time_series.columns)) == sorted(columns)
+    for name, column in pipeline.time_series.items():
+        assert len(column) == 5734
 
     expected_graph = Graph()
     expected_graph.parse(expected)

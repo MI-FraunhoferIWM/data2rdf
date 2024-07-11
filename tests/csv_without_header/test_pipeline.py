@@ -44,7 +44,7 @@ def test_csv_wo_header_pipeline() -> None:
 
     assert pipeline.graph.isomorphic(expected_graph)
     assert str(pipeline.graph.identifier) == config["graph_identifier"]
-    assert sorted(list(pipeline.time_series.keys())) == sorted(columns)
+    assert sorted(list(pipeline.time_series.columns)) == sorted(columns)
 
     assert len(pipeline.general_metadata) == 0
 
@@ -52,11 +52,10 @@ def test_csv_wo_header_pipeline() -> None:
     for row in pipeline.time_series_metadata:
         assert isinstance(row, QuantityMapping)
 
-    assert len(pipeline.time_series) == 4
-    assert sorted(list(pipeline.time_series.keys())) == sorted(columns)
-    for row in pipeline.time_series.values():
-        assert len(row) == 4
-        assert isinstance(row, list)
+    assert len(pipeline.time_series.columns) == 4
+    assert sorted(list(pipeline.time_series.columns)) == sorted(columns)
+    for name, column in pipeline.time_series.items():
+        assert len(column) == 4
 
     expected_graph = Graph()
     expected_graph.parse(expected)

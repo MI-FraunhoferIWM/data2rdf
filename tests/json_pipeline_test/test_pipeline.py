@@ -61,11 +61,10 @@ def test_pipeline_json(mapping_format, data_format) -> None:
     for row in pipeline.time_series_metadata:
         assert isinstance(row, QuantityMapping)
 
-    assert len(pipeline.time_series) == 2
+    assert len(pipeline.time_series.columns) == 2
     assert sorted(series) == sorted(pipeline.time_series)
-    for row in pipeline.time_series.values():
-        assert len(row) == 3
-        assert isinstance(row, list)
+    for name, column in pipeline.time_series.items():
+        assert len(column) == 3
 
     expected_graph = Graph()
     expected_graph.parse(expected)
@@ -112,11 +111,10 @@ def test_json_pipeline_different_mapping_types(extension) -> None:
     for row in pipeline.time_series_metadata:
         assert isinstance(row, QuantityMapping)
 
-    assert len(pipeline.time_series) == 2
+    assert len(pipeline.time_series.columns) == 2
     assert sorted(series) == sorted(pipeline.time_series)
-    for row in pipeline.time_series.values():
-        assert len(row) == 3
-        assert isinstance(row, list)
+    for name, column in pipeline.time_series.items():
+        assert len(column) == 3
 
     expected_graph = Graph()
     expected_graph.parse(expected)

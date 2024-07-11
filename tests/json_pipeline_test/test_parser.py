@@ -56,11 +56,10 @@ def test_parser_json(mapping_format, data_format) -> None:
     for row in parser.time_series_metadata:
         assert isinstance(row, QuantityMapping)
 
-    assert len(parser.time_series) == 2
+    assert len(parser.time_series.columns) == 2
     assert sorted(series) == sorted(parser.time_series)
-    for row in parser.time_series.values():
-        assert len(row) == 3
-        assert isinstance(row, list)
+    for name, column in parser.time_series.items():
+        assert len(column) == 3
 
     expected_graph = Graph()
     expected_graph.parse(expected)
@@ -99,11 +98,10 @@ def test_json_parser_different_mapping_files(extension) -> None:
     for row in parser.time_series_metadata:
         assert isinstance(row, QuantityMapping)
 
-    assert len(parser.time_series) == 2
+    assert len(parser.time_series.columns) == 2
     assert sorted(series) == sorted(parser.time_series)
-    for row in parser.time_series.values():
-        assert len(row) == 3
-        assert isinstance(row, list)
+    for name, column in parser.time_series.items():
+        assert len(column) == 3
 
     expected_graph = Graph()
     expected_graph.parse(expected)

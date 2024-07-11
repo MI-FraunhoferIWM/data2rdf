@@ -44,12 +44,11 @@ def test_csv_wo_header_parser_config() -> None:
     for row in parser.time_series_metadata:
         assert isinstance(row, QuantityMapping)
 
-    assert len(parser.time_series) == 4
-    assert sorted(list(parser.time_series.keys())) == sorted(columns)
+    assert len(parser.time_series.columns) == 4
+    assert sorted(list(parser.time_series.columns)) == sorted(columns)
 
-    for row in parser.time_series.values():
-        assert len(row) == 4
-        assert isinstance(row, list)
+    for name, column in parser.time_series.items():
+        assert len(column) == 4
 
     assert parser.graph.isomorphic(expected_graph)
     assert parser.plain_metadata == {}

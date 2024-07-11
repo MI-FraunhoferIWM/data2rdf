@@ -82,24 +82,3 @@ def _strip_unit(symbol: str, char_list: "List[str]") -> str:
     for char in char_list:
         symbol = symbol.strip(char)
     return symbol
-
-
-def _find_end_of_series(
-    worksheet: "Any", start_cell: str, max_iter_row: int
-) -> str:
-    column_name = start_cell.rstrip("0123456789")
-    row_name = int(start_cell.lstrip(column_name))
-
-    # go trough the rows and check when the value is empty to get the
-    # location end
-    while row_name <= max_iter_row:
-        cell_name = f"{column_name}{row_name}"
-        cell = worksheet[cell_name]
-
-        if cell.value == "" or cell.value is None:
-            row_name -= 1
-            col_end_pos = f"{column_name}{row_name}"
-            break
-
-        row_name += 1
-    return col_end_pos

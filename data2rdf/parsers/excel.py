@@ -5,6 +5,7 @@ from io import BytesIO
 from typing import Any, Dict, Union
 from urllib.parse import urljoin
 
+import pandas as pd
 from openpyxl import load_workbook
 from pydantic import Field, model_validator
 
@@ -17,7 +18,7 @@ from data2rdf.utils import make_prefix
 from data2rdf.warnings import MappingMissmatchWarning
 
 from .base import DataParser
-from .utils import _find_end_of_series, _strip_unit, load_mapping_file
+from .utils import _strip_unit, load_mapping_file
 
 
 class ExcelParser(DataParser):
@@ -33,12 +34,6 @@ class ExcelParser(DataParser):
     unit_macro_location: int = Field(
         -1,
         description="Index where the marco for the unit in an excel cell might be located.",
-    )
-
-    max_row_iteration: int = Field(
-        1e12,
-        description="""In Excel files, the parser is scanning for the end of the time series.
-        In order to prevent a frozen process, this maximum row number is set.""",
     )
 
     # OVERRIDE
@@ -103,9 +98,13 @@ class ExcelParser(DataParser):
                 }
             ]
             for idx, mapping in enumerate(cls.time_series_metadata):
-                if not isinstance(mapping, QuantityMapping):
+                if isinstance(mapping, QuantityMapping):
+                    entity = {"qudt:quantity": mapping.json_ld}
+                elif isinstance(mapping, PropertyMapping):
+                    entity = {"dcterms:subject": mapping.json_ld}
+                else:
                     raise TypeError(
-                        f"Mapping must be of type {QuantityMapping}, not {type(mapping)}"
+                        f"Mapping must be of type {QuantityMapping} or {PropertyMapping}, not {type(mapping)}"
                     )
 
                 if cls.config.data_download_uri:
@@ -127,7 +126,7 @@ class ExcelParser(DataParser):
                         "@type": "xsd:string",
                         "@value": mapping.key,
                     },
-                    "qudt:quantity": mapping.json_ld,
+                    **entity,
                     "foaf:page": {
                         "@type": "foaf:Document",
                         "dcterms:format": {
@@ -191,8 +190,6 @@ class ExcelParser(DataParser):
         for key, datum in mapping.items():
             worksheet = datafile[datum.worksheet]
 
-            suffix = str(datum.iri).split(self.config.separator)[-1]
-
             if datum.value_location and datum.time_series_start:
                 raise RuntimeError(
                     """Both, `value_location` and `time_series_start
@@ -201,15 +198,12 @@ class ExcelParser(DataParser):
 
             # find data for time series
             if datum.time_series_start:
-                time_series_end = _find_end_of_series(
-                    worksheet,
-                    datum.time_series_start,
-                    self.max_row_iteration,
-                )
+                column_name = datum.time_series_start.rstrip("0123456789")
+                time_series_end = f"{column_name}{worksheet.max_row}"
 
                 column = worksheet[datum.time_series_start : time_series_end]
                 if column:
-                    self.time_series[suffix] = [
+                    self._time_series[datum.suffix] = [
                         cell[0].value for cell in column
                     ]
                 else:
@@ -273,7 +267,7 @@ class ExcelParser(DataParser):
                                   """
                     warnings.warn(message, MappingMissmatchWarning)
 
-            if model_data.get("value") or suffix in self.time_series:
+            if model_data.get("value") or datum.suffix in self.time_series:
                 if model_data.get("unit"):
                     model = QuantityMapping(**model_data)
                 else:
@@ -284,6 +278,13 @@ class ExcelParser(DataParser):
                 else:
                     self._time_series_metadata.append(model)
 
+        # set time series as pd dataframe
+        self._time_series = pd.DataFrame.from_dict(
+            self._time_series, orient="index"
+        ).transpose()
+        # check if drop na:
+        if self.dropna:
+            self._time_series.dropna(how="all", inplace=True)
         return self
 
     @classmethod

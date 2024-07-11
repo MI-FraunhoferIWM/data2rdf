@@ -65,6 +65,7 @@ def test_csv_pipeline_config(config) -> None:
             mapping=os.path.join(mapping_folder, "tensile_test_mapping.json"),
             parser=Parser.excel,
             extra_triples=template,
+            parser_args={"dropna": True},
             config=config,
         )
 
@@ -82,7 +83,7 @@ def test_csv_pipeline_config(config) -> None:
     assert str(pipeline.graph.identifier) == config["graph_identifier"]
 
     assert pipeline.plain_metadata == metadata
-    assert sorted(list(pipeline.time_series.keys())) == sorted(columns)
+    assert sorted(list(pipeline.time_series.columns)) == sorted(columns)
 
 
 @pytest.mark.parametrize("extension", ["xlsx", "json", "csv", dict])
@@ -116,6 +117,7 @@ def test_excel_pipeline(extension) -> None:
             mapping=mapping,
             parser=Parser.excel,
             extra_triples=template,
+            parser_args={"dropna": True},
         )
 
     missmatches = [
@@ -135,11 +137,10 @@ def test_excel_pipeline(extension) -> None:
     for row in pipeline.time_series_metadata:
         assert isinstance(row, QuantityMapping)
 
-    assert len(pipeline.time_series) == 6
-    assert sorted(list(pipeline.time_series.keys())) == sorted(columns)
-    for row in pipeline.time_series.values():
-        assert len(row) == 460
-        assert isinstance(row, list)
+    assert len(pipeline.time_series.columns) == 6
+    assert sorted(list(pipeline.time_series.columns)) == sorted(columns)
+    for name, column in pipeline.time_series.items():
+        assert len(column) == 460
 
     expected_graph = Graph()
     expected_graph.parse(expected)
@@ -176,6 +177,7 @@ def test_excel_pipeline_inputs(input_kind) -> None:
             mapping=os.path.join(mapping_folder, "tensile_test_mapping.json"),
             parser=Parser.excel,
             extra_triples=template,
+            parser_args={"dropna": True},
         )
 
     missmatches = [
@@ -195,11 +197,10 @@ def test_excel_pipeline_inputs(input_kind) -> None:
     for row in pipeline.time_series_metadata:
         assert isinstance(row, QuantityMapping)
 
-    assert len(pipeline.time_series) == 6
-    assert sorted(list(pipeline.time_series.keys())) == sorted(columns)
-    for row in pipeline.time_series.values():
-        assert len(row) == 460
-        assert isinstance(row, list)
+    assert len(pipeline.time_series.columns) == 6
+    assert sorted(list(pipeline.time_series.columns)) == sorted(columns)
+    for name, column in pipeline.time_series.items():
+        assert len(column) == 460
 
     expected_graph = Graph()
     expected_graph.parse(expected)

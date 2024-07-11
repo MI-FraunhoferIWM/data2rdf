@@ -57,6 +57,7 @@ def test_xlsx_parser_no_match_in_metadata_from_mapping() -> None:
             mapping=os.path.join(
                 mapping_folder, "bad_metadata_tensile_test_mapping.json"
             ),
+            dropna=True,
         )
     missmatches = [
         warning
@@ -78,11 +79,10 @@ def test_xlsx_parser_no_match_in_metadata_from_mapping() -> None:
     for row in parser.time_series_metadata:
         assert isinstance(row, QuantityMapping)
 
-    assert len(parser.time_series) == 6
-    assert sorted(list(parser.time_series.keys())) == sorted(columns)
-    for row in parser.time_series.values():
-        assert len(row) == 460
-        assert isinstance(row, list)
+    assert len(parser.time_series.columns) == 6
+    assert sorted(list(parser.time_series.columns)) == sorted(columns)
+    for name, column in parser.time_series.items():
+        assert len(column) == 460
 
 
 def test_xlsx_parser_no_match_in_timeseries_from_mapping() -> None:
@@ -100,6 +100,7 @@ def test_xlsx_parser_no_match_in_timeseries_from_mapping() -> None:
             mapping=os.path.join(
                 mapping_folder, "bad_timeseries_tensile_test_mapping.json"
             ),
+            dropna=True,
         )
 
     missmatches = [
@@ -122,11 +123,9 @@ def test_xlsx_parser_no_match_in_timeseries_from_mapping() -> None:
     for row in parser.time_series_metadata:
         assert isinstance(row, QuantityMapping)
 
-    assert len(parser.time_series) == 5
-    for key, row in parser.time_series.items():
-        assert key in columns
-        assert len(row) == 460
-        assert isinstance(row, list)
+    assert len(parser.time_series.columns) == 5
+    for name, column in parser.time_series.items():
+        assert len(column) == 460
 
     assert parser.plain_metadata == metadata
 
@@ -144,6 +143,7 @@ def test_csv_parser_config(config) -> None:
         parser = ExcelParser(
             raw_data=raw_data,
             mapping=os.path.join(mapping_folder, "tensile_test_mapping.json"),
+            dropna=True,
             config=config,
         )
 
@@ -160,7 +160,7 @@ def test_csv_parser_config(config) -> None:
     assert parser.graph.isomorphic(expected_graph)
     assert str(parser.graph.identifier) == config["graph_identifier"]
     assert parser.plain_metadata == metadata
-    assert sorted(list(parser.time_series.keys())) == sorted(columns)
+    assert sorted(list(parser.time_series.columns)) == sorted(columns)
 
 
 @pytest.mark.parametrize("extension", ["xlsx", "json", "csv", dict])
@@ -184,7 +184,7 @@ def test_parser_excel(extension) -> None:
     with pytest.warns(
         MappingMissmatchWarning, match="Concept with key `Bemerkungen`"
     ) as warnings:
-        parser = ExcelParser(raw_data=raw_data, mapping=mapping)
+        parser = ExcelParser(raw_data=raw_data, mapping=mapping, dropna=True)
 
     missmatches = [
         warning
@@ -203,11 +203,10 @@ def test_parser_excel(extension) -> None:
     for row in parser.time_series_metadata:
         assert isinstance(row, QuantityMapping)
 
-    assert len(parser.time_series) == 6
-    assert sorted(list(parser.time_series.keys())) == sorted(columns)
-    for row in parser.time_series.values():
-        assert len(row) == 460
-        assert isinstance(row, list)
+    assert len(parser.time_series.columns) == 6
+    assert sorted(list(parser.time_series.columns)) == sorted(columns)
+    for name, column in parser.time_series.items():
+        assert len(column) == 460
 
     expected_graph = Graph()
     expected_graph.parse(expected)
@@ -237,6 +236,7 @@ def test_parser_excel_inputs(input_kind) -> None:
         parser = ExcelParser(
             raw_data=input_obj,
             mapping=os.path.join(mapping_folder, "tensile_test_mapping.json"),
+            dropna=True,
         )
     missmatches = [
         warning
@@ -255,11 +255,10 @@ def test_parser_excel_inputs(input_kind) -> None:
     for row in parser.time_series_metadata:
         assert isinstance(row, QuantityMapping)
 
-    assert len(parser.time_series) == 6
-    assert sorted(list(parser.time_series.keys())) == sorted(columns)
-    for row in parser.time_series.values():
-        assert len(row) == 460
-        assert isinstance(row, list)
+    assert len(parser.time_series.columns) == 6
+    assert sorted(list(parser.time_series.columns)) == sorted(columns)
+    for name, column in parser.time_series.items():
+        assert len(column) == 460
 
     expected_graph = Graph()
     expected_graph.parse(expected)

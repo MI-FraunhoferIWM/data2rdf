@@ -79,11 +79,10 @@ def test_csv_parser_bad_mapping() -> None:
     for row in parser.time_series_metadata:
         assert isinstance(row, QuantityMapping)
 
-    assert len(parser.time_series) == 6
-    assert sorted(list(parser.time_series.keys())) == sorted(columns)
-    for row in parser.time_series.values():
-        assert len(row) == 5734
-        assert isinstance(row, list)
+    assert len(parser.time_series.columns) == 6
+    assert sorted(list(parser.time_series.columns)) == sorted(columns)
+    for name, column in parser.time_series.items():
+        assert len(column) == 5734
 
     assert parser.graph.isomorphic(expected_graph)
 
@@ -128,11 +127,10 @@ def test_csv_parser_no_match_in_mapping() -> None:
     for row in parser.time_series_metadata:
         assert isinstance(row, QuantityMapping)
 
-    assert len(parser.time_series) == 6
-    assert sorted(list(parser.time_series.keys())) == sorted(columns)
-    for row in parser.time_series.values():
-        assert len(row) == 5734
-        assert isinstance(row, list)
+    assert len(parser.time_series.columns) == 6
+    assert sorted(list(parser.time_series.columns)) == sorted(columns)
+    for name, column in parser.time_series.items():
+        assert len(column) == 5734
 
     assert parser.graph.isomorphic(expected_graph)
 
@@ -154,7 +152,7 @@ def test_csv_parser_config(config) -> None:
 
     assert parser.graph.isomorphic(expected_graph)
     assert str(parser.graph.identifier) == config["graph_identifier"]
-    assert sorted(list(parser.time_series.keys())) == sorted(columns)
+    assert sorted(list(parser.time_series.columns)) == sorted(columns)
 
 
 @pytest.mark.parametrize("extension", ["xlsx", "json", "csv", dict])
@@ -186,11 +184,10 @@ def test_parser_csv(extension) -> None:
     for row in parser.time_series_metadata:
         assert isinstance(row, QuantityMapping)
 
-    assert len(parser.time_series) == 6
-    assert sorted(list(parser.time_series.keys())) == sorted(columns)
-    for row in parser.time_series.values():
-        assert len(row) == 5734
-        assert isinstance(row, list)
+    assert len(parser.time_series.columns) == 6
+    assert sorted(list(parser.time_series.columns)) == sorted(columns)
+    for name, column in parser.time_series.items():
+        assert len(column) == 5734
 
     expected_graph = Graph()
     expected_graph.parse(expected)
@@ -229,11 +226,10 @@ def test_parser_csv_input(input_kind) -> None:
     for row in parser.time_series_metadata:
         assert isinstance(row, QuantityMapping)
 
-    assert len(parser.time_series) == 6
-    assert sorted(list(parser.time_series.keys())) == sorted(columns)
-    for row in parser.time_series.values():
-        assert len(row) == 5734
-        assert isinstance(row, list)
+    assert len(parser.time_series.columns) == 6
+    assert sorted(list(parser.time_series.columns)) == sorted(columns)
+    for name, column in parser.time_series.items():
+        assert len(column) == 5734
 
     expected_graph = Graph()
     expected_graph.parse(expected)

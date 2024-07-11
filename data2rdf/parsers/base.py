@@ -12,6 +12,7 @@ from data2rdf import ClassConceptMapping, Config
 if TYPE_CHECKING:
     from typing import List
 
+    import pandas as pd
     from pydantic import AnyUrl
 
     from data2rdf import BasicConceptMapping
@@ -38,6 +39,11 @@ class DataParser(BaseModel):
         default_factory=Config, description="Configuration object"
     )
 
+    dropna: bool = Field(
+        False,
+        description="Drop all rows where ONLY NaN and None occur in the time series.",
+    )
+
     _general_metadata: Any = PrivateAttr()
     _time_series_metadata: Any = PrivateAttr()
     _time_series: Any = PrivateAttr()
@@ -60,8 +66,8 @@ class DataParser(BaseModel):
         return cls._time_series_metadata
 
     @property
-    def time_series(cls) -> "List[BasicConceptMapping]":
-        """Return list object with general metadata"""
+    def time_series(cls) -> "pd.DataFrame":
+        """Return times series found in the data as pd.DataFrame"""
         return cls._time_series
 
     @property

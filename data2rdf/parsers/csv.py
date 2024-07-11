@@ -100,9 +100,13 @@ class CSVParser(DataParser):
                 }
             ]
             for idx, mapping in enumerate(cls.time_series_metadata):
-                if not isinstance(mapping, QuantityMapping):
+                if isinstance(mapping, QuantityMapping):
+                    entity = {"qudt:quantity": mapping.json_ld}
+                elif isinstance(mapping, PropertyMapping):
+                    entity = {"dcterms:subject": mapping.json_ld}
+                else:
                     raise TypeError(
-                        f"Mapping must be of type {QuantityMapping}, not {type(mapping)}"
+                        f"Mapping must be of type {QuantityMapping} or {PropertyMapping}, not {type(mapping)}"
                     )
 
                 if cls.config.data_download_uri:
@@ -124,7 +128,7 @@ class CSVParser(DataParser):
                         "@type": "xsd:string",
                         "@value": mapping.key,
                     },
-                    "qudt:quantity": mapping.json_ld,
+                    **entity,
                     "foaf:page": {
                         "@type": "foaf:Document",
                         "dcterms:format": {
@@ -282,6 +286,14 @@ class CSVParser(DataParser):
                     f"No match found in mapping for key `{key}`",
                     MappingMissmatchWarning,
                 )
+        # set time series as pd dataframe
+        self._time_series = pd.DataFrame.from_dict(
+            self._time_series, orient="index"
+        ).transpose()
+        # check if drop na:
+        if self.dropna:
+            self._time_series.dropna(how="all", inplace=True)
+        return self
 
     @classmethod
     def _load_data_file(cls, self: "DataParser") -> StringIO:

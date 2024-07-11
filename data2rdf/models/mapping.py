@@ -196,8 +196,8 @@ class PropertyMapping(MergedConceptMapping):
     """Mapping for a non-quantitative property. E.g. the
     name of a tester or a testing facility."""
 
-    value: str = Field(
-        ..., description="Non-quantitative Value of the property"
+    value: Optional[str] = Field(
+        None, description="Non-quantitative Value of the property"
     )
     annotation: Optional[AnyUrl] = Field(
         None, description="Base IRI with which the value shall be concatenated"
@@ -213,9 +213,17 @@ class PropertyMapping(MergedConceptMapping):
                 "xsd": "http://www.w3.org/2001/XMLSchema#",
             },
             "@id": f"fileid:{cls.suffix}",
-            "rdfs:label": cls.value,
+            **cls.value_json,
             **cls.types_json,
         }
+
+    @property
+    def value_json(cls) -> "Optional[Dict[str, str]]":
+        if not isinstance(cls.value, type(None)):
+            response = {"rdfs:label": cls.value}
+        else:
+            response = {}
+        return response
 
     @property
     def types_json(cls) -> "Dict[str, Any]":

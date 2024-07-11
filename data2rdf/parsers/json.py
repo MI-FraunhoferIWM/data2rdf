@@ -6,6 +6,7 @@ import warnings
 from typing import Any, Dict, Union
 from urllib.parse import urljoin
 
+import pandas as pd
 from jsonpath_ng import parse
 from pydantic import Field, model_validator
 
@@ -232,7 +233,13 @@ class JsonParser(DataParser):
                     model = PropertyMapping(**model_data)
 
                     self._general_metadata.append(model)
-
+        # set time series as pd dataframe
+        self._time_series = pd.DataFrame.from_dict(
+            self._time_series, orient="index"
+        ).transpose()
+        # check if drop na:
+        if self.dropna:
+            self._time_series.dropna(how="all", inplace=True)
         return self
 
     @classmethod
