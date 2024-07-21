@@ -8,38 +8,92 @@ from urllib.parse import urljoin
 
 import pandas as pd
 from jsonpath_ng import parse
-from pydantic import Field, model_validator
+from pydantic import Field
 
+from data2rdf.models.graph import PropertyGraph, QuantityGraph
+from data2rdf.models.mapping import ABoxJsonMapping, TBoxBaseMapping
 from data2rdf.utils import make_prefix
 from data2rdf.warnings import MappingMissmatchWarning
 
-from .base import DataParser
-from .utils import _strip_unit, load_mapping_file
-
-from data2rdf.models.mapping import (  # isort: skip
-    JsonConceptMapping,
-    PropertyMapping,
-    QuantityMapping,
-)
+from .base import ABoxBaseParser, BaseFileParser, TBoxBaseParser
+from .utils import _strip_unit
 
 
-class JsonParser(DataParser):
-    """
-    Parses a data file of type json
-    """
+def _load_data_file(
+    self: "Union[JsonABoxParser, JsonTBoxParser]",
+) -> "Dict[str, Any]":
+    """Load json file"""
+    if isinstance(self.raw_data, str):
+        if os.path.isfile(self.raw_data):
+            with open(self.raw_data, encoding=self.config.encoding) as file:
+                content = json.load(file)
+        else:
+            content = json.loads(self.raw_data)
+
+    if isinstance(self.raw_data, dict):
+        content = self.raw_data
+    if not isinstance(self.raw_data, (str, dict)):
+        raise TypeError(
+            "Raw data must be of type `str` for a file path or a `dict` for a parsed json."
+        )
+    return content
+
+
+class JsonTBoxParser(TBoxBaseParser):
+    """Parser for JSON in TBox mode"""
 
     # OVERRIDE
-    mapping: Union[str, Dict[str, JsonConceptMapping]] = Field(
+    mapping: Union[str, Dict[str, TBoxBaseMapping]] = Field(
         ...,
         description="""File path to the mapping file to be parsed or
         a dictionary with the mapping.""",
     )
 
+    # OVERRIDE
     @property
-    def media_type(cls) -> str:
-        """IANA Media type definition of the resource to be parsed."""
-        return "https://www.iana.org/assignments/media-types/application/json"
+    def json_ld(cls) -> "Dict[str, Any]":
+        """Return JSON-LD in TBox mode"""
+        return {}
 
+    # OVERRIDE
+    @property
+    def mapping_model(cls) -> TBoxBaseMapping:
+        "TBox mapping model"
+        return TBoxBaseMapping
+
+    # OVERRIDE
+    @classmethod
+    def _run_parser(
+        cls,
+        self: "JsonTBoxParser",
+        datafile: "Dict[str, Any]",
+        mapping: "Dict[str, TBoxBaseMapping]",
+    ) -> None:
+        """Run parser in TBox mode"""
+
+    # OVERRIDE
+    @classmethod
+    def _load_data_file(cls, self: "JsonTBoxParser") -> "Dict[str, Any]":
+        return _load_data_file(self)
+
+
+class JsonABoxParser(ABoxBaseParser):
+    """Parser for JSON in ABox mode"""
+
+    # OVERRIDE
+    mapping: Union[str, Dict[str, ABoxJsonMapping]] = Field(
+        ...,
+        description="""File path to the mapping file to be parsed or
+        a dictionary with the mapping.""",
+    )
+
+    # OVERRIDE
+    @property
+    def mapping_model(cls) -> ABoxJsonMapping:
+        "ABox mapping model"
+        return ABoxJsonMapping
+
+    # OVERRIDE
     @property
     def json_ld(cls) -> Dict[str, Any]:
         members = []
@@ -60,7 +114,7 @@ class JsonParser(DataParser):
         }
 
         for mapping in cls.general_metadata:
-            if isinstance(mapping, QuantityMapping):
+            if isinstance(mapping, QuantityGraph):
                 entity = {
                     "@type": "prov:KeyEntityPair",
                     "prov:pairKey": {
@@ -73,7 +127,7 @@ class JsonParser(DataParser):
                     },
                 }
                 members.append(entity)
-            elif isinstance(mapping, PropertyMapping):
+            elif isinstance(mapping, PropertyGraph):
                 entity = {
                     "@type": "prov:KeyEntityPair",
                     "prov:pairKey": {
@@ -88,13 +142,13 @@ class JsonParser(DataParser):
                 members.append(entity)
             else:
                 raise TypeError(
-                    f"Mapping must be of type {QuantityMapping} or {PropertyMapping}, not {type(mapping)}"
+                    f"Mapping must be of type {QuantityGraph} or {PropertyGraph}, not {type(mapping)}"
                 )
 
         for idx, mapping in enumerate(cls.time_series_metadata):
-            if not isinstance(mapping, QuantityMapping):
+            if not isinstance(mapping, QuantityGraph):
                 raise TypeError(
-                    f"Mapping must be of type {QuantityMapping}, not {type(mapping)}"
+                    f"Mapping must be of type {QuantityGraph}, not {type(mapping)}"
                 )
 
             if cls.config.data_download_uri:
@@ -136,17 +190,22 @@ class JsonParser(DataParser):
 
         return triples
 
-    @model_validator(mode="after")
+    # OVERRIDE
     @classmethod
-    def run_parser(cls, self: "JsonParser") -> "JsonParser":
+    def _load_data_file(cls, self: "JsonABoxParser") -> "Dict[str, Any]":
+        return _load_data_file(self)
+
+    # OVERRIDE
+    @classmethod
+    def _run_parser(
+        cls,
+        self: "JsonABoxParser",
+        datafile: "Dict[str, Any]",
+        mapping: "Dict[str, ABoxJsonMapping]",
+    ) -> None:
         """
         Parse metadata, time series metadata and time series
         """
-
-        datafile: "Dict[str, Any]" = cls._parse_data(self)
-        mapping: "Dict[str, JsonConceptMapping]" = load_mapping_file(
-            self.mapping, self.config, JsonConceptMapping
-        )
 
         self._general_metadata = []
         self._time_series_metadata = []
@@ -213,7 +272,7 @@ class JsonParser(DataParser):
                 }
                 if not isinstance(value, numericals) and unit:
                     model_data["unit"] = unit
-                    model = QuantityMapping(**model_data)
+                    model = QuantityGraph(**model_data)
 
                     self._time_series[datum.suffix] = value
                     self._time_series_metadata.append(model)
@@ -225,12 +284,12 @@ class JsonParser(DataParser):
                 elif isinstance(value, numericals) and unit:
                     model_data["value"] = value
                     model_data["unit"] = unit
-                    model = QuantityMapping(**model_data)
+                    model = QuantityGraph(**model_data)
 
                     self._general_metadata.append(model)
                 elif isinstance(value, numericals) and not unit:
                     model_data["value"] = str(value)
-                    model = PropertyMapping(**model_data)
+                    model = PropertyGraph(**model_data)
 
                     self._general_metadata.append(model)
         # set time series as pd dataframe
@@ -240,23 +299,27 @@ class JsonParser(DataParser):
         # check if drop na:
         if self.dropna:
             self._time_series.dropna(how="all", inplace=True)
-        return self
 
-    @classmethod
-    def _parse_data(cls, self: "JsonParser") -> "Dict[str, Any]":
-        if isinstance(self.raw_data, str):
-            if os.path.isfile(self.raw_data):
-                with open(
-                    self.raw_data, encoding=self.config.encoding
-                ) as file:
-                    content = json.load(file)
-            else:
-                content = json.loads(self.raw_data)
 
-        if isinstance(self.raw_data, dict):
-            content = self.raw_data
-        if not isinstance(self.raw_data, (str, dict)):
-            raise TypeError(
-                "Raw data must be of type `str` for a file path or a `dict` for a parsed json."
-            )
-        return content
+class JsonParser(BaseFileParser):
+    """
+    Parses a data file of type json
+    """
+
+    # OVERRIDE
+    @property
+    def media_type(cls) -> str:
+        """IANA Media type definition of the resource to be parsed."""
+        return "https://www.iana.org/assignments/media-types/application/json"
+
+    # OVERRIDE
+    @property
+    def _abox_parser(cls) -> JsonABoxParser:
+        """Pydantic Model for Joson ABox parser"""
+        return JsonABoxParser
+
+    # OVERRIDE
+    @property
+    def _tbox_parser(cls) -> JsonTBoxParser:
+        """Pydantic Model for Excel TBox parser"""
+        return JsonTBoxParser

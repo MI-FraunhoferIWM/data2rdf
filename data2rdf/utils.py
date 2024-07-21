@@ -22,6 +22,22 @@ def is_float(s):
         return False
 
 
+def is_bool(s):
+    try:
+        bool(s)
+        return True
+    except ValueError:
+        return False
+
+
+def is_uri(s):
+    try:
+        if str(s).startswith("http://") or str(s).startswith("https://"):
+            return True
+    except Exception:
+        return False
+
+
 def make_prefix(config: "Config") -> str:
     if not str(config.base_iri).endswith(config.separator):
         prefix = str(config.base_iri) + config.separator

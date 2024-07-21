@@ -148,7 +148,7 @@ The individuals of the template are converted to unique individuals with a provi
 The namespace is provided with the `base_iri` argument.
 
 ```python
-pipeline = AnnotationPipeline(
+pipeline = Data2RDF(
     raw_data,
     parser,
     parser_args,

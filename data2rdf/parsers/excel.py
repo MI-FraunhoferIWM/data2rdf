@@ -7,23 +7,77 @@ from urllib.parse import urljoin
 
 import pandas as pd
 from openpyxl import load_workbook
-from pydantic import Field, model_validator
+from pydantic import Field
 
-from data2rdf.models.mapping import (
-    ExcelConceptMapping,
-    PropertyMapping,
-    QuantityMapping,
-)
+from data2rdf.models.graph import PropertyGraph, QuantityGraph
+from data2rdf.models.mapping import ABoxExcelMapping, TBoxExcelMapping
 from data2rdf.utils import make_prefix
 from data2rdf.warnings import MappingMissmatchWarning
 
-from .base import DataParser
-from .utils import _strip_unit, load_mapping_file
+from .base import ABoxBaseParser, BaseFileParser, TBoxBaseParser
+from .utils import _strip_unit
 
 
-class ExcelParser(DataParser):
+def _load_data_file(
+    self: "Union[ExcelTBoxParser, ExcelABoxParser]",
+) -> BytesIO:
+    """Load excel file as bytes"""
+    if isinstance(self.raw_data, str):
+        with open(self.raw_data, mode="rb") as file:
+            content = BytesIO(file.read())
+    elif isinstance(self.raw_data, bytes):
+        content = BytesIO(self.raw_data)
+    else:
+        raise TypeError(
+            f"`raw_data` must be of type `str` or `btyes`, not `{type(self.raw_data)}`"
+        )
+    return content
+
+
+class ExcelTBoxParser(TBoxBaseParser):
     """
-    Parses a data file of type excel
+    Parses a data file of type excel in b box mode
+    """
+
+    # OVERRIDE
+    mapping: Union[str, Dict[str, TBoxExcelMapping]] = Field(
+        ...,
+        description="""File path to the mapping file to be parsed or
+        a dictionary with the mapping.""",
+    )
+
+    # OVERRIDE
+    @property
+    def mapping_model(cls) -> TBoxExcelMapping:
+        "TBox Mapping Model"
+        return TBoxExcelMapping
+
+    # OVERRIDE
+    @property
+    def json_ld(cls) -> "Dict[str, Any]":
+        """Make the json-ld if pipeline is in abox-mode"""
+        return {}
+
+    # OVERRIDE
+    @classmethod
+    def _run_parser(
+        cls,
+        self: "ExcelTBoxParser",
+        datafile: BytesIO,
+        mapping: "Dict[str, ABoxExcelMapping]",
+    ) -> None:
+        """Run excel parser in tbox mode"""
+
+    # OVERRIDE
+    @classmethod
+    def _load_data_file(cls, self: "ExcelTBoxParser") -> BytesIO:
+        """Load excel file"""
+        return _load_data_file(self)
+
+
+class ExcelABoxParser(ABoxBaseParser):
+    """
+    Parses a data file of type excel in a box mode
     """
 
     unit_from_macro: bool = Field(
@@ -37,20 +91,22 @@ class ExcelParser(DataParser):
     )
 
     # OVERRIDE
-    mapping: Union[str, Dict[str, ExcelConceptMapping]] = Field(
+    mapping: Union[str, Dict[str, ABoxExcelMapping]] = Field(
         ...,
         description="""File path to the mapping file to be parsed or
         a dictionary with the mapping.""",
     )
 
+    # OVERRIDE
     @property
-    def media_type(cls) -> str:
-        """IANA Media type definition of the resource to be parsed."""
-        return "https://www.iana.org/assignments/media-types/application/vnd.ms-excel"
+    def mapping_model(cls) -> ABoxExcelMapping:
+        "Mapping Model"
+        return ABoxExcelMapping
 
+    # OVERRIDE
     @property
     def json_ld(cls) -> Dict[str, Any]:
-        """Return dict for json-ld for the graph"""
+        """Make the json-ld if pipeline is in abox-mode"""
 
         tables = []
 
@@ -62,7 +118,7 @@ class ExcelParser(DataParser):
             }
 
             for mapping in cls.general_metadata:
-                if isinstance(mapping, QuantityMapping):
+                if isinstance(mapping, QuantityGraph):
                     row = {
                         "@type": "csvw:Row",
                         "csvw:titles": {
@@ -72,7 +128,7 @@ class ExcelParser(DataParser):
                         "qudt:quantity": mapping.json_ld,
                     }
                     meta_table["csvw:row"].append(row)
-                elif isinstance(mapping, PropertyMapping):
+                elif isinstance(mapping, PropertyGraph):
                     row = {
                         "@type": "csvw:Row",
                         "csvw:titles": {
@@ -84,7 +140,7 @@ class ExcelParser(DataParser):
                     meta_table["csvw:row"].append(row)
                 else:
                     raise TypeError(
-                        f"Mapping must be of type {QuantityMapping} or {PropertyMapping}, not {type(mapping)}"
+                        f"Mapping must be of type {QuantityGraph} or {PropertyGraph}, not {type(mapping)}"
                     )
             tables += [meta_table]
 
@@ -98,13 +154,13 @@ class ExcelParser(DataParser):
                 }
             ]
             for idx, mapping in enumerate(cls.time_series_metadata):
-                if isinstance(mapping, QuantityMapping):
+                if isinstance(mapping, QuantityGraph):
                     entity = {"qudt:quantity": mapping.json_ld}
-                elif isinstance(mapping, PropertyMapping):
+                elif isinstance(mapping, PropertyGraph):
                     entity = {"dcterms:subject": mapping.json_ld}
                 else:
                     raise TypeError(
-                        f"Mapping must be of type {QuantityMapping} or {PropertyMapping}, not {type(mapping)}"
+                        f"Mapping must be of type {QuantityGraph} or {PropertyGraph}, not {type(mapping)}"
                     )
 
                 if cls.config.data_download_uri:
@@ -168,27 +224,28 @@ class ExcelParser(DataParser):
             **csvw_tables,
         }
 
-    @model_validator(mode="after")
+    # OVERRIDE
     @classmethod
-    def run_parser(cls, self: "ExcelParser") -> "ExcelParser":
+    def _run_parser(
+        cls,
+        self: "ExcelABoxParser",
+        datafile: BytesIO,
+        mapping: "Dict[str, ABoxExcelMapping]",
+    ) -> None:
         """
         Parse metadata, time series metadata and time series
         """
 
-        io: BytesIO = cls._load_data_file(self)
-
-        datafile = load_workbook(filename=io, data_only=True)
-        io.seek(0)
-        macros = load_workbook(filename=io)
-        mapping: "Dict[str, ExcelConceptMapping]" = load_mapping_file(
-            self.mapping, self.config, ExcelConceptMapping
-        )
+        workbook = load_workbook(filename=datafile, data_only=True)
+        datafile.seek(0)
+        macros = load_workbook(filename=datafile)
+        datafile.seek(0)
 
         self._general_metadata = []
         self._time_series_metadata = []
         self._time_series = {}
         for key, datum in mapping.items():
-            worksheet = datafile[datum.worksheet]
+            worksheet = workbook[datum.worksheet]
 
             if datum.value_location and datum.time_series_start:
                 raise RuntimeError(
@@ -269,9 +326,9 @@ class ExcelParser(DataParser):
 
             if model_data.get("value") or datum.suffix in self.time_series:
                 if model_data.get("unit"):
-                    model = QuantityMapping(**model_data)
+                    model = QuantityGraph(**model_data)
                 else:
-                    model = PropertyMapping(**model_data)
+                    model = PropertyGraph(**model_data)
 
                 if model_data.get("value"):
                     self._general_metadata.append(model)
@@ -285,17 +342,31 @@ class ExcelParser(DataParser):
         # check if drop na:
         if self.dropna:
             self._time_series.dropna(how="all", inplace=True)
-        return self
 
+    # OVERRIDE
     @classmethod
-    def _load_data_file(cls, self: "DataParser") -> BytesIO:
-        if isinstance(self.raw_data, str):
-            with open(self.raw_data, mode="rb") as file:
-                content = BytesIO(file.read())
-        elif isinstance(self.raw_data, bytes):
-            content = BytesIO(self.raw_data)
-        else:
-            raise TypeError(
-                f"`raw_data` must be of type `str` or `btyes`, not `{type(self.raw_data)}`"
-            )
-        return content
+    def _load_data_file(cls, self: "ExcelABoxParser") -> BytesIO:
+        """Load excel file"""
+        return _load_data_file(self)
+
+
+class ExcelParser(BaseFileParser):
+    """Parser for excel files"""
+
+    # OVERRIDE
+    @property
+    def _abox_parser(cls) -> ExcelABoxParser:
+        """Pydantic Model for Excel ABox parser"""
+        return ExcelABoxParser
+
+    # OVERRIDE
+    @property
+    def _tbox_parser(cls) -> ExcelTBoxParser:
+        """Pydantic Model for Excel TBox parser"""
+        return ExcelTBoxParser
+
+    # OVERRIDE
+    @property
+    def media_type(cls) -> str:
+        """IANA Media type definition of the resource to be parsed."""
+        return "https://www.iana.org/assignments/media-types/application/vnd.ms-excel"

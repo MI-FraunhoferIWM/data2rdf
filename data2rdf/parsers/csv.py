@@ -3,30 +3,77 @@
 import os
 import warnings
 from io import StringIO
-from typing import TYPE_CHECKING, Any, List, Optional, Union
+from typing import Any, Dict, List, Optional, Union
 from urllib.parse import urljoin
 
 import pandas as pd
-from pydantic import Field, model_validator
+from pydantic import Field
 
-from data2rdf.models.mapping import (
-    ClassConceptMapping,
-    PropertyMapping,
-    QuantityMapping,
-)
+from data2rdf.models.graph import PropertyGraph, QuantityGraph
+from data2rdf.models.mapping import ABoxBaseMapping, TBoxBaseMapping
 from data2rdf.utils import make_prefix
 from data2rdf.warnings import MappingMissmatchWarning, ParserWarning
 
-from .base import DataParser
-from .utils import _strip_unit, load_mapping_file
-
-if TYPE_CHECKING:
-    from typing import Dict
+from .base import ABoxBaseParser, BaseFileParser, TBoxBaseParser
+from .utils import _strip_unit
 
 
-class CSVParser(DataParser):
+def _load_data_file(self: "Union[CSVTBoxParser, CSVABoxParser]") -> StringIO:
+    """Load csv file"""
+    if isinstance(self.raw_data, str):
+        if os.path.isfile(self.raw_data):
+            with open(self.raw_data, encoding=self.config.encoding) as file:
+                content = StringIO(file.read())
+        else:
+            content = StringIO(self.raw_data)
+    else:
+        raise TypeError(
+            f"`raw_data` must be of type `str`, not `{type(self.raw_data)}`"
+        )
+    return content
+
+
+class CSVTBoxParser(TBoxBaseParser):
     """
-    Parses the csv file
+    CSV file parser in tbox mode
+    """
+
+    column_sep: Optional[str] = Field(
+        None, description="Data column separator"
+    )
+    # OVERRIDE
+    mapping: Union[str, Dict[str, TBoxBaseMapping]] = Field(
+        ...,
+        description="""File path to the mapping file to be parsed or
+        a dictionary with the mapping.""",
+    )
+
+    # OVERRIDE
+    @property
+    def mapping_model(cls) -> TBoxBaseMapping:
+        """TBox Mapping Model for CSV Parser"""
+        return TBoxBaseMapping
+
+    # OVERRIDE
+    def json_ld(cls) -> "Dict[str, Any]":
+        """Return JSON LD for a box"""
+        return {}
+
+    # OVERRIDE
+    @classmethod
+    def _run_parser(cls, datafile, mapping) -> None:
+        """Run parser for CSV files in tbox mode"""
+
+    # OVERRIDE
+    @classmethod
+    def _load_data_file(cls, self: "CSVTBoxParser") -> StringIO:
+        """Load CSV file"""
+        return _load_data_file(self)
+
+
+class CSVABoxParser(ABoxBaseParser):
+    """
+    CSV file parser in abox mode
     """
 
     metadata_sep: Optional[str] = Field(
@@ -39,18 +86,23 @@ class CSVParser(DataParser):
     time_series_header_length: int = Field(
         2, description="Length of header of the time series"
     )
-    drop_na: Optional[bool] = Field(
-        True, description="Whether NA-values shall be dropped or not"
+    # OVERRIDE
+    mapping: Union[str, Dict[str, ABoxBaseMapping]] = Field(
+        ...,
+        description="""File path to the mapping file to be parsed or
+        a dictionary with the mapping.""",
     )
 
+    # OVERRIDE
     @property
-    def media_type(cls) -> str:
-        """IANA Media type definition of the resource to be parsed."""
-        return "http://www.iana.org/assignments/media-types/text/csv"
+    def mapping_model(cls) -> ABoxBaseMapping:
+        """ABox Mapping Model for CSV Parser"""
+        return ABoxBaseMapping
 
+    # OVERRIDE
     @property
     def json_ld(cls) -> "Dict[str, Any]":
-        """Return dict for json-ld for the graph"""
+        """Return dict for json-ld for the graph in abox mode"""
 
         tables = []
 
@@ -62,7 +114,7 @@ class CSVParser(DataParser):
             }
 
             for n, mapping in enumerate(cls.general_metadata):
-                if isinstance(mapping, QuantityMapping):
+                if isinstance(mapping, QuantityGraph):
                     row = {
                         "@type": "csvw:Row",
                         "csvw:titles": {
@@ -73,7 +125,7 @@ class CSVParser(DataParser):
                         "qudt:quantity": mapping.json_ld,
                     }
                     meta_table["csvw:row"].append(row)
-                elif isinstance(mapping, PropertyMapping):
+                elif isinstance(mapping, PropertyGraph):
                     row = {
                         "@type": "csvw:Row",
                         "csvw:titles": {
@@ -86,7 +138,7 @@ class CSVParser(DataParser):
                     meta_table["csvw:row"].append(row)
                 else:
                     raise TypeError(
-                        f"Mapping must be of type {QuantityMapping} or {PropertyMapping}, not {type(mapping)}"
+                        f"Mapping must be of type {QuantityGraph} or {PropertyGraph}, not {type(mapping)}"
                     )
             tables += [meta_table]
 
@@ -100,13 +152,13 @@ class CSVParser(DataParser):
                 }
             ]
             for idx, mapping in enumerate(cls.time_series_metadata):
-                if isinstance(mapping, QuantityMapping):
+                if isinstance(mapping, QuantityGraph):
                     entity = {"qudt:quantity": mapping.json_ld}
-                elif isinstance(mapping, PropertyMapping):
+                elif isinstance(mapping, PropertyGraph):
                     entity = {"dcterms:subject": mapping.json_ld}
                 else:
                     raise TypeError(
-                        f"Mapping must be of type {QuantityMapping} or {PropertyMapping}, not {type(mapping)}"
+                        f"Mapping must be of type {QuantityGraph} or {PropertyGraph}, not {type(mapping)}"
                     )
 
                 if cls.config.data_download_uri:
@@ -170,21 +222,22 @@ class CSVParser(DataParser):
             **csvw_tables,
         }
 
-    @model_validator(mode="after")
+    # OVERRIDE
     @classmethod
-    def run_parser(cls, self: "CSVParser") -> "CSVParser":
+    def _run_parser(
+        cls,
+        self: "CSVParser",
+        datafile: StringIO,
+        mapping: "Dict[str, ABoxBaseMapping]",
+    ) -> None:
         """
         Parse metadata, time series metadata and time series
         """
 
-        datafile: StringIO = cls._load_data_file(self)
-        mapping: "Dict[str, ClassConceptMapping]" = load_mapping_file(
-            self.mapping, self.config, ClassConceptMapping
-        )
         time_series: Union[pd.DataFrame, List[None]] = cls._parse_time_series(
             self, datafile
         )
-        if self.drop_na:
+        if self.dropna:
             time_series.dropna(inplace=True)
         datafile.seek(0)
 
@@ -227,9 +280,9 @@ class CSVParser(DataParser):
                         "config": self.config,
                     }
                     if model_data.get("unit"):
-                        model = QuantityMapping(**model_data)
+                        model = QuantityGraph(**model_data)
                     else:
-                        model = PropertyMapping(**model_data)
+                        model = PropertyGraph(**model_data)
                     self._general_metadata.append(model)
                 else:
                     warnings.warn(
@@ -264,7 +317,7 @@ class CSVParser(DataParser):
                     unit = _strip_unit(unit, self.config.remove_from_unit)
 
                 # assign model
-                model = QuantityMapping(
+                model = QuantityGraph(
                     key=key,
                     unit=unit,
                     iri=mapping_match.iri,
@@ -293,23 +346,12 @@ class CSVParser(DataParser):
         # check if drop na:
         if self.dropna:
             self._time_series.dropna(how="all", inplace=True)
-        return self
 
+    # OVERRIDE
     @classmethod
-    def _load_data_file(cls, self: "DataParser") -> StringIO:
-        if isinstance(self.raw_data, str):
-            if os.path.isfile(self.raw_data):
-                with open(
-                    self.raw_data, encoding=self.config.encoding
-                ) as file:
-                    content = StringIO(file.read())
-            else:
-                content = StringIO(self.raw_data)
-        else:
-            raise TypeError(
-                f"`raw_data` must be of type `str`, not `{type(self.raw_data)}`"
-            )
-        return content
+    def _load_data_file(cls, self: "CSVABoxParser") -> StringIO:
+        """Load csv file"""
+        return _load_data_file(self)
 
     @classmethod
     def _parse_time_series(
@@ -329,3 +371,25 @@ class CSVParser(DataParser):
             )
             response = []
         return response
+
+
+class CSVParser(BaseFileParser):
+    """Parser for CSV/TSV files"""
+
+    # OVERRIDE
+    @property
+    def _abox_parser(self) -> CSVABoxParser:
+        """Pydantic Model for CSV ABox parser"""
+        return CSVABoxParser
+
+    # OVERRIDE
+    @property
+    def _tbox_parser(self) -> CSVTBoxParser:
+        """Pydantic Model for CSV TBox parser"""
+        return CSVTBoxParser
+
+    # OVERRIDE
+    @property
+    def media_type(self) -> str:
+        """IANA Media type definition of the resource to be parsed."""
+        return "http://www.iana.org/assignments/media-types/text/csv"

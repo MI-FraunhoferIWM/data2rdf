@@ -1,5 +1,5 @@
 """Data2rdf pipelines"""
 
-from .annotation_pipeline import AnnotationPipeline
+from .main import Data2RDF
 
-__all__ = ["AnnotationPipeline", "ABoxScaffoldPipeline"]
+__all__ = ["Data2RDF"]

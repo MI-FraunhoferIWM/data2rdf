@@ -9,16 +9,6 @@
     :show-inheritance:
 ```
 
-## Abox template
-
-### abox template module
-
-```{eval-rst}
-.. automodule:: data2rdf.abox_template_generation
-    :members:
-    :undoc-members:
-    :show-inheritance:
-```
 
 ## Parser code
 
@@ -60,10 +50,4 @@
     :members:
     :undoc-members:
     :show-inheritance:
-```
-
-### Emmo utils
-
-```{eval-rst}
-.. autofunction:: data2rdf.emmo_lib.emmo_utils.simple_unit_lookup
 ```

@@ -1,21 +1,22 @@
 """Data2RDF"""
 
 from .config import Config
-from .models import (
-    BasicConceptMapping,
-    ClassConceptMapping,
-    PropertyMapping,
-    QuantityMapping,
-)
 from .parsers import Parser
-from .pipelines import AnnotationPipeline
+from .pipelines import Data2RDF
+
+from .models import (  # isort:skip
+    ABoxBaseMapping,
+    BasicConceptMapping,
+    PropertyGraph,
+    QuantityGraph,
+)
 
 __all__ = [
-    "AnnotationPipeline",
+    "Data2RDF",
     "Config",
-    "QuantityMapping",
-    "PropertyMapping",
-    "ClassConceptMapping",
+    "QuantityGraph",
+    "PropertyGraph",
+    "ABoxBaseMapping",
     "BasicConceptMapping",
     "Parser",
 ]
