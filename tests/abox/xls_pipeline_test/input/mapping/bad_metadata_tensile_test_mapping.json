@@ -1,126 +1,126 @@
-{
-  "Bemerkungen": {
+[
+  {
     "iri": "https://w3id.org/steel/ProcessOntology/Remark",
     "key": "Bemerkungen",
     "value_location": "UU31",
     "worksheet": "Protokoll"
   },
-  "Breiten\u00e4nderung": {
+  {
     "iri": "https://w3id.org/steel/ProcessOntology/WidthChange",
     "key": "Breiten\u00e4nderung",
     "time_series_start": "E15",
     "unit_location": "E14",
     "worksheet": "Messdaten"
   },
-  "Datum": {
+  {
     "iri": "https://w3id.org/steel/ProcessOntology/TimeStamp",
     "key": "Datum",
     "value_location": "AD6",
     "worksheet": "Protokoll"
   },
-  "Dehnung": {
+  {
     "iri": "https://w3id.org/steel/ProcessOntology/PercentageElongation",
     "key": "Dehnung",
     "time_series_start": "Q15",
     "unit": "\u00f7",
     "worksheet": "Messdaten"
   },
-  "Messl\u00e4nge Standardweg": {
+  {
     "iri": "https://w3id.org/steel/ProcessOntology/OriginalGaugeLength",
     "key": "Messl\u00e4nge Standardweg",
     "unit_location": "P16",
     "value_location": "M16",
     "worksheet": "Protokoll"
   },
-  "Probenbreite b": {
+  {
     "iri": "https://w3id.org/steel/ProcessOntology/SpecimenWidth",
     "key": "Probenbreite b",
     "unit_location": "P15",
     "value_location": "M15",
     "worksheet": "Protokoll"
   },
-  "Probendicke a": {
+  {
     "iri": "https://w3id.org/steel/ProcessOntology/SpecimenThickness",
     "key": "Probendicke a",
     "unit_location": "P50000",
     "value_location": "M400000",
     "worksheet": "Protokoll"
   },
-  "Probenform": {
+  {
     "iri": "https://w3id.org/steel/ProcessOntology/SpecimenType",
     "key": "Probenform",
     "value_location": "AE7",
     "worksheet": "Protokoll"
   },
-  "Probenkennung 2": {
+  {
     "iri": "https://w3id.org/steel/ProcessOntology/SampleIdentifier-2",
     "key": "Probenkennung 2",
     "value_location": "U7",
     "worksheet": "Protokoll"
   },
-  "Projekt": {
+  {
     "iri": "https://w3id.org/steel/ProcessOntology/ProjectNumber",
     "key": "Projekt",
     "value_location": "F6",
     "worksheet": "Protokoll"
   },
-  "Pr\u00fcfer": {
+  {
     "iri": "https://w3id.org/steel/ProcessOntology/Tester",
     "key": "Pr\u00fcfer",
     "value_location": "U6",
     "worksheet": "Protokoll"
   },
-  "Pr\u00fcfgeschwindigkeit": {
+  {
     "iri": "https://w3id.org/steel/ProcessOntology/TestingRate",
     "key": "Pr\u00fcfgeschwindigkeit",
     "value_location": "J9",
     "worksheet": "Protokoll"
   },
-  "Pr\u00fcfmaschine": {
+  {
     "iri": "https://w3id.org/steel/ProcessOntology/MachineData",
     "key": "Pr\u00fcfmaschine",
     "value_location": "I8",
     "worksheet": "Protokoll"
   },
-  "Pr\u00fcftemperatur": {
+  {
     "iri": "https://w3id.org/steel/ProcessOntology/Temperature",
     "key": "Pr\u00fcftemperatur",
     "value_location": "U8",
     "worksheet": "Protokoll"
   },
-  "Standardkraft": {
+  {
     "iri": "https://w3id.org/steel/ProcessOntology/StandardForce",
     "key": "Standardkraft",
     "time_series_start": "C15",
     "unit_location": "C14",
     "worksheet": "Messdaten"
   },
-  "Standardweg": {
+  {
     "iri": "https://w3id.org/steel/ProcessOntology/Extension",
     "key": "Standardweg",
     "time_series_start": "D15",
     "unit_location": "D14",
     "worksheet": "Messdaten"
   },
-  "Traversenweg absolut": {
+  {
     "iri": "https://w3id.org/steel/ProcessOntology/AbsoluteCrossheadTravel",
     "key": "Traversenweg absolut",
     "time_series_start": "B15",
     "unit_location": "B14",
     "worksheet": "Messdaten"
   },
-  "Werkstoff": {
+  {
     "annotation": "https://w3id.org/steel/ProcessOntology",
     "iri": "https://w3id.org/steel/ProcessOntology/Material",
     "key": "Werkstoff",
     "value_location": "H7",
     "worksheet": "Protokoll"
   },
-  "Zeit": {
+  {
     "iri": "https://w3id.org/steel/ProcessOntology/TestTime",
     "key": "Zeit",
     "time_series_start": "A15",
     "unit_location": "A14",
     "worksheet": "Messdaten"
   }
-}
+]

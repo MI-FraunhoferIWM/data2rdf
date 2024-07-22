@@ -42,15 +42,6 @@ class TBoxBaseMapping(BaseConfigModel):
     )
 
 
-class TBoxExcelMapping(TBoxBaseMapping):
-    """A special model for mapping from excel files to semantic concepts in the TBox"""
-
-    worksheet: Optional[str] = Field(
-        None,
-        description="Name of the worksheet where the entity is located in the excel file",
-    )
-
-
 class ABoxBaseMapping(BasicConceptMapping):
     """Base class for mapping during A Box modelling"""
 

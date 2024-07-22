@@ -2,7 +2,7 @@
 
 import warnings
 from io import BytesIO
-from typing import Any, Dict, Union
+from typing import Any, Dict, List, Union
 from urllib.parse import urljoin
 
 import pandas as pd
@@ -10,7 +10,7 @@ from openpyxl import load_workbook
 from pydantic import Field
 
 from data2rdf.models.graph import PropertyGraph, QuantityGraph
-from data2rdf.models.mapping import ABoxExcelMapping, TBoxExcelMapping
+from data2rdf.models.mapping import ABoxExcelMapping, TBoxBaseMapping
 from data2rdf.utils import make_prefix
 from data2rdf.warnings import MappingMissmatchWarning
 
@@ -39,18 +39,20 @@ class ExcelTBoxParser(TBoxBaseParser):
     Parses a data file of type excel in b box mode
     """
 
+    sheet: str = Field(..., description="Name of the sheet for the mapping.")
+
     # OVERRIDE
-    mapping: Union[str, Dict[str, TBoxExcelMapping]] = Field(
+    mapping: Union[str, List[TBoxBaseMapping]] = Field(
         ...,
         description="""File path to the mapping file to be parsed or
-        a dictionary with the mapping.""",
+        a list with the mapping.""",
     )
 
     # OVERRIDE
     @property
-    def mapping_model(cls) -> TBoxExcelMapping:
+    def mapping_model(cls) -> TBoxBaseMapping:
         "TBox Mapping Model"
-        return TBoxExcelMapping
+        return TBoxBaseMapping
 
     # OVERRIDE
     @property
@@ -64,9 +66,14 @@ class ExcelTBoxParser(TBoxBaseParser):
         cls,
         self: "ExcelTBoxParser",
         datafile: BytesIO,
-        mapping: "Dict[str, ABoxExcelMapping]",
+        mapping: "List[TBoxBaseMapping]",
     ) -> None:
         """Run excel parser in tbox mode"""
+        mapping = {model.suffix_location: model for model in mapping}
+        workbook = load_workbook(filename=datafile, data_only=True)
+        worksheet = workbook[self.sheet]
+        for row in worksheet.iter_rows():
+            print(row)
 
     # OVERRIDE
     @classmethod
@@ -91,10 +98,10 @@ class ExcelABoxParser(ABoxBaseParser):
     )
 
     # OVERRIDE
-    mapping: Union[str, Dict[str, ABoxExcelMapping]] = Field(
+    mapping: Union[str, List[ABoxExcelMapping]] = Field(
         ...,
         description="""File path to the mapping file to be parsed or
-        a dictionary with the mapping.""",
+        a list with the mapping.""",
     )
 
     # OVERRIDE
@@ -230,11 +237,13 @@ class ExcelABoxParser(ABoxBaseParser):
         cls,
         self: "ExcelABoxParser",
         datafile: BytesIO,
-        mapping: "Dict[str, ABoxExcelMapping]",
+        mapping: "List[ABoxExcelMapping]",
     ) -> None:
         """
         Parse metadata, time series metadata and time series
         """
+
+        mapping = {model.key: model for model in mapping}
 
         workbook = load_workbook(filename=datafile, data_only=True)
         datafile.seek(0)

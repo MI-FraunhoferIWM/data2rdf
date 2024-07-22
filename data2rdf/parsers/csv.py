@@ -42,10 +42,10 @@ class CSVTBoxParser(TBoxBaseParser):
         None, description="Data column separator"
     )
     # OVERRIDE
-    mapping: Union[str, Dict[str, TBoxBaseMapping]] = Field(
+    mapping: Union[str, List[TBoxBaseMapping]] = Field(
         ...,
         description="""File path to the mapping file to be parsed or
-        a dictionary with the mapping.""",
+        a list with the mapping.""",
     )
 
     # OVERRIDE
@@ -87,10 +87,10 @@ class CSVABoxParser(ABoxBaseParser):
         2, description="Length of header of the time series"
     )
     # OVERRIDE
-    mapping: Union[str, Dict[str, ABoxBaseMapping]] = Field(
+    mapping: Union[str, List[ABoxBaseMapping]] = Field(
         ...,
         description="""File path to the mapping file to be parsed or
-        a dictionary with the mapping.""",
+        a list with the mapping.""",
     )
 
     # OVERRIDE
@@ -228,11 +228,13 @@ class CSVABoxParser(ABoxBaseParser):
         cls,
         self: "CSVParser",
         datafile: StringIO,
-        mapping: "Dict[str, ABoxBaseMapping]",
+        mapping: "List[ABoxBaseMapping]",
     ) -> None:
         """
         Parse metadata, time series metadata and time series
         """
+
+        mapping = {model.key: model for model in mapping}
 
         time_series: Union[pd.DataFrame, List[None]] = cls._parse_time_series(
             self, datafile

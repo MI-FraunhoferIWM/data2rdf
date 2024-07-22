@@ -12,20 +12,20 @@ if TYPE_CHECKING:
 
 
 def load_mapping_file(
-    mapping: "Union[str, Dict[str, Any]]",
+    mapping: "Union[str, List[Dict[str, Any]]]",
     config: "Config" = Config(),
     model_callable: "Any" = dict,
-) -> "Dict[str, Any]":
+) -> "List[Any]":
     """
     Load a mapping file and transform its contents into a dictionary format.
 
     Parameters:
-        mapping (Union[str, Dict[str, Any]]): Path to the mapping file (either a string representing the file path or a dictionary containing the mapping directly).
+        mapping (Union[str, List[Dict[str, Any]]]): Path to the mapping file (either a string representing the file path or a list containing the mapping directly).
         config (Config, optional): Configuration settings for loading the file. Defaults to Config().
         model_callable (Any, optional): Callable object used to transform each row of the mapping file into the desired format. Defaults to dict.
 
     Returns:
-        Dict[str, Any]: A dictionary containing the loaded mapping data.
+        List[Any]: A list containing the loaded mapping data.
 
     Raises:
         TypeError: If the `mapping` parameter is not of type `str` or `dict`, or if the file type for mapping is not supported.
@@ -38,9 +38,9 @@ def load_mapping_file(
         - If `mapping` is already a dictionary, it is returned as is.
 
     """
-    if not isinstance(mapping, (str, dict)):
+    if not isinstance(mapping, (str, list)):
         raise TypeError(
-            f"""Mapping file must be of type `{str}` or `{dict}`,
+            f"""Mapping file must be of type `{str}` or `{list}`,
             not `{type(mapping)}`."""
         )
     if isinstance(mapping, str):
@@ -52,9 +52,8 @@ def load_mapping_file(
             )
             mapping_df.fillna("", inplace=True)
             mapping_df = mapping_df.apply(lambda s: s.str.replace('"', ""))
-            model = {
-                row["key"]: row.to_dict() for n, row in mapping_df.iterrows()
-            }
+            model = [row.to_dict() for n, row in mapping_df.iterrows()]
+
         elif mapping.endswith("json"):
             with open(mapping, encoding=config.encoding) as file:
                 model = json.load(file)
@@ -66,14 +65,12 @@ def load_mapping_file(
             )
             mapping_df.fillna("", inplace=True)
             mapping_df = mapping_df.apply(lambda s: s.str.replace('"', ""))
-            model = {
-                row["key"]: row.to_dict() for n, row in mapping_df.iterrows()
-            }
+            model = [row.to_dict() for n, row in mapping_df.iterrows()]
         else:
             raise TypeError("File type for mapping not supported!")
 
-        result = {key: model_callable(**row) for key, row in model.items()}
-    if isinstance(mapping, dict):
+        result = [model_callable(**row) for row in model]
+    if isinstance(mapping, list):
         result = mapping
     return result
 

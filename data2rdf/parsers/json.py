@@ -3,7 +3,7 @@
 import json
 import os
 import warnings
-from typing import Any, Dict, Union
+from typing import Any, Dict, List, Union
 from urllib.parse import urljoin
 
 import pandas as pd
@@ -43,10 +43,10 @@ class JsonTBoxParser(TBoxBaseParser):
     """Parser for JSON in TBox mode"""
 
     # OVERRIDE
-    mapping: Union[str, Dict[str, TBoxBaseMapping]] = Field(
+    mapping: Union[str, List[TBoxBaseMapping]] = Field(
         ...,
         description="""File path to the mapping file to be parsed or
-        a dictionary with the mapping.""",
+        a list with the mapping.""",
     )
 
     # OVERRIDE
@@ -81,10 +81,10 @@ class JsonABoxParser(ABoxBaseParser):
     """Parser for JSON in ABox mode"""
 
     # OVERRIDE
-    mapping: Union[str, Dict[str, ABoxJsonMapping]] = Field(
+    mapping: Union[str, List[ABoxJsonMapping]] = Field(
         ...,
         description="""File path to the mapping file to be parsed or
-        a dictionary with the mapping.""",
+        a list with the mapping.""",
     )
 
     # OVERRIDE
@@ -201,11 +201,13 @@ class JsonABoxParser(ABoxBaseParser):
         cls,
         self: "JsonABoxParser",
         datafile: "Dict[str, Any]",
-        mapping: "Dict[str, ABoxJsonMapping]",
+        mapping: "List[ABoxJsonMapping]",
     ) -> None:
         """
         Parse metadata, time series metadata and time series
         """
+
+        mapping = {model.key: model for model in mapping}
 
         self._general_metadata = []
         self._time_series_metadata = []

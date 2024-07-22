@@ -1,107 +1,107 @@
-{
-  "Bemerkung": {
+[
+  {
     "iri": "https://w3id.org/steel/ProcessOntology/Remark",
     "key": "Bemerkung"
   },
-  "Breiten\u00e4nderung": {
+  {
     "iri": "https://w3id.org/steel/ProcessOntology/WidthChange",
     "key": "Breiten\u00e4nderung"
   },
-  "Datum/Uhrzeit": {
+  {
     "iri": "https://w3id.org/steel/ProcessOntology/TimeStamp",
     "key": "Datum/Uhrzeit"
   },
-  "Dehnung": {
+  {
     "iri": "https://w3id.org/steel/ProcessOntology/Elongation",
     "key": "Dehnung"
   },
-  "Kraftaufnehmer": {
+  {
     "iri": "https://w3id.org/steel/ProcessOntology/ForceMeasuringDevice",
     "key": "Kraftaufnehmer"
   },
-  "Maschinendaten": {
+  {
     "iri": "https://w3id.org/steel/ProcessOntology/MachineData",
     "key": "Maschinendaten"
   },
-  "Messl\u00e4nge Standardweg": {
+  {
     "iri": "https://w3id.org/steel/ProcessOntology/OriginalGaugeLength",
     "key": "Messl\u00e4nge Standardweg"
   },
-  "Probenbreite": {
+  {
     "iri": "https://w3id.org/steel/ProcessOntology/SpecimenWidth",
     "key": "Probenbreite"
   },
-  "Probendicke": {
+  {
     "iri": "https://w3id.org/steel/ProcessOntology/SpecimenThickness",
     "key": "Probendicke"
   },
-  "Probenkennung 2": {
+  {
     "iri": "https://w3id.org/steel/ProcessOntology/SampleIdentifier-2",
     "key": "Probenkennung 2"
   },
-  "Probentyp": {
+  {
     "iri": "https://w3id.org/steel/ProcessOntology/SpecimenType",
     "key": "Probentyp"
   },
-  "Projektname": {
+  {
     "iri": "https://w3id.org/steel/ProcessOntology/ProjectName",
     "key": "Projektname"
   },
-  "Projektnummer": {
+  {
     "iri": "https://w3id.org/steel/ProcessOntology/ProjectNumber",
     "key": "Projektnummer"
   },
-  "Pr\u00fcfer": {
+  {
     "iri": "https://w3id.org/steel/ProcessOntology/Tester",
     "key": "Pr\u00fcfer"
   },
-  "Pr\u00fcfgeschwindigkeit": {
+  {
     "iri": "https://w3id.org/steel/ProcessOntology/TestingRate",
     "key": "Pr\u00fcfgeschwindigkeit"
   },
-  "Pr\u00fcfinstitut": {
+  {
     "iri": "https://w3id.org/steel/ProcessOntology/TestingFacility",
     "key": "Pr\u00fcfinstitut"
   },
-  "Pr\u00fcfnorm": {
+  {
     "iri": "https://w3id.org/steel/ProcessOntology/TestStandard",
     "key": "Pr\u00fcfnorm"
   },
-  "Pr\u00fcfzeit": {
+  {
     "iri": "https://w3id.org/steel/ProcessOntology/TestTime",
     "key": "Pr\u00fcfzeit"
   },
-  "Standardkraft": {
+  {
     "iri": "https://w3id.org/steel/ProcessOntology/StandardForce",
     "key": "Standardkraft"
   },
-  "Standardweg": {
+  {
     "iri": "https://w3id.org/steel/ProcessOntology/Extension",
     "key": "Standardweg"
   },
-  "Temperatur": {
+  {
     "iri": "https://w3id.org/steel/ProcessOntology/Temperature",
     "key": "Temperatur"
   },
-  "Traversenweg absolut": {
+  {
     "iri": "https://w3id.org/steel/ProcessOntology/AbsoluteCrossheadTravel",
     "key": "Traversenweg absolut"
   },
-  "Versuchsl\u00e4nge": {
+  {
     "iri": "https://w3id.org/steel/ProcessOntology/ParallelLength",
     "key": "Versuchsl\u00e4nge"
   },
-  "Vorkraft": {
+  {
     "iri": "https://w3id.org/steel/ProcessOntology/Preload",
     "key": "Vorkraft"
   },
-  "Wegaufnehmer": {
+  {
     "iri": "https://w3id.org/steel/ProcessOntology/DisplacementTransducer",
     "key": "Wegaufnehmer"
   },
-  "Werkstoff": {
+  {
     "annotation": "https://w3id.org/steel/ProcessOntology",
     "iri": "https://w3id.org/steel/ProcessOntology/Material",
     "key": "Werkstoff"
   }
-}
+]

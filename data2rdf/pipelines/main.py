@@ -1,7 +1,7 @@
 """Data2RDF ABox pipeline"""
 
 import json
-from typing import TYPE_CHECKING, Any, Dict, Optional, Union
+from typing import TYPE_CHECKING, Any, Dict, List, Optional, Union
 
 from pydantic import (
     BaseModel,
@@ -19,8 +19,6 @@ from data2rdf.parsers import Parser
 from data2rdf.utils import make_prefix
 
 if TYPE_CHECKING:
-    from typing import List
-
     from data2rdf import BasicConceptMapping
 
 
@@ -56,7 +54,7 @@ class Data2RDF(BaseModel):
         In case of a json file: `dict` for the content of the file of `str` for the file content or file path.
         In case of an excel file: `btyes` for the content or `str` for the file path""",
     )
-    mapping: Union[str, Dict[str, Any]] = Field(
+    mapping: Union[str, List[Any]] = Field(
         ...,
         description="""File path to the mapping file to be parsed or
         a dictionary with the mapping.""",
