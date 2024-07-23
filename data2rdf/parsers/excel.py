@@ -2,20 +2,25 @@
 
 import warnings
 from io import BytesIO
-from typing import Any, Dict, List, Union
+from typing import Any, Dict, List, Optional, Union
 from urllib.parse import urljoin
 
 import pandas as pd
 from openpyxl import load_workbook
 from pydantic import Field
 
-from data2rdf.models.graph import PropertyGraph, QuantityGraph
-from data2rdf.models.mapping import ABoxExcelMapping, TBoxBaseMapping
+from data2rdf.models.graph import ClassTypeGraph, PropertyGraph, QuantityGraph
 from data2rdf.utils import make_prefix
 from data2rdf.warnings import MappingMissmatchWarning
 
 from .base import ABoxBaseParser, BaseFileParser, TBoxBaseParser
 from .utils import _strip_unit
+
+from data2rdf.models.mapping import (  # isort:skip
+    ABoxExcelMapping,
+    RelationType,
+    TBoxBaseMapping,
+)
 
 
 def _load_data_file(
@@ -41,11 +46,19 @@ class ExcelTBoxParser(TBoxBaseParser):
 
     sheet: str = Field(..., description="Name of the sheet for the mapping.")
 
+    header_length: int = Field(
+        1, description="Length of the header of the excel sheet", ge=1
+    )
+
     # OVERRIDE
     mapping: Union[str, List[TBoxBaseMapping]] = Field(
         ...,
         description="""File path to the mapping file to be parsed or
         a list with the mapping.""",
+    )
+
+    fillna: Optional[Any] = Field(
+        "", description="Value to fill NaN values in the parsed dataframe."
     )
 
     # OVERRIDE
@@ -58,7 +71,28 @@ class ExcelTBoxParser(TBoxBaseParser):
     @property
     def json_ld(cls) -> "Dict[str, Any]":
         """Make the json-ld if pipeline is in abox-mode"""
-        return {}
+        ontology_iri = cls.ontology_iri or cls.config.base_iri
+        return {
+            "@context": {
+                "owl": "http://www.w3.org/2002/07/owl#",
+                "rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
+                "dcterms": "http://purl.org/dc/terms/",
+                "foaf": "http://xmlns.com/foaf/spec/",
+            },
+            "@graph": [model.json_ld for model in cls.classes]
+            + [
+                {
+                    "@id": str(ontology_iri),
+                    "@type": "owl:Ontology",
+                    "dcterms:title": cls.ontology_title,
+                    "owl:versionInfo": cls.version_info,
+                    "dcterms:creator": [
+                        {"@type": "foaf:Person", "foaf:name": author}
+                        for author in cls.authors
+                    ],
+                },
+            ],
+        }
 
     # OVERRIDE
     @classmethod
@@ -69,11 +103,41 @@ class ExcelTBoxParser(TBoxBaseParser):
         mapping: "List[TBoxBaseMapping]",
     ) -> None:
         """Run excel parser in tbox mode"""
-        mapping = {model.suffix_location: model for model in mapping}
-        workbook = load_workbook(filename=datafile, data_only=True)
-        worksheet = workbook[self.sheet]
-        for row in worksheet.iter_rows():
-            print(row)
+        mapping = {model.key: model for model in mapping}
+        df = pd.read_excel(datafile, sheet_name=self.sheet)
+        df.fillna(self.fillna, inplace=True)
+        self._classes = []
+        for n, row in df[self.header_length - 1 :].iterrows():
+            annotations = []
+            datatypes = []
+            objects = []
+
+            for key, model in mapping.items():
+                try:
+                    value = row[key]
+                    relation_mapping = {
+                        "value": value,
+                        "relation": model.relation,
+                    }
+                    if model.relation_type == RelationType.ANNOTATION_PROPERTY:
+                        annotations.append(relation_mapping)
+                    if model.relation_type == RelationType.DATA_PROPERTY:
+                        datatypes.append(relation_mapping)
+                    if model.relation_type == RelationType.OBJECT_PROPERTY:
+                        objects.append(relation_mapping)
+                except KeyError:
+                    raise MappingMissmatchWarning(
+                        f"Column with name `{key}` does not exist in provided worksheet."
+                    )
+
+            subgraph = ClassTypeGraph(
+                rdfs_type=self.rdfs_type,
+                suffix=row[self.suffix_location],
+                annotation_properties=annotations,
+                object_properties=objects,
+                data_properties=datatypes,
+            )
+            self._classes.append(subgraph)
 
     # OVERRIDE
     @classmethod

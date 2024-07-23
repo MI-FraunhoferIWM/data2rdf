@@ -27,32 +27,11 @@ class BaseConfigModel(BaseModel):
 
 
 class BasicConceptMapping(BaseConfigModel):
-    """Basic mapping for any entity"""
+    """Basic mapping for a concept in a file"""
 
     key: Optional[str] = Field(
-        None, description="Key of the concept in the file"
+        None, description="Key/column/ of the concept in the file"
     )
-    iri: AnyUrl = Field(
-        ..., description="Ontological class related to this concept"
-    )
-
-    suffix: Optional[str] = Field(
-        None,
-        description="""Optional suffix of the individual
-        which will be constructed. If not set, the suffix of the iri
-        of the ontological class will be taken""",
-        validate_default=True,
-    )
-
-    @field_validator("suffix")
-    @classmethod
-    def validate_suffix(
-        cls, value: Optional[str], info: ValidationInfo
-    ) -> str:
-        """Return suffix for individal"""
-        iri = info.data["iri"]
-        config = info.data["config"]
-        return value or str(iri).split(config.separator)[-1]
 
 
 class BasicGraphModel(BasicConceptMapping):
@@ -69,3 +48,29 @@ class BasicGraphModel(BasicConceptMapping):
         graph = Graph(identifier=cls.config.graph_identifier)
         graph.parse(data=json.dumps(cls.json_ld), format="json-ld")
         return graph
+
+
+class BasicSuffixModel(BaseConfigModel):
+    """Pydantic BaseModel for suffix and type of a class instance"""
+
+    iri: Union[str, AnyUrl] = Field(
+        ..., description="Ontological class related to this concept"
+    )
+    suffix: Optional[str] = Field(
+        None,
+        description="""Optional suffix of the individual
+        which will be constructed. If not set, the suffix of the iri
+        of the ontological class will be taken""",
+        validate_default=True,
+    )
+
+    @field_validator("suffix")
+    @classmethod
+    def validate_suffix(
+        cls, value: Optional[str], info: ValidationInfo
+    ) -> str:
+        """Return suffix for individal"""
+
+        iri = info.data["iri"]
+        config = info.data["config"]
+        return value or str(iri).split(config.separator)[-1]

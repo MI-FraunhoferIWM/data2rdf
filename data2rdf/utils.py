@@ -1,5 +1,6 @@
 """General data2rdf utils"""
 
+import ast
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
@@ -24,9 +25,9 @@ def is_float(s):
 
 def is_bool(s):
     try:
-        bool(s)
+        ast.literal_eval(s)
         return True
-    except ValueError:
+    except Exception:
         return False
 
 

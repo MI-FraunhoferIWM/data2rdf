@@ -2,7 +2,7 @@
 
 import json
 from abc import abstractmethod
-from typing import TYPE_CHECKING, Any, Dict, List, Union
+from typing import TYPE_CHECKING, Any, Dict, List, Optional, Union
 
 from rdflib import Graph
 
@@ -61,8 +61,8 @@ class BaseParser(BaseModel):
         return value
 
 
-class TBoxBaseParser(BaseParser):
-    """Basic Parser for TBox mode"""
+class AnyBoxBaseParser(BaseParser):
+    """Basic parser for A Box or T Box producing an RDF"""
 
     @property
     @abstractmethod
@@ -111,7 +111,42 @@ class TBoxBaseParser(BaseParser):
         return self
 
 
-class ABoxBaseParser(TBoxBaseParser):
+class TBoxBaseParser(AnyBoxBaseParser):
+    """Basic Parser for TBox mode"""
+
+    suffix_location: str = Field(
+        ...,
+        description="""Key/column name/reference to the locaton in the data file
+        where the suffix of the ontological class to be created.""",
+    )
+
+    rdfs_type: AnyUrl = Field(
+        "owl:Class", description="rdfs:type for the concepts"
+    )
+
+    version_info: Optional[str] = Field(
+        "1.0.0", description="Version of the ontplpgy"
+    )
+
+    ontology_iri: Optional[Union[str, AnyUrl]] = Field(
+        None, description="General IRI of the ontology."
+    )
+
+    ontology_title: str = Field(..., description="Title of the ontology")
+
+    authors: List[str] = Field(
+        ..., description="Name of the authors contributing to the ontology."
+    )
+
+    _classes: Any = PrivateAttr()
+
+    @property
+    def classes(self) -> "List[BasicConceptMapping]":
+        """Return list object with class models"""
+        return self._classes
+
+
+class ABoxBaseParser(AnyBoxBaseParser):
     """Basic Parser for ABox mode"""
 
     _general_metadata: Any = PrivateAttr()
@@ -153,7 +188,7 @@ class BaseFileParser(BaseParser):
     `Data2RDF` class later."""
 
     mode: PipelineMode = Field(
-        PipelineMode.abox, description="Run parser in ABox or TBox mode."
+        PipelineMode.ABOX, description="Run parser in ABox or TBox mode."
     )
 
     parser_args: Dict[str, Any] = Field(
@@ -187,7 +222,7 @@ class BaseFileParser(BaseParser):
     @property
     def tbox(self) -> "TBoxBaseParser":
         """Return instance of the `tbox_parser` after model validation"""
-        return self._abox
+        return self._tbox
 
     @model_validator(mode="after")
     @classmethod
@@ -198,9 +233,9 @@ class BaseFileParser(BaseParser):
             "config": self.config,
             **self.parser_args,
         }
-        if self.mode == PipelineMode.abox:
+        if self.mode == PipelineMode.ABOX:
             self._abox = self._abox_parser(**arguments)
-        elif self.mode == PipelineMode.tbox:
+        elif self.mode == PipelineMode.TBOX:
             self._tbox = self._tbox_parser(**arguments)
         else:
             raise TypeError(f"Operating mode not understood: {self.mode}")
@@ -210,7 +245,7 @@ class BaseFileParser(BaseParser):
     def plain_metadata(cls) -> Dict[str, Any]:
         """Metadata as flat json - without units and iris.
         Useful e.g. for the custom properties of the DSMS."""
-        if cls.mode == PipelineMode.abox:
+        if cls.mode == PipelineMode.ABOX:
             return cls.abox.plain_metadata
         else:
             raise NotImplementedError(
@@ -220,7 +255,7 @@ class BaseFileParser(BaseParser):
     @property
     def general_metadata(cls) -> "List[BasicConceptMapping]":
         """Return list object with general metadata"""
-        if cls.mode == PipelineMode.abox:
+        if cls.mode == PipelineMode.ABOX:
             return cls.abox.general_metadata
         else:
             raise NotImplementedError(
@@ -230,7 +265,7 @@ class BaseFileParser(BaseParser):
     @property
     def time_series_metadata(cls) -> "List[BasicConceptMapping]":
         """Return time series metadata"""
-        if cls.mode == PipelineMode.abox:
+        if cls.mode == PipelineMode.ABOX:
             return cls.abox.time_series_metadata
         else:
             raise NotImplementedError(
@@ -240,7 +275,7 @@ class BaseFileParser(BaseParser):
     @property
     def time_series(cls) -> "Dict[str, Any]":
         """Return time series"""
-        if cls.mode == PipelineMode.abox:
+        if cls.mode == PipelineMode.ABOX:
             return cls.abox.time_series
         else:
             raise NotImplementedError(
@@ -250,7 +285,7 @@ class BaseFileParser(BaseParser):
     @property
     def graph(self) -> Graph:
         """Return RDFlib Graph"""
-        if self.mode == PipelineMode.abox:
+        if self.mode == PipelineMode.ABOX:
             return self.abox.graph
         else:
             return self.tbox.graph
@@ -258,7 +293,7 @@ class BaseFileParser(BaseParser):
     @property
     def json_ld(self) -> "Dict[str, Any]":
         """Return JSON LD representation of graph"""
-        if self.mode == PipelineMode.abox:
+        if self.mode == PipelineMode.ABOX:
             return self.abox.json_ld
         else:
             return self.tbox.json_ld

@@ -1,15 +1,26 @@
 """Mapping models for data2rdf"""
 
-from typing import List, Optional, Union
+from enum import Enum
+from typing import Optional, Union
 
-from pydantic import AnyUrl, BaseModel, Field, field_validator
+from pydantic import AnyUrl, Field, field_validator
 
-from .base import BaseConfigModel, BasicConceptMapping
+from .base import BasicConceptMapping, BasicSuffixModel
 
 
-class KeyRelationMapping(BaseModel):
-    """Mapping between a object/data/annotation property and a value under a location in the data file"""
+class RelationType(str, Enum):
+    """Relation Type of TBox modellings"""
 
+    ANNOTATION_PROPERTY = "annotation_property"
+    DATA_PROPERTY = "data_property"
+    OBJECT_PROPERTY = "object_property"
+
+
+class TBoxBaseMapping(BasicConceptMapping):
+    """Mapping between a object/data/annotation property and
+    a value under a location in the data file. This"""
+
+    # OVERRIDE
     key: str = Field(
         ...,
         description="""Key/Column/Location of the value in the data file.
@@ -20,29 +31,12 @@ class KeyRelationMapping(BaseModel):
         description="""Object/Data/Annotation property for the value
         resolving from `key` of this model""",
     )
-
-
-class TBoxBaseMapping(BaseConfigModel):
-    """Basic class for mapping during T Box modelling"""
-
-    iri: AnyUrl = Field("owl:Class", description="rdfs:type for this concept")
-    suffix_location: str = Field(
-        ...,
-        description="""Key to the locaton in the data file where the suffix of the
-        ontological class to be used""",
-    )
-    annotation_properties: Optional[List[KeyRelationMapping]] = Field(
-        None, description="Mappings for Annotations Properties"
-    )
-    object_properties: Optional[List[KeyRelationMapping]] = Field(
-        None, description="Mappings for Object Properties"
-    )
-    data_properties: Optional[List[KeyRelationMapping]] = Field(
-        None, description="Mappings for Data Properties"
+    relation_type: RelationType = Field(
+        ..., description="Type of the semantic relation used in the mappings"
     )
 
 
-class ABoxBaseMapping(BasicConceptMapping):
+class ABoxBaseMapping(BasicConceptMapping, BasicSuffixModel):
     """Base class for mapping during A Box modelling"""
 
     unit: Optional[Union[str, AnyUrl]] = Field(

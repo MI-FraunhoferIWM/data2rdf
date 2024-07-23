@@ -42,7 +42,7 @@ class Data2RDF(BaseModel):
     """
 
     mode: PipelineMode = Field(
-        PipelineMode.abox,
+        PipelineMode.ABOX,
         description="""With data2rdf, you are able to model in two modes:
         the ABox (for data instances) or the TBox (for the class hierarchy/taxonomy)""",
     )
@@ -134,7 +134,7 @@ class Data2RDF(BaseModel):
     @property
     def json_ld(cls) -> Dict[str, Any]:
         """Return dict of json-ld for graph"""
-        if cls.mode == PipelineMode.abox:
+        if cls.mode == PipelineMode.ABOX:
             model = {
                 "@context": {
                     "fileid": make_prefix(cls.config),
@@ -162,7 +162,7 @@ class Data2RDF(BaseModel):
                 },
                 "dcterms:hasPart": cls.parser.abox.json_ld,
             }
-        elif cls.mode == PipelineMode.tbox:
+        elif cls.mode == PipelineMode.TBOX:
             model = cls.parser.tbox.json_ld
         else:
             raise TypeError("Pipeline mode not understood")
@@ -188,7 +188,7 @@ class Data2RDF(BaseModel):
     def plain_metadata(cls) -> Dict[str, Any]:
         """Metadata as flat json - without units and iris.
         Useful e.g. for the custom properties of the DSMS."""
-        if cls.mode == PipelineMode.abox:
+        if cls.mode == PipelineMode.ABOX:
             return cls.parser.abox.plain_metadata
         else:
             raise NotImplementedError(
@@ -198,7 +198,7 @@ class Data2RDF(BaseModel):
     @property
     def general_metadata(cls) -> "List[BasicConceptMapping]":
         """Return list object with general metadata"""
-        if cls.mode == PipelineMode.abox:
+        if cls.mode == PipelineMode.ABOX:
             return cls.parser.abox.general_metadata
         else:
             raise NotImplementedError(
@@ -208,7 +208,7 @@ class Data2RDF(BaseModel):
     @property
     def time_series_metadata(cls) -> "List[BasicConceptMapping]":
         """Return list object with time series metadata"""
-        if cls.mode == PipelineMode.abox:
+        if cls.mode == PipelineMode.ABOX:
             return cls.parser.abox.time_series_metadata
         else:
             raise NotImplementedError(
@@ -218,7 +218,7 @@ class Data2RDF(BaseModel):
     @property
     def time_series(cls) -> "Dict[str, Any]":
         """Return time series"""
-        if cls.mode == PipelineMode.abox:
+        if cls.mode == PipelineMode.ABOX:
             return cls.parser.abox.time_series
         else:
             raise NotImplementedError(

@@ -8,7 +8,7 @@ from pydantic import AnyUrl, BaseModel, Field, ValidationInfo, field_validator
 from data2rdf.qudt.utils import _get_query_match
 from data2rdf.utils import is_bool, is_float, is_integer, is_uri, make_prefix
 
-from .base import BasicGraphModel
+from .base import BasicGraphModel, BasicSuffixModel
 
 
 class ValueRelationMapping(BaseModel):
@@ -28,11 +28,13 @@ class ValueRelationMapping(BaseModel):
 class ClassTypeGraph(BasicGraphModel):
     """Graph of a potential concept or class in the T Box."""
 
-    iri: AnyUrl = Field("owl:Class", description="rdfs:type for this concept")
     suffix: str = Field(
         ...,
         description="""Value of the suffix of the
         ontological class to be used""",
+    )
+    rdfs_type: AnyUrl = Field(
+        "owl:Class", description="rdfs:type for this concept"
     )
     annotation_properties: Optional[List[ValueRelationMapping]] = Field(
         None, description="Mappings for Annotations Properties"
@@ -58,6 +60,9 @@ class ClassTypeGraph(BasicGraphModel):
             value = bool(value)
         elif is_uri(value):
             dtype = "xsd:anyURI"
+            value = str(value)
+        elif isinstance(value, str):
+            dtype = "xsd:string"
         else:
             raise TypeError(
                 f"Datatype of value `{value}` ({type(value)}) cannot be mapped to xsd."
@@ -65,8 +70,39 @@ class ClassTypeGraph(BasicGraphModel):
 
         return {"@type": dtype, "@value": value}
 
+    # OVERRIDE
+    @property
+    def json_ld(self) -> "Dict[str, Any]":
+        annotations = {
+            model.relation: self.value_json(model.value)
+            for model in self.annotation_properties
+        }
+        datatypes = {
+            model.relation: self.value_json(model.value)
+            for model in self.data_properties
+        }
+        objects = {
+            model.relation: str(model.value)
+            for model in self.object_properties
+        }
+        return {
+            "@context": {
+                "owl": "http://www.w3.org/2002/07/owl#",
+                "rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
+                "dcterms": "http://purl.org/dc/terms/",
+                "rdfs": "http://www.w3.org/2000/01/rdf-schema#",
+                "xsd": "http://www.w3.org/2001/XMLSchema#",
+                "ontology_namespace": make_prefix(self.config),
+            },
+            "@id": f"ontology_namespace:{self.suffix}",
+            "@type": str(self.rdfs_type),
+            **annotations,
+            **datatypes,
+            **objects,
+        }
 
-class QuantityGraph(BasicGraphModel):
+
+class QuantityGraph(BasicGraphModel, BasicSuffixModel):
     """Quantity with or without a discrete value and a unit
     E.g. a quantity with a single value and unit _or_
     a quantity describing a column of a time series or table with a unit."""
@@ -173,7 +209,7 @@ class QuantityGraph(BasicGraphModel):
         return value
 
 
-class PropertyGraph(BasicGraphModel):
+class PropertyGraph(BasicGraphModel, BasicSuffixModel):
     """Mapping for a non-quantitative property. E.g. the
     name of a tester or a testing facility. The value must not have a
     discrete value but can also be a reference to a column in a table or
