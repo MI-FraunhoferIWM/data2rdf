@@ -10,12 +10,16 @@ import pandas as pd
 from pydantic import Field
 
 from data2rdf.models.graph import PropertyGraph, QuantityGraph
-from data2rdf.models.mapping import ABoxBaseMapping, TBoxBaseMapping
 from data2rdf.utils import make_prefix
 from data2rdf.warnings import MappingMissmatchWarning, ParserWarning
 
 from .base import ABoxBaseParser, BaseFileParser, TBoxBaseParser
-from .utils import _strip_unit
+from .utils import _make_tbox_classes, _make_tbox_json_ld, _strip_unit
+
+from data2rdf.models.mapping import (  # isort:skip
+    ABoxBaseMapping,
+    TBoxBaseMapping,
+)
 
 
 def _load_data_file(self: "Union[CSVTBoxParser, CSVABoxParser]") -> StringIO:
@@ -38,14 +42,19 @@ class CSVTBoxParser(TBoxBaseParser):
     CSV file parser in tbox mode
     """
 
-    column_sep: Optional[str] = Field(
-        None, description="Data column separator"
-    )
     # OVERRIDE
     mapping: Union[str, List[TBoxBaseMapping]] = Field(
         ...,
         description="""File path to the mapping file to be parsed or
         a list with the mapping.""",
+    )
+    column_sep: Optional[str] = Field(",", description="Data column separator")
+    header_length: int = Field(
+        1, description="Length of the header of the excel sheet", ge=1
+    )
+
+    fillna: Optional[Any] = Field(
+        "", description="Value to fill NaN values in the parsed dataframe."
     )
 
     # OVERRIDE
@@ -55,14 +64,22 @@ class CSVTBoxParser(TBoxBaseParser):
         return TBoxBaseMapping
 
     # OVERRIDE
+    @property
     def json_ld(cls) -> "Dict[str, Any]":
-        """Return JSON LD for a box"""
-        return {}
+        """Make the json-ld if pipeline is in abox-mode"""
+        return _make_tbox_json_ld(cls)
 
     # OVERRIDE
     @classmethod
-    def _run_parser(cls, datafile, mapping) -> None:
-        """Run parser for CSV files in tbox mode"""
+    def _run_parser(
+        cls,
+        self: "CSVTBoxParser",
+        datafile: StringIO,
+        mapping: "List[TBoxBaseMapping]",
+    ) -> None:
+        """Run excel parser in tbox mode"""
+        df = pd.read_csv(datafile, sep=self.column_sep)
+        _make_tbox_classes(self, df, mapping)
 
     # OVERRIDE
     @classmethod

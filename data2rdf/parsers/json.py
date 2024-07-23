@@ -16,12 +16,12 @@ from data2rdf.utils import make_prefix
 from data2rdf.warnings import MappingMissmatchWarning
 
 from .base import ABoxBaseParser, BaseFileParser, TBoxBaseParser
-from .utils import _strip_unit
+from .utils import _make_tbox_classes, _make_tbox_json_ld, _strip_unit
 
 
 def _load_data_file(
     self: "Union[JsonABoxParser, JsonTBoxParser]",
-) -> "Dict[str, Any]":
+) -> "List[Dict[str, Any]]":
     """Load json file"""
     if isinstance(self.raw_data, str):
         if os.path.isfile(self.raw_data):
@@ -53,7 +53,7 @@ class JsonTBoxParser(TBoxBaseParser):
     @property
     def json_ld(cls) -> "Dict[str, Any]":
         """Return JSON-LD in TBox mode"""
-        return {}
+        return _make_tbox_json_ld(cls)
 
     # OVERRIDE
     @property
@@ -66,14 +66,17 @@ class JsonTBoxParser(TBoxBaseParser):
     def _run_parser(
         cls,
         self: "JsonTBoxParser",
-        datafile: "Dict[str, Any]",
+        datafile: "List[Dict[str, Any]]",
         mapping: "Dict[str, TBoxBaseMapping]",
     ) -> None:
         """Run parser in TBox mode"""
+        # datafile = {n: data for n, data in enumerate(datafile)}
+        df = pd.DataFrame(datafile)
+        _make_tbox_classes(self, df, mapping)
 
     # OVERRIDE
     @classmethod
-    def _load_data_file(cls, self: "JsonTBoxParser") -> "Dict[str, Any]":
+    def _load_data_file(cls, self: "JsonTBoxParser") -> "List[Dict[str, Any]]":
         return _load_data_file(self)
 
 
