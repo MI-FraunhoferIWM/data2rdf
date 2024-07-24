@@ -1,22 +1,24 @@
 """Data2RDF ABox pipeline"""
 
 import json
+from pathlib import Path
 from typing import TYPE_CHECKING, Any, Dict, List, Optional, Union
 
-from pydantic import (
-    BaseModel,
-    ConfigDict,
-    Field,
-    ValidationInfo,
-    field_validator,
-    model_validator,
-)
 from rdflib import Graph
 
 from data2rdf.config import Config
 from data2rdf.modes import PipelineMode
 from data2rdf.parsers import Parser
 from data2rdf.utils import make_prefix
+
+from pydantic import (  # isort:skip
+    BaseModel,
+    ConfigDict,
+    Field,
+    field_validator,
+    model_validator,
+)
+
 
 if TYPE_CHECKING:
     from data2rdf import BasicConceptMapping
@@ -47,11 +49,11 @@ class Data2RDF(BaseModel):
         the ABox (for data instances) or the TBox (for the class hierarchy/taxonomy)""",
     )
 
-    raw_data: Union[str, bytes, Dict[str, Any]] = Field(
+    raw_data: Union[str, bytes, Dict[str, Any], List[Dict[str, Any]]] = Field(
         ...,
         description="""
         In case of a csv: `str` with the file path or the content of the file itself.
-        In case of a json file: `dict` for the content of the file of `str` for the file content or file path.
+        In case of a json file: `dict` or `list` for the content of the file of `str` for the file content or file path.
         In case of an excel file: `btyes` for the content or `str` for the file path""",
     )
     mapping: Union[str, List[Any]] = Field(
@@ -91,31 +93,32 @@ class Data2RDF(BaseModel):
             value = Config(**value)
         return value
 
-    @field_validator("extra_triples")
-    @classmethod
-    def validate_extra_triples(
-        cls, value: Optional[Union[str, Graph]], info: ValidationInfo
+    def _validate_extra_triples(
+        self,
+        value: Union[str, Graph],
     ) -> Graph:
         """Validate extra triples."""
-        config = info.data.get("config")
         if isinstance(value, str):
-            with open(value, encoding=config.encoding) as file:
-                extra_triples = file.read()
+            potential_path = Path(value)
+            if potential_path.is_file():
+                with open(value, encoding=self.config.encoding) as file:
+                    extra_triples = file.read()
+            else:
+                extra_triples = value
         elif isinstance(value, Graph):
             extra_triples = value.serialize()
-        elif isinstance(value, type(None)):
-            extra_triples = None
         else:
             raise TypeError(
                 f"`extra_triples` must be of type {str}, {Graph} or {type(None)}, not {type(value)}."
             )
-        if extra_triples:
-            extra_triples = extra_triples.replace(
-                config.namespace_placeholder, str(config.base_iri)
-            )
-            graph = Graph(identifier=config.graph_identifier)
-            graph.parse(data=extra_triples)
-        return value
+
+        extra_triples = extra_triples.replace(
+            self.config.namespace_placeholder, str(self.config.base_iri)
+        )
+        graph = Graph(identifier=self.config.graph_identifier)
+        graph.parse(data=extra_triples)
+
+        return graph
 
     @model_validator(mode="after")
     @classmethod
@@ -174,14 +177,7 @@ class Data2RDF(BaseModel):
         graph = Graph(identifier=cls.config.graph_identifier)
         graph.parse(data=json.dumps(cls.json_ld), format="json-ld")
         if cls.extra_triples:
-            with open(cls.extra_triples, encoding=cls.config.encoding) as file:
-                content = file.read()
-            data = content.replace(
-                str(cls.config.namespace_placeholder), make_prefix(cls.config)
-            )
-            extra_triples = Graph(identifier=cls.config.graph_identifier)
-            extra_triples.parse(data=data)
-            graph += extra_triples
+            graph += cls._validate_extra_triples(cls.extra_triples)
         return graph
 
     @property

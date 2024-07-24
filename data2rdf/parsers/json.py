@@ -30,9 +30,9 @@ def _load_data_file(
         else:
             content = json.loads(self.raw_data)
 
-    if isinstance(self.raw_data, dict):
+    if isinstance(self.raw_data, (list, dict)):
         content = self.raw_data
-    if not isinstance(self.raw_data, (str, dict)):
+    if not isinstance(self.raw_data, (str, dict, list)):
         raise TypeError(
             "Raw data must be of type `str` for a file path or a `dict` for a parsed json."
         )
@@ -70,7 +70,6 @@ class JsonTBoxParser(TBoxBaseParser):
         mapping: "Dict[str, TBoxBaseMapping]",
     ) -> None:
         """Run parser in TBox mode"""
-        # datafile = {n: data for n, data in enumerate(datafile)}
         df = pd.DataFrame(datafile)
         _make_tbox_classes(self, df, mapping)
 
@@ -275,8 +274,13 @@ class JsonABoxParser(ABoxBaseParser):
                     "annotation": datum.annotation,
                     "config": self.config,
                 }
+                if datum.value_relation:
+                    model_data["value_relation"] = datum.value_relation
+
                 if not isinstance(value, numericals) and unit:
                     model_data["unit"] = unit
+                    if datum.unit_relation:
+                        model_data["unit_relation"] = datum.unit_relation
                     model = QuantityGraph(**model_data)
 
                     self._time_series[datum.suffix] = value
@@ -289,6 +293,8 @@ class JsonABoxParser(ABoxBaseParser):
                 elif isinstance(value, numericals) and unit:
                     model_data["value"] = value
                     model_data["unit"] = unit
+                    if datum.unit_relation:
+                        model_data["unit_relation"] = datum.unit_relation
                     model = QuantityGraph(**model_data)
 
                     self._general_metadata.append(model)

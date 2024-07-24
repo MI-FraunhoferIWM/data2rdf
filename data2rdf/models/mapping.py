@@ -45,6 +45,18 @@ class ABoxBaseMapping(BasicConceptMapping, BasicSuffixModel):
     annotation: Optional[Union[str, AnyUrl]] = Field(
         None, description="Base IRI with which the value shall be concatenated"
     )
+    value_relation: Optional[Union[str, AnyUrl]] = Field(
+        None,
+        description="""Data or annotation property
+        for mapping the data value to the individual.""",
+    )
+
+    unit_relation: Optional[Union[str, AnyUrl]] = Field(
+        None,
+        description="""Object property for mapping the IRI
+         of the unit to the individual, in case the concept
+         is a quantity and has a unit""",
+    )
 
     @field_validator("annotation", mode="after")
     @classmethod

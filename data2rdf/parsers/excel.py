@@ -343,7 +343,11 @@ class ExcelABoxParser(ABoxBaseParser):
                     warnings.warn(message, MappingMissmatchWarning)
 
             if model_data.get("value") or datum.suffix in self.time_series:
+                if datum.value_relation:
+                    model_data["value_relation"] = datum.value_relation
                 if model_data.get("unit"):
+                    if datum.unit_relation:
+                        model_data["unit_relation"] = datum.unit_relation
                     model = QuantityGraph(**model_data)
                 else:
                     model = PropertyGraph(**model_data)

@@ -30,7 +30,7 @@ if TYPE_CHECKING:
 class BaseParser(BaseModel):
     """Basic Parser for any data file and mode"""
 
-    raw_data: Union[str, bytes, Dict[str, Any]] = Field(
+    raw_data: Union[str, bytes, Dict[str, Any], List[Dict[str, Any]]] = Field(
         ...,
         description="""
         In case of a csv: `str` with the file path or the content of the file itself.

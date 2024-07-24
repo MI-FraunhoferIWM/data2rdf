@@ -298,7 +298,15 @@ class CSVABoxParser(ABoxBaseParser):
                         "annotation": mapping_match.annotation or None,
                         "config": self.config,
                     }
+                    if mapping_match.value_relation:
+                        model_data[
+                            "value_relation"
+                        ] = mapping_match.value_relation
                     if model_data.get("unit"):
+                        if mapping_match.unit_relation:
+                            model_data[
+                                "unit_relation"
+                            ] = mapping_match.unit_relation
                         model = QuantityGraph(**model_data)
                     else:
                         model = PropertyGraph(**model_data)
@@ -344,6 +352,8 @@ class CSVABoxParser(ABoxBaseParser):
                     annotation=mapping_match.annotation or None,
                     config=self.config,
                 )
+                if mapping_match.unit_relation:
+                    model.unit_relation = mapping_match.unit_relation
 
                 # append model
                 self.time_series_metadata.append(model)
