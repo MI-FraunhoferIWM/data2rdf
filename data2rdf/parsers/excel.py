@@ -124,121 +124,128 @@ class ExcelABoxParser(ABoxBaseParser):
     def json_ld(cls) -> Dict[str, Any]:
         """Make the json-ld if pipeline is in abox-mode"""
 
-        tables = []
+        if not cls.config.suppress_file_description:
+            tables = []
 
-        if cls.general_metadata:
-            meta_table = {
-                "@type": "csvw:Table",
-                "rdfs:label": "Metadata",
-                "csvw:row": [],
-            }
-
-            for mapping in cls.general_metadata:
-                if isinstance(mapping, QuantityGraph):
-                    row = {
-                        "@type": "csvw:Row",
-                        "csvw:titles": {
-                            "@type": "xsd:string",
-                            "@value": mapping.key,
-                        },
-                        "qudt:quantity": mapping.json_ld,
-                    }
-                    meta_table["csvw:row"].append(row)
-                elif isinstance(mapping, PropertyGraph):
-                    row = {
-                        "@type": "csvw:Row",
-                        "csvw:titles": {
-                            "@type": "xsd:string",
-                            "@value": mapping.key,
-                        },
-                        "csvw:describes": mapping.json_ld,
-                    }
-                    meta_table["csvw:row"].append(row)
-                else:
-                    raise TypeError(
-                        f"Mapping must be of type {QuantityGraph} or {PropertyGraph}, not {type(mapping)}"
-                    )
-            tables += [meta_table]
-
-        if cls.time_series_metadata:
-            column_schema = {"@type": "csvw:Schema", "csvw:column": []}
-            tables += [
-                {
+            if cls.general_metadata:
+                meta_table = {
                     "@type": "csvw:Table",
-                    "rdfs:label": "Time series data",
-                    "csvw:tableSchema": column_schema,
+                    "rdfs:label": "Metadata",
+                    "csvw:row": [],
                 }
-            ]
-            for idx, mapping in enumerate(cls.time_series_metadata):
-                if isinstance(mapping, QuantityGraph):
-                    entity = {"qudt:quantity": mapping.json_ld}
-                elif isinstance(mapping, PropertyGraph):
-                    entity = {"dcterms:subject": mapping.json_ld}
-                else:
-                    raise TypeError(
-                        f"Mapping must be of type {QuantityGraph} or {PropertyGraph}, not {type(mapping)}"
-                    )
 
-                if cls.config.data_download_uri:
-                    download_url = {
-                        "dcterms:identifier": {
-                            "@type": "xsd:anyURI",
-                            "@value": urljoin(
-                                str(cls.config.data_download_uri),
-                                f"column-{idx}",
-                            ),
+                for mapping in cls.general_metadata:
+                    if isinstance(mapping, QuantityGraph):
+                        row = {
+                            "@type": "csvw:Row",
+                            "csvw:titles": {
+                                "@type": "xsd:string",
+                                "@value": mapping.key,
+                            },
+                            "qudt:quantity": mapping.json_ld,
                         }
+                        meta_table["csvw:row"].append(row)
+                    elif isinstance(mapping, PropertyGraph):
+                        row = {
+                            "@type": "csvw:Row",
+                            "csvw:titles": {
+                                "@type": "xsd:string",
+                                "@value": mapping.key,
+                            },
+                            "csvw:describes": mapping.json_ld,
+                        }
+                        meta_table["csvw:row"].append(row)
+                    else:
+                        raise TypeError(
+                            f"Mapping must be of type {QuantityGraph} or {PropertyGraph}, not {type(mapping)}"
+                        )
+                tables += [meta_table]
+
+            if cls.time_series_metadata:
+                column_schema = {"@type": "csvw:Schema", "csvw:column": []}
+                tables += [
+                    {
+                        "@type": "csvw:Table",
+                        "rdfs:label": "Time series data",
+                        "csvw:tableSchema": column_schema,
                     }
-                else:
-                    download_url = {}
+                ]
+                for idx, mapping in enumerate(cls.time_series_metadata):
+                    if isinstance(mapping, QuantityGraph):
+                        entity = {"qudt:quantity": mapping.json_ld}
+                    elif isinstance(mapping, PropertyGraph):
+                        entity = {"dcterms:subject": mapping.json_ld}
+                    else:
+                        raise TypeError(
+                            f"Mapping must be of type {QuantityGraph} or {PropertyGraph}, not {type(mapping)}"
+                        )
 
-                column = {
-                    "@type": "csvw:Column",
-                    "csvw:titles": {
-                        "@type": "xsd:string",
-                        "@value": mapping.key,
-                    },
-                    **entity,
-                    "foaf:page": {
-                        "@type": "foaf:Document",
-                        "dcterms:format": {
-                            "@type": "xsd:anyURI",
-                            "@value": "https://www.iana.org/assignments/media-types/application/json",
-                        },
-                        "dcterms:type": {
-                            "@type": "xsd:anyURI",
-                            "@value": "http://purl.org/dc/terms/Dataset",
-                        },
-                        **download_url,
-                    },
-                }
-                column_schema["csvw:column"].append(column)
+                    if cls.config.data_download_uri:
+                        download_url = {
+                            "dcterms:identifier": {
+                                "@type": "xsd:anyURI",
+                                "@value": urljoin(
+                                    str(cls.config.data_download_uri),
+                                    f"column-{idx}",
+                                ),
+                            }
+                        }
+                    else:
+                        download_url = {}
 
-        # flatten list if only one value exists
-        if len(tables) == 1:
-            tables = tables.pop()
-        # make relation to csvw:table property
-        if tables:
-            csvw_tables = {"csvw:table": tables}
+                    column = {
+                        "@type": "csvw:Column",
+                        "csvw:titles": {
+                            "@type": "xsd:string",
+                            "@value": mapping.key,
+                        },
+                        **entity,
+                        "foaf:page": {
+                            "@type": "foaf:Document",
+                            "dcterms:format": {
+                                "@type": "xsd:anyURI",
+                                "@value": "https://www.iana.org/assignments/media-types/application/json",
+                            },
+                            "dcterms:type": {
+                                "@type": "xsd:anyURI",
+                                "@value": "http://purl.org/dc/terms/Dataset",
+                            },
+                            **download_url,
+                        },
+                    }
+                    column_schema["csvw:column"].append(column)
+
+            # flatten list if only one value exists
+            if len(tables) == 1:
+                tables = tables.pop()
+            # make relation to csvw:table property
+            if tables:
+                csvw_tables = {"csvw:table": tables}
+            else:
+                csvw_tables = {}
+
+            json_ld = {
+                "@context": {
+                    f"{cls.config.prefix_name}": make_prefix(cls.config),
+                    "csvw": "http://www.w3.org/ns/csvw#",
+                    "rdfs": "http://www.w3.org/2000/01/rdf-schema#",
+                    "dcat": "http://www.w3.org/ns/dcat#",
+                    "xsd": "http://www.w3.org/2001/XMLSchema#",
+                    "dcterms": "http://purl.org/dc/terms/",
+                    "qudt": "http://qudt.org/schema/qudt/",
+                    "csvw": "http://www.w3.org/ns/csvw#",
+                    "foaf": "http://xmlns.com/foaf/spec/",
+                },
+                "@id": f"{cls.config.prefix_name}:tableGroup",
+                "@type": "csvw:TableGroup",
+                **csvw_tables,
+            }
         else:
-            csvw_tables = {}
-
-        return {
-            "@context": {
-                "fileid": make_prefix(cls.config),
-                "csvw": "http://www.w3.org/ns/csvw#",
-                "rdfs": "http://www.w3.org/2000/01/rdf-schema#",
-                "dcat": "http://www.w3.org/ns/dcat#",
-                "xsd": "http://www.w3.org/2001/XMLSchema#",
-                "dcterms": "http://purl.org/dc/terms/",
-                "qudt": "http://qudt.org/schema/qudt/",
-                "csvw": "http://www.w3.org/ns/csvw#",
-                "foaf": "http://xmlns.com/foaf/spec/",
-            },
-            "@id": "fileid:tableGroup",
-            "@type": "csvw:TableGroup",
-            **csvw_tables,
-        }
+            json_ld = {
+                "@graph": [model.json_ld for model in cls.general_metadata]
+                + [model.json_ld for model in cls.time_series_metadata]
+            }
+        return json_ld
 
     # OVERRIDE
     @classmethod

@@ -98,25 +98,75 @@ class JsonABoxParser(ABoxBaseParser):
     # OVERRIDE
     @property
     def json_ld(cls) -> Dict[str, Any]:
-        members = []
+        if not cls.config.suppress_file_description:
+            members = []
 
-        triples = {
-            "@context": {
-                "fileid": make_prefix(cls.config),
-                "rdfs": "http://www.w3.org/2000/01/rdf-schema#",
-                "xsd": "http://www.w3.org/2001/XMLSchema#",
-                "dcterms": "http://purl.org/dc/terms/",
-                "qudt": "http://qudt.org/schema/qudt/",
-                "foaf": "http://xmlns.com/foaf/spec/",
-                "prov": "<http://www.w3.org/ns/prov#>",
-            },
-            "@id": "fileid:Dictionary",
-            "@type": "prov:Dictionary",
-            "prov:hadDictionaryMember": members,
-        }
+            triples = {
+                "@context": {
+                    f"{cls.config.prefix_name}": make_prefix(cls.config),
+                    "rdfs": "http://www.w3.org/2000/01/rdf-schema#",
+                    "xsd": "http://www.w3.org/2001/XMLSchema#",
+                    "dcterms": "http://purl.org/dc/terms/",
+                    "qudt": "http://qudt.org/schema/qudt/",
+                    "foaf": "http://xmlns.com/foaf/spec/",
+                    "prov": "<http://www.w3.org/ns/prov#>",
+                },
+                "@id": f"{cls.config.prefix_name}:Dictionary",
+                "@type": "prov:Dictionary",
+                "prov:hadDictionaryMember": members,
+            }
 
-        for mapping in cls.general_metadata:
-            if isinstance(mapping, QuantityGraph):
+            for mapping in cls.general_metadata:
+                if isinstance(mapping, QuantityGraph):
+                    entity = {
+                        "@type": "prov:KeyEntityPair",
+                        "prov:pairKey": {
+                            "@type": "xsd:string",
+                            "@value": mapping.key,
+                        },
+                        "prov:pairEntity": {
+                            "@type": "prov:Entity",
+                            "qudt:quantity": mapping.json_ld,
+                        },
+                    }
+                    members.append(entity)
+                elif isinstance(mapping, PropertyGraph):
+                    entity = {
+                        "@type": "prov:KeyEntityPair",
+                        "prov:pairKey": {
+                            "@type": "xsd:string",
+                            "@value": mapping.key,
+                        },
+                        "prov:pairEntity": {
+                            "@type": "prov:Entity",
+                            "dcterms:hasPart": mapping.json_ld,
+                        },
+                    }
+                    members.append(entity)
+                else:
+                    raise TypeError(
+                        f"Mapping must be of type {QuantityGraph} or {PropertyGraph}, not {type(mapping)}"
+                    )
+
+            for idx, mapping in enumerate(cls.time_series_metadata):
+                if not isinstance(mapping, QuantityGraph):
+                    raise TypeError(
+                        f"Mapping must be of type {QuantityGraph}, not {type(mapping)}"
+                    )
+
+                if cls.config.data_download_uri:
+                    download_url = {
+                        "dcterms:identifier": {
+                            "@type": "xsd:anyURI",
+                            "@value": urljoin(
+                                str(cls.config.data_download_uri),
+                                f"column-{idx}",
+                            ),
+                        }
+                    }
+                else:
+                    download_url = {}
+
                 entity = {
                     "@type": "prov:KeyEntityPair",
                     "prov:pairKey": {
@@ -126,69 +176,26 @@ class JsonABoxParser(ABoxBaseParser):
                     "prov:pairEntity": {
                         "@type": "prov:Entity",
                         "qudt:quantity": mapping.json_ld,
+                        "foaf:page": {
+                            "@type": "foaf:Document",
+                            "dcterms:format": {
+                                "@type": "xsd:anyURI",
+                                "@value": "https://www.iana.org/assignments/media-types/application/json",
+                            },
+                            "dcterms:type": {
+                                "@type": "xsd:anyURI",
+                                "@value": "http://purl.org/dc/terms/Dataset",
+                            },
+                            **download_url,
+                        },
                     },
                 }
                 members.append(entity)
-            elif isinstance(mapping, PropertyGraph):
-                entity = {
-                    "@type": "prov:KeyEntityPair",
-                    "prov:pairKey": {
-                        "@type": "xsd:string",
-                        "@value": mapping.key,
-                    },
-                    "prov:pairEntity": {
-                        "@type": "prov:Entity",
-                        "dcterms:hasPart": mapping.json_ld,
-                    },
-                }
-                members.append(entity)
-            else:
-                raise TypeError(
-                    f"Mapping must be of type {QuantityGraph} or {PropertyGraph}, not {type(mapping)}"
-                )
-
-        for idx, mapping in enumerate(cls.time_series_metadata):
-            if not isinstance(mapping, QuantityGraph):
-                raise TypeError(
-                    f"Mapping must be of type {QuantityGraph}, not {type(mapping)}"
-                )
-
-            if cls.config.data_download_uri:
-                download_url = {
-                    "dcterms:identifier": {
-                        "@type": "xsd:anyURI",
-                        "@value": urljoin(
-                            str(cls.config.data_download_uri), f"column-{idx}"
-                        ),
-                    }
-                }
-            else:
-                download_url = {}
-
-            entity = {
-                "@type": "prov:KeyEntityPair",
-                "prov:pairKey": {
-                    "@type": "xsd:string",
-                    "@value": mapping.key,
-                },
-                "prov:pairEntity": {
-                    "@type": "prov:Entity",
-                    "qudt:quantity": mapping.json_ld,
-                    "foaf:page": {
-                        "@type": "foaf:Document",
-                        "dcterms:format": {
-                            "@type": "xsd:anyURI",
-                            "@value": "https://www.iana.org/assignments/media-types/application/json",
-                        },
-                        "dcterms:type": {
-                            "@type": "xsd:anyURI",
-                            "@value": "http://purl.org/dc/terms/Dataset",
-                        },
-                        **download_url,
-                    },
-                },
+        else:
+            triples = {
+                "@graph": [model.json_ld for model in cls.general_metadata]
+                + [model.json_ld for model in cls.time_series_metadata]
             }
-            members.append(entity)
 
         return triples
 

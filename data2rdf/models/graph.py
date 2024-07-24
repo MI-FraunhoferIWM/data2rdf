@@ -92,9 +92,9 @@ class ClassTypeGraph(BasicGraphModel):
                 "dcterms": "http://purl.org/dc/terms/",
                 "rdfs": "http://www.w3.org/2000/01/rdf-schema#",
                 "xsd": "http://www.w3.org/2001/XMLSchema#",
-                "ontology_namespace": make_prefix(self.config),
+                f"{self.config.prefix_name}": make_prefix(self.config),
             },
-            "@id": f"ontology_namespace:{self.suffix}",
+            "@id": f"{self.config.prefix_name}:{self.suffix}",
             "@type": str(self.rdfs_type),
             **annotations,
             **datatypes,
@@ -156,12 +156,12 @@ class QuantityGraph(BasicGraphModel, BasicSuffixModel):
         """Return dict of json-ld for graph"""
         return {
             "@context": {
-                "fileid": make_prefix(cls.config),
+                f"{cls.config.prefix_name}": make_prefix(cls.config),
                 "rdfs": "http://www.w3.org/2000/01/rdf-schema#",
                 "xsd": "http://www.w3.org/2001/XMLSchema#",
                 "qudt": "http://qudt.org/schema/qudt/",
             },
-            "@id": f"fileid:{cls.suffix}",
+            "@id": f"{cls.config.prefix_name}:{cls.suffix}",
             "@type": str(cls.iri),
             **cls.unit_json,
             **cls.value_json,
@@ -232,11 +232,11 @@ class PropertyGraph(BasicGraphModel, BasicSuffixModel):
         """Return dict of json-ld for graph"""
         return {
             "@context": {
-                "fileid": make_prefix(cls.config),
+                f"{cls.config.prefix_name}": make_prefix(cls.config),
                 "rdfs": "http://www.w3.org/2000/01/rdf-schema#",
                 "xsd": "http://www.w3.org/2001/XMLSchema#",
             },
-            "@id": f"fileid:{cls.suffix}",
+            "@id": f"{cls.config.prefix_name}:{cls.suffix}",
             **cls.value_json,
             **cls.types_json,
         }

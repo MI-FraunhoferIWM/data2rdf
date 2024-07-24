@@ -21,7 +21,12 @@ class Config(BaseSettings):
     )
 
     base_iri: AnyUrl = Field(
-        "https://www.example.org/", description="Base IRI for individuals."
+        "https://www.example.org", description="Base IRI for individuals."
+    )
+
+    prefix_name: str = Field(
+        "fileid",
+        description="Prefix used referencing the `base_iri` in the context of the graph.",
     )
 
     separator: str = Field(
@@ -58,6 +63,13 @@ class Config(BaseSettings):
         ['"', "\r", "\n"],
         description="""In plain text parsers, e.g. the CSV-parser,
         there might be the need to remove certain characters when parsing""",
+    )
+
+    suppress_file_description: bool = Field(
+        False,
+        description="""In ABox mode, the pipeline is producing an additional
+        subgraph graph for describing the data file in its structure, mime type, etc.
+        This will be suppressed if enabled.""",
     )
 
     model_config = ConfigDict(extra="ignore")

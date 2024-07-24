@@ -134,6 +134,7 @@ def _make_tbox_classes(
             annotation_properties=annotations,
             object_properties=objects,
             data_properties=datatypes,
+            config=self.config,
         )
         self._classes.append(subgraph)
 

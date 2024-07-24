@@ -113,7 +113,8 @@ class Data2RDF(BaseModel):
             )
 
         extra_triples = extra_triples.replace(
-            self.config.namespace_placeholder, str(self.config.base_iri)
+            self.config.namespace_placeholder,
+            make_prefix(self.config),
         )
         graph = Graph(identifier=self.config.graph_identifier)
         graph.parse(data=extra_triples)
@@ -138,33 +139,36 @@ class Data2RDF(BaseModel):
     def json_ld(cls) -> Dict[str, Any]:
         """Return dict of json-ld for graph"""
         if cls.mode == PipelineMode.ABOX:
-            model = {
-                "@context": {
-                    "fileid": make_prefix(cls.config),
-                    "csvw": "http://www.w3.org/ns/csvw#",
-                    "rdfs": "http://www.w3.org/2000/01/rdf-schema#",
-                    "dcat": "http://www.w3.org/ns/dcat#",
-                    "xsd": "http://www.w3.org/2001/XMLSchema#",
-                    "dcterms": "http://purl.org/dc/terms/",
-                    "qudt": "http://qudt.org/schema/qudt/",
-                    "csvw": "http://www.w3.org/ns/csvw#",
-                    "foaf": "http://xmlns.com/foaf/spec/",
-                },
-                "@id": "fileid:dataset",
-                "@type": "dcat:Dataset",
-                "dcat:distribution": {
-                    "@type": "dcat:Distribution",
-                    "dcat:mediaType": {
-                        "@type": "xsd:anyURI",
-                        "@value": cls.parser.media_type,
+            if not cls.config.suppress_file_description:
+                model = {
+                    "@context": {
+                        f"{cls.config.prefix_name}": make_prefix(cls.config),
+                        "csvw": "http://www.w3.org/ns/csvw#",
+                        "rdfs": "http://www.w3.org/2000/01/rdf-schema#",
+                        "dcat": "http://www.w3.org/ns/dcat#",
+                        "xsd": "http://www.w3.org/2001/XMLSchema#",
+                        "dcterms": "http://purl.org/dc/terms/",
+                        "qudt": "http://qudt.org/schema/qudt/",
+                        "csvw": "http://www.w3.org/ns/csvw#",
+                        "foaf": "http://xmlns.com/foaf/spec/",
                     },
-                    "dcat:accessURL": {
-                        "@type": "xsd:anyURI",
-                        "@value": str(cls.config.data_download_uri),
+                    "@id": f"{cls.config.prefix_name}:dataset",
+                    "@type": "dcat:Dataset",
+                    "dcat:distribution": {
+                        "@type": "dcat:Distribution",
+                        "dcat:mediaType": {
+                            "@type": "xsd:anyURI",
+                            "@value": cls.parser.media_type,
+                        },
+                        "dcat:accessURL": {
+                            "@type": "xsd:anyURI",
+                            "@value": str(cls.config.data_download_uri),
+                        },
                     },
-                },
-                "dcterms:hasPart": cls.parser.abox.json_ld,
-            }
+                    "dcterms:hasPart": cls.parser.abox.json_ld,
+                }
+            else:
+                model = cls.parser.abox.json_ld
         elif cls.mode == PipelineMode.TBOX:
             model = cls.parser.tbox.json_ld
         else:
