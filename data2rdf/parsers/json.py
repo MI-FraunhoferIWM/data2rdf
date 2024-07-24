@@ -216,13 +216,11 @@ class JsonABoxParser(ABoxBaseParser):
         Parse metadata, time series metadata and time series
         """
 
-        mapping = {model.key: model for model in mapping}
-
         self._general_metadata = []
         self._time_series_metadata = []
         self._time_series = {}
         numericals = (int, str, float, bool)
-        for key, datum in mapping.items():
+        for datum in mapping:
             value_expression = parse(datum.value_location)
 
             results = [
@@ -231,7 +229,7 @@ class JsonABoxParser(ABoxBaseParser):
 
             if len(results) == 0:
                 value = None
-                message = f"""Concept with key `{key}`
+                message = f"""Concept with key `{datum.key or datum.value_location}`
                                 does not have a value at location `{datum.value_location}`.
                                 Concept will be omitted in graph.
                                 """
@@ -252,7 +250,7 @@ class JsonABoxParser(ABoxBaseParser):
 
                     if len(results) == 0:
                         unit = None
-                        message = f"""Concept with key `{key}`
+                        message = f"""Concept with key `{datum.key or datum.value_location}`
                                         does not have a unit at location `{datum.unit_location}`.
                                         Concept will be omitted in graph."""
                         warnings.warn(message, MappingMissmatchWarning)
@@ -260,7 +258,7 @@ class JsonABoxParser(ABoxBaseParser):
                         unit = results.pop()
                     else:
                         unit = None
-                        message = f"""Concept with key `{key}`
+                        message = f"""Concept with key `{datum.key or datum.value_location}`
                                     has multiple units at location `{datum.unit_location}`.
                                     Concept will be omitted in graph."""
                         warnings.warn(message, MappingMissmatchWarning)
@@ -275,7 +273,7 @@ class JsonABoxParser(ABoxBaseParser):
 
                 # make model
                 model_data = {
-                    "key": datum.key,
+                    "key": datum.key or datum.value_location,
                     "iri": datum.iri,
                     "suffix": datum.suffix,
                     "annotation": datum.annotation,
@@ -293,7 +291,7 @@ class JsonABoxParser(ABoxBaseParser):
                     self._time_series[datum.suffix] = value
                     self._time_series_metadata.append(model)
                 if not isinstance(value, numericals) and not unit:
-                    message = f"""Series with with key `{key}`
+                    message = f"""Series with with key `{datum.key or datum.value_locationy}`
                                 must be a quantity does not have a unit.
                                 Concept will be omitted in graph."""
                     warnings.warn(message, MappingMissmatchWarning)
