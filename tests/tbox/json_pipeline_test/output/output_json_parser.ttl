@@ -6,13 +6,13 @@
 @prefix skos: <http://www.w3.org/2004/02/skos/core#> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
-<https://www.example.org/> a owl:Ontology ;
+<https://w3id.org/dimat> a owl:Ontology ;
     dcterms:creator [ a foaf1:Person ;
             foaf1:name "Jane Doe" ] ;
     dcterms:title "Test Ontology" ;
     owl:versionInfo "1.0.0" .
 
-<https://www.example.org/BulkModulus> a owl:Class ;
+<https://w3id.org/dimat/BulkModulus> a owl:Class ;
     rdfs:label "B"^^xsd:string ;
     dcterms:contributor "John Doe"^^xsd:string ;
     dcterms:description "atio of the infinitesimal pressure increase to the resulting relative decrease of the volume"^^xsd:string ;
@@ -21,7 +21,7 @@
     ns1:hasLabelSource "DIN EN ISO XXX"^^xsd:string ;
     ns1:hasTypicalUnitLabel "MPa "^^xsd:string .
 
-<https://www.example.org/ModulusOfElasticity> a owl:Class ;
+<https://w3id.org/dimat/ModulusOfElasticity> a owl:Class ;
     rdfs:label "E"^^xsd:string ;
     dcterms:contributor "Jane Doe"^^xsd:string ;
     dcterms:description "Quotient of change of stress and change of extension in the range of evaluation in the elastic regime."^^xsd:string ;

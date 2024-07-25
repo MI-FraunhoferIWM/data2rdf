@@ -37,6 +37,9 @@ def test_parser_json_tbox(extension) -> None:
             "authors": ["Jane Doe"],
             "header_length": 2,
         },
+        config={
+            "base_iri": "https://w3id.org/dimat",
+        },
     )
 
     expected_graph = Graph()
@@ -68,6 +71,9 @@ def test_parser_json_inputs_tbox(input_kind) -> None:
             "ontology_title": "Test Ontology",
             "authors": ["Jane Doe"],
             "header_length": 2,
+        },
+        config={
+            "base_iri": "https://w3id.org/dimat",
         },
     )
 

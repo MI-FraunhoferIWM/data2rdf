@@ -40,6 +40,9 @@ def test_csv_pipeline_tbox(extension) -> None:
             "authors": ["Jane Doe"],
             "header_length": 2,
         },
+        config={
+            "base_iri": "https://w3id.org/dimat",
+        },
     )
 
     expected_graph = Graph()
@@ -74,6 +77,9 @@ def test_csv_pipeline_inputs_tbox(input_kind) -> None:
             "ontology_title": "Test Ontology",
             "authors": ["Jane Doe"],
             "header_length": 2,
+        },
+        config={
+            "base_iri": "https://w3id.org/dimat",
         },
     )
 
