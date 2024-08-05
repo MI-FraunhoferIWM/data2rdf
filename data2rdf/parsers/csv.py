@@ -50,7 +50,7 @@ class CSVTBoxParser(TBoxBaseParser):
     )
     column_sep: Optional[str] = Field(",", description="Data column separator")
     header_length: int = Field(
-        1, description="Length of the header of the excel sheet", ge=1
+        1, description="Length of the header of the CSV sheet", ge=1
     )
 
     fillna: Optional[Any] = Field(

@@ -3,7 +3,14 @@
 import warnings
 from typing import Any, Dict, List, Optional, Union
 
-from pydantic import AnyUrl, BaseModel, Field, ValidationInfo, field_validator
+from pydantic import (
+    AnyUrl,
+    BaseModel,
+    Field,
+    ValidationInfo,
+    field_validator,
+    model_validator,
+)
 
 from data2rdf.qudt.utils import _get_query_match
 from data2rdf.utils import is_bool, is_float, is_integer, is_uri, make_prefix
@@ -227,6 +234,19 @@ class PropertyGraph(BasicGraphModel, BasicSuffixModel):
         for mapping the data value to the individual.""",
     )
 
+    @model_validator(mode="after")
+    @classmethod
+    def validate_property_graph(cls, self: "PropertyGraph") -> "PropertyGraph":
+        """Validate property graph in order to generate annotations"""
+        if self.annotation:
+            if str(self.annotation).endswith(self.config.separator):
+                self.annotation = str(self.annotation) + self.value
+            else:
+                self.annotation = (
+                    str(self.annotation) + self.config.separator + self.value
+                )
+        return self
+
     @property
     def json_ld(cls) -> Dict[str, Any]:
         """Return dict of json-ld for graph"""
@@ -253,16 +273,10 @@ class PropertyGraph(BasicGraphModel, BasicSuffixModel):
     def types_json(cls) -> "Dict[str, Any]":
         """Dict of json-ld for class types of the individual"""
         if cls.annotation:
-            if str(cls.annotation).endswith(cls.config.separator):
-                annotation = str(cls.annotation) + cls.value
-            else:
-                annotation = (
-                    str(cls.annotation) + cls.config.separator + cls.value
-                )
             types = {
                 "@type": [
                     str(cls.iri),
-                    annotation,
+                    cls.annotation,
                 ]
             }
         else:
