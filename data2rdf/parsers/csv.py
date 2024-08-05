@@ -417,6 +417,9 @@ class CSVABoxParser(ABoxBaseParser):
                 sep=self.time_series_sep,
                 skiprows=self.metadata_length,
             )
+            response = response.map(
+                lambda value: _replace(value, self.config.remove_from_datafile)
+            )
         else:
             warnings.warn(
                 "`time_series_sep` is not set. Any potential time series in the data file will be skipped.",
