@@ -6,6 +6,7 @@ from io import StringIO
 from typing import Any, Dict, List, Optional, Union
 from urllib.parse import urljoin
 
+import numpy as np
 import pandas as pd
 from pydantic import Field
 
@@ -20,6 +21,14 @@ from data2rdf.models.mapping import (  # isort:skip
     ABoxBaseMapping,
     TBoxBaseMapping,
 )
+
+
+def _replace(value: Optional[str], to_be_replaced: List[str]) -> Any:
+    """Replace char in string"""
+    if isinstance(value, str):
+        for char in to_be_replaced:
+            value = value.replace(char, "")
+    return value
 
 
 def _load_data_file(self: "Union[CSVTBoxParser, CSVABoxParser]") -> StringIO:
@@ -102,6 +111,9 @@ class CSVABoxParser(ABoxBaseParser):
     )
     time_series_header_length: int = Field(
         2, description="Length of header of the time series"
+    )
+    fillna: Optional[Any] = Field(
+        "", description="Value to fill NaN values in the parsed dataframe."
     )
     # OVERRIDE
     mapping: Union[str, List[ABoxBaseMapping]] = Field(
@@ -274,40 +286,39 @@ class CSVABoxParser(ABoxBaseParser):
         datafile.seek(0)
 
         # iterate over general metadata
-        header = ["key", "value", "unit"]
         self._general_metadata = []
         if self.metadata_length > 0:
             if not self.metadata_sep:
                 raise ValueError(
                     "`metadata_length` is > 0 but `metadata_sep` is not set"
                 )
-            for l_count, line in enumerate(datafile.readlines()):
-                # remove unneeded characters
-                for char in self.config.remove_from_datafile:
-                    line = line.replace(char, "")
-
-                # merge with header keys
-                row = [
-                    element.strip()
-                    for element in line.split(self.metadata_sep)
-                ]
-                metadatum = dict(zip(header, row))
-
+            metadata = pd.read_csv(
+                datafile,
+                sep=self.metadata_sep,
+                nrows=self.metadata_length,
+                names=["key", "value", "unit"],
+                header=None,
+            )
+            # remove unneeded characters
+            metadata = metadata.map(
+                lambda value: _replace(value, self.config.remove_from_datafile)
+            )
+            metadata.replace({np.nan: self.fillna}, inplace=True)
+            for i, metadatum in metadata.iterrows():
                 # get the match from the mapping
-                key = metadatum.get("key")
-                mapping_match = mapping.get(key)
+                mapping_match = mapping.get(metadatum.key)
 
                 # only map the data if a match is found
                 if mapping_match:
                     # get unit
-                    unit = mapping_match.unit or metadatum.get("unit") or None
+                    unit = mapping_match.unit or metadatum.unit or None
                     if unit:
                         unit = _strip_unit(unit, self.config.remove_from_unit)
 
                     # instanciate model
                     model_data = {
-                        "key": key,
-                        "value": metadatum.get("value"),
+                        "key": metadatum.key,
+                        "value": metadatum.value,
                         "unit": unit,
                         "iri": mapping_match.iri,
                         "suffix": mapping_match.suffix,
@@ -329,12 +340,9 @@ class CSVABoxParser(ABoxBaseParser):
                     self._general_metadata.append(model)
                 else:
                     warnings.warn(
-                        f"No match found in mapping for key `{key}`",
+                        f"No match found in mapping for key `{metadatum.key}`",
                         MappingMissmatchWarning,
                     )
-
-                if l_count == self.metadata_length - 1:
-                    break
 
         # parse time series data and meta data
         self._time_series_metadata = []
