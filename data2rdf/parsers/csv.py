@@ -287,7 +287,10 @@ class CSVABoxParser(ABoxBaseParser):
                     line = line.replace(char, "")
 
                 # merge with header keys
-                row = line.split(self.metadata_sep)
+                row = [
+                    element.strip()
+                    for element in line.split(self.metadata_sep)
+                ]
                 metadatum = dict(zip(header, row))
 
                 # get the match from the mapping
