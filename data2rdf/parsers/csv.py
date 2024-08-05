@@ -420,6 +420,10 @@ class CSVABoxParser(ABoxBaseParser):
             response = response.map(
                 lambda value: _replace(value, self.config.remove_from_datafile)
             )
+            response.columns = [
+                _replace(column, self.config.remove_from_datafile)
+                for column in response.columns
+            ]
         else:
             warnings.warn(
                 "`time_series_sep` is not set. Any potential time series in the data file will be skipped.",
