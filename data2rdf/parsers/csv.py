@@ -313,6 +313,11 @@ class CSVABoxParser(ABoxBaseParser):
                     # get unit
                     unit = mapping_match.unit or metadatum.unit or None
                     if unit:
+                        if not isinstance(unit, str):
+                            raise TypeError(
+                                f"""Unit `{unit}` for key `{metadatum.key}` is not a string.
+                                Is it a bad mapping?"""
+                            )
                         unit = _strip_unit(unit, self.config.remove_from_unit)
 
                     # instanciate model
@@ -365,6 +370,11 @@ class CSVABoxParser(ABoxBaseParser):
                 )
 
                 if unit:
+                    if not isinstance(unit, str):
+                        raise TypeError(
+                            f"""Unit `{unit}` for key `{key}` is not a string.
+                            Is it a bad mapping?"""
+                        )
                     unit = _strip_unit(unit, self.config.remove_from_unit)
 
                 # assign model

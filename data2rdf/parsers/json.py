@@ -269,6 +269,11 @@ class JsonABoxParser(ABoxBaseParser):
                 # decide which unit to take
                 unit = datum.unit or unit
                 if unit:
+                    if not isinstance(unit, str):
+                        raise TypeError(
+                            f"""Unit `{unit}` for key `{datum.key}` is not a string.
+                            Is it a bad mapping?"""
+                        )
                     unit = _strip_unit(unit, self.config.remove_from_unit)
 
                 # make model
