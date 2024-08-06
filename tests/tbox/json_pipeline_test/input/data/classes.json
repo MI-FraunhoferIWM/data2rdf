@@ -1,0 +1,20 @@
+[
+  {
+    "Author's name": "Jane Doe",
+    "Comment": "This row is an example",
+    "Description": "Quotient of change of stress and change of extension in the range of evaluation in the elastic regime.",
+    "Measurement unit": "GPa",
+    "Ontological concept ID": "ModulusOfElasticity",
+    "Original name": "E",
+    "Source": "DIN EN ISO 6892-1, 3.13"
+  },
+  {
+    "Author's name": "John Doe",
+    "Comment": "",
+    "Description": "atio of the infinitesimal pressure increase to the resulting relative decrease of the volume",
+    "Measurement unit": "MPa ",
+    "Ontological concept ID": "BulkModulus",
+    "Original name": "B",
+    "Source": "DIN EN ISO XXX"
+  }
+]

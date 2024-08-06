@@ -4,6 +4,9 @@ A pipeline for generating data representation in RDF out of raw data given in AS
 
 https://data2rdf.readthedocs.io/en/latest/
 
+<!-- Pytest Coverage Comment:Begin -->
+<!-- Pytest Coverage Comment:End -->
+
 # Installation
 
 ## Install for using the package

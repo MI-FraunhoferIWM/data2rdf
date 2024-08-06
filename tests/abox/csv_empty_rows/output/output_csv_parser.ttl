@@ -1,0 +1,82 @@
+@prefix csvw: <http://www.w3.org/ns/csvw#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix fileid: <https://www.example.org/> .
+@prefix foaf1: <http://xmlns.com/foaf/spec/> .
+@prefix qudt: <http://qudt.org/schema/qudt/> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+fileid:tableGroup a csvw:TableGroup ;
+    csvw:table [ a csvw:Table ;
+            rdfs:label "Time series data" ;
+            csvw:tableSchema [ a csvw:Schema ;
+                    csvw:column [ a csvw:Column ;
+                            qudt:quantity fileid:Temperature ;
+                            csvw:titles "Temperature[°C]"^^xsd:string ;
+                            foaf1:page [ a foaf1:Document ;
+                                    dcterms:format "https://www.iana.org/assignments/media-types/application/json"^^xsd:anyURI ;
+                                    dcterms:identifier "https://www.example.org/column-0"^^xsd:anyURI ;
+                                    dcterms:type "http://purl.org/dc/terms/Dataset"^^xsd:anyURI ] ],
+                        [ a csvw:Column ;
+                            qudt:quantity fileid:PoissonRatio ;
+                            csvw:titles "Poison's ratio[-]"^^xsd:string ;
+                            foaf1:page [ a foaf1:Document ;
+                                    dcterms:format "https://www.iana.org/assignments/media-types/application/json"^^xsd:anyURI ;
+                                    dcterms:identifier "https://www.example.org/column-4"^^xsd:anyURI ;
+                                    dcterms:type "http://purl.org/dc/terms/Dataset"^^xsd:anyURI ] ],
+                        [ a csvw:Column ;
+                            qudt:quantity fileid:MassDensity ;
+                            csvw:titles "Density[kg/m3]"^^xsd:string ;
+                            foaf1:page [ a foaf1:Document ;
+                                    dcterms:format "https://www.iana.org/assignments/media-types/application/json"^^xsd:anyURI ;
+                                    dcterms:identifier "https://www.example.org/column-6"^^xsd:anyURI ;
+                                    dcterms:type "http://purl.org/dc/terms/Dataset"^^xsd:anyURI ] ],
+                        [ a csvw:Column ;
+                            qudt:quantity fileid:ModulusOfElasticity ;
+                            csvw:titles "Young's modulus[Pa]"^^xsd:string ;
+                            foaf1:page [ a foaf1:Document ;
+                                    dcterms:format "https://www.iana.org/assignments/media-types/application/json"^^xsd:anyURI ;
+                                    dcterms:identifier "https://www.example.org/column-3"^^xsd:anyURI ;
+                                    dcterms:type "http://purl.org/dc/terms/Dataset"^^xsd:anyURI ] ],
+                        [ a csvw:Column ;
+                            qudt:quantity fileid:ThermalConductivity ;
+                            csvw:titles "Thermal conductivity[W/mK]"^^xsd:string ;
+                            foaf1:page [ a foaf1:Document ;
+                                    dcterms:format "https://www.iana.org/assignments/media-types/application/json"^^xsd:anyURI ;
+                                    dcterms:identifier "https://www.example.org/column-5"^^xsd:anyURI ;
+                                    dcterms:type "http://purl.org/dc/terms/Dataset"^^xsd:anyURI ] ],
+                        [ a csvw:Column ;
+                            qudt:quantity fileid:SpecificHeatCapacity ;
+                            csvw:titles "Specific heat[J/kgK]"^^xsd:string ;
+                            foaf1:page [ a foaf1:Document ;
+                                    dcterms:format "https://www.iana.org/assignments/media-types/application/json"^^xsd:anyURI ;
+                                    dcterms:identifier "https://www.example.org/column-2"^^xsd:anyURI ;
+                                    dcterms:type "http://purl.org/dc/terms/Dataset"^^xsd:anyURI ] ],
+                        [ a csvw:Column ;
+                            qudt:quantity fileid:ThermalExpansionCoefficient ;
+                            csvw:titles "Coefficient of thermal exapansion[1/K]"^^xsd:string ;
+                            foaf1:page [ a foaf1:Document ;
+                                    dcterms:format "https://www.iana.org/assignments/media-types/application/json"^^xsd:anyURI ;
+                                    dcterms:identifier "https://www.example.org/column-1"^^xsd:anyURI ;
+                                    dcterms:type "http://purl.org/dc/terms/Dataset"^^xsd:anyURI ] ] ] ] .
+
+fileid:MassDensity a <https://w3id.org/steel/ProcessOntology/MassDensity> ;
+    qudt:hasUnit "http://qudt.org/vocab/unit/KiloGM-PER-M3"^^xsd:anyURI .
+
+fileid:ModulusOfElasticity a <https://w3id.org/steel/ProcessOntology/ModulusOfElasticity> ;
+    qudt:hasUnit "https://qudt.org/vocab/unit/PA"^^xsd:anyURI .
+
+fileid:PoissonRatio a <https://w3id.org/steel/ProcessOntology/PoissonRatio> ;
+    qudt:hasUnit "https://qudt.org/vocab/unit/NUM"^^xsd:anyURI .
+
+fileid:SpecificHeatCapacity a <https://w3id.org/steel/ProcessOntology/SpecificHeatCapacity> ;
+    qudt:hasUnit "http://qudt.org/vocab/unit/J-PER-KiloGM-K"^^xsd:anyURI .
+
+fileid:Temperature a <https://w3id.org/steel/ProcessOntology/Temperature> ;
+    qudt:hasUnit "https://qudt.org/vocab/unit/DEG_C"^^xsd:anyURI .
+
+fileid:ThermalConductivity a <https://w3id.org/steel/ProcessOntology/ThermalConductivity> ;
+    qudt:hasUnit "http://qudt.org/vocab/unit/KiloW-PER-M-K"^^xsd:anyURI .
+
+fileid:ThermalExpansionCoefficient a <https://w3id.org/steel/ProcessOntology/ThermalExpansionCoefficient> ;
+    qudt:hasUnit "https://qudt.org/vocab/unit/PERCENT-PER-K"^^xsd:anyURI .

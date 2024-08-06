@@ -1,0 +1,24 @@
+{
+  "data": {
+    "Breitenaenderung": {
+      "unit": "mm",
+      "value": 1.0
+    },
+    "Dehnung": [
+      1.0,
+      2.0,
+      3.0
+    ],
+    "Standardkraft": {
+      "array": [
+        2.0,
+        3.0,
+        4.0
+      ],
+      "unit": "kN"
+    }
+  },
+  "details": {
+    "Bemerkungen": "foobar"
+  }
+}

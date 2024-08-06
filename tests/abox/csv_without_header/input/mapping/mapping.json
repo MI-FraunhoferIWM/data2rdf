@@ -1,0 +1,21 @@
+[
+  {
+    "iri": "https://w3id.org/steel/ProcessOntology/Sensor",
+    "key": "column_01",
+    "suffix": "Sensor1"
+  },
+  {
+    "iri": "https://w3id.org/steel/ProcessOntology/Sensor",
+    "key": "column_02",
+    "suffix": "Sensor2"
+  },
+  {
+    "iri": "https://w3id.org/steel/ProcessOntology/Sensor",
+    "key": "column_03",
+    "suffix": "Sensor3"
+  },
+  {
+    "iri": "https://w3id.org/steel/ProcessOntology/TestTime",
+    "key": "time"
+  }
+]

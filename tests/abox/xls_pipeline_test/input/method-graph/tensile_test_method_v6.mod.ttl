@@ -1,0 +1,122 @@
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
+@prefix fileid: <http://abox-namespace-placeholder.org/> .
+
+#  Describe the Tester and the Facility and lab
+
+fileid:TestingFacility rdf:type prov:Organization , prov:Location .
+
+fileid:TestingLab rdf:type prov:Location, prov:Agent ;
+                  prov:atLocation fileid:TestingFacility .
+
+fileid:Tester rdf:type prov:Agent ;
+              prov:actedOnBehalfOf fileid:TestingFacility ;
+              prov:atLocation fileid:TestingLab .
+
+fileid:Temperature rdf:type prov:Entity ;
+                   prov:wasAttributedTo fileid:TestingLab .
+
+
+# describe the project
+
+fileid:Project rdf:type prov:Activity ;
+               prov:wasAssociatedWith fileid:TestingFacility ;
+               prov:generated fileid:ProjectName ,
+                              fileid:ProjectNumber .
+
+fileid:ProjectName rdf:type prov:Entity .
+
+fileid:ProjectNumber rdf:type prov:Entity .
+
+
+# Describe the Specimen and its attributes
+
+fileid:SamplePreparatation rdf:type prov:Activity ;
+                           prov:wasAssociatedWith fileid:TensileTestSpecimen ,
+                                                  fileid:Material ;
+                           prov:generated fileid:ParallelLength ,
+                                          fileid:SpecimenThickness ,
+                                          fileid:SpecimenType ,
+                                          fileid:SpecimenWidth ;
+                           prov:wasInfluencedBy fileid:Project .
+
+fileid:TensileTestSpecimen rdf:type prov:Agent , prov:Entity .
+
+fileid:Material rdf:type prov:Agent .
+
+fileid:ParallelLength rdf:type prov:Entity ;
+                      prov:wasAttributedTo fileid:TensileTestSpecimen .
+
+fileid:SpecimenThickness rdf:type prov:Entity ;
+                         prov:wasAttributedTo fileid:TensileTestSpecimen .
+
+fileid:SpecimenType rdf:type prov:Entity ;
+                    prov:wasAttributedTo fileid:TensileTestSpecimen .
+
+fileid:SpecimenWidth rdf:type prov:Entity ;
+                    prov:wasAttributedTo fileid:TensileTestSpecimen .
+
+# Describe the experiment preparation
+
+fileid:ExperimentPreparation rdf:type prov:Activity ;
+                             prov:atLocation fileid:TestingLab ;
+                             prov:wasAssociatedWith fileid:Tester ,
+                                                    fileid:ForceMeasuringDevice ,
+                                                    fileid:DisplacementTransducer ,
+                                                    fileid:TensileTestSpecimen ,
+                                                    fileid:TensileTestingMachine ;
+                             prov:generated fileid:Preload ,
+                                            fileid:OriginalGaugeLength ,
+                                            fileid:TestingRate ;
+                            prov:wasInfluencedBy fileid:SamplePreparatation .
+
+fileid:TensileTestingMachine rdf:type prov:Agent, prov:Entity ;
+                             prov:atLocation fileid:TestingLab .
+
+fileid:ForceMeasuringDevice rdf:type prov:Agent, prov:Entity ;
+                            prov:atLocation fileid:TestingLab .
+
+fileid:DisplacementTransducer rdf:type prov:Agent , prov:Entity ;
+                              prov:atLocation fileid:TestingLab .
+
+fileid:TestingRate rdf:type prov:Entity ;
+                   prov:wasAttributedTo fileid:TensileTestingMachine .
+
+fileid:Preload rdf:type prov:Entity ;
+               prov:wasAttributedTo fileid:TensileTestingMachine .
+
+fileid:OriginalGaugeLength rdf:type prov:Entity ;
+                           prov:wasAttributedTo fileid:DisplacementTransducer .
+
+
+# Describe the experiment and its data produced by which device
+
+fileid:dataset rdf:type prov:Entity .
+
+fileid:TensileTestExperiment rdf:type prov:Activity ;
+    prov:wasAssociatedWith fileid:Tester ;
+    prov:used fileid:TensileTestSpecimen ,
+              fileid:TensileTestingMachine ,
+              fileid:ForceMeasuringDevice ,
+              fileid:DisplacementTransducer ,
+              fileid:TestingFacility ;
+    prov:generated fileid:Extension ,
+                   fileid:StandardForce ,
+                   fileid:AbsoluteCrossheadTravel ,
+                   fileid:Remark ,
+                   fileid:TimeStamp ,
+                   fileid:dataset ;
+    prov:hadPlan fileid:TestStandard ;
+    prov:wasInfluencedBy fileid:ExperimentPreparation .
+
+fileid:AbsoluteCrossheadTravel rdf:type prov:Entity;
+                               prov:wasDerivedFrom fileid:DisplacementTransducer .
+
+fileid:StandardForce rdf:type prov:Entity ;
+                     prov:wasDerivedFrom fileid:ForceMeasuringDevice .
+
+fileid:Extension rdf:type prov:Entity ;
+                 prov:wasDerivedFrom fileid:DisplacementTransducer .
+
+fileid:TestingStandard rdf:type prov:Plan .

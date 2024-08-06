@@ -1,0 +1,53 @@
+@prefix dcat: <http://www.w3.org/ns/dcat#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix fileid: <https://www.example.org/> .
+@prefix foaf: <http://xmlns.com/foaf/spec/> .
+@prefix ns1: <prov:> .
+@prefix qudt: <http://qudt.org/schema/qudt/> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+fileid:dataset a dcat:Dataset ;
+    dcterms:hasPart fileid:Dictionary ;
+    dcat:distribution [ a dcat:Distribution ;
+            dcat:accessURL "https://www.example.org/download/"^^xsd:anyURI ;
+            dcat:mediaType "https://www.iana.org/assignments/media-types/application/json"^^xsd:anyURI ] .
+
+fileid:Dictionary a ns1:Dictionary ;
+    ns1:hadDictionaryMember [ a ns1:KeyEntityPair ;
+            ns1:pairEntity [ a ns1:Entity ;
+                    qudt:quantity fileid:Force ;
+                    foaf:page [ a foaf:Document ;
+                            dcterms:format "https://www.iana.org/assignments/media-types/application/json"^^xsd:anyURI ;
+                            dcterms:identifier "https://www.example.org/download/column-1"^^xsd:anyURI ;
+                            dcterms:type "http://purl.org/dc/terms/Dataset"^^xsd:anyURI ] ] ;
+            ns1:pairKey "Standardkraft"^^xsd:string ],
+        [ a ns1:KeyEntityPair ;
+            ns1:pairEntity [ a ns1:Entity ;
+                    qudt:quantity fileid:PercentageElongation ;
+                    foaf:page [ a foaf:Document ;
+                            dcterms:format "https://www.iana.org/assignments/media-types/application/json"^^xsd:anyURI ;
+                            dcterms:identifier "https://www.example.org/download/column-0"^^xsd:anyURI ;
+                            dcterms:type "http://purl.org/dc/terms/Dataset"^^xsd:anyURI ] ] ;
+            ns1:pairKey "Dehnung"^^xsd:string ],
+        [ a ns1:KeyEntityPair ;
+            ns1:pairEntity [ a ns1:Entity ;
+                    qudt:quantity fileid:WidthChange ] ;
+            ns1:pairKey "Breitenaenderung"^^xsd:string ],
+        [ a ns1:KeyEntityPair ;
+            ns1:pairEntity [ a ns1:Entity ;
+                    dcterms:hasPart fileid:Remark ] ;
+            ns1:pairKey "Bemerkungen"^^xsd:string ] .
+
+fileid:Force a <https://w3id.org/steel/ProcessOntology/Force> ;
+    qudt:hasUnit "http://qudt.org/vocab/unit/KiloN"^^xsd:anyURI .
+
+fileid:PercentageElongation a <https://w3id.org/steel/ProcessOntology/PercentageElongation> ;
+    qudt:hasUnit "http://qudt.org/vocab/unit/PERCENT"^^xsd:anyURI .
+
+fileid:Remark a <https://w3id.org/steel/ProcessOntology/Remark> ;
+    rdfs:label "foobar" .
+
+fileid:WidthChange a <https://w3id.org/steel/ProcessOntology/WidthChange> ;
+    qudt:hasUnit "http://qudt.org/vocab/unit/MilliM"^^xsd:anyURI ;
+    qudt:value "1.0"^^xsd:float .
