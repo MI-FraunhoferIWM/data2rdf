@@ -54,7 +54,7 @@ def test_pipeline_dict_custom_properties() -> None:
         raw_data=data,
         mapping=mapping,
         parser=Parser.json,
-        extra_triples=addtional_triples,
+        additional_triples=addtional_triples,
         config={
             "base_iri": base_iri,
             "separator": "#",

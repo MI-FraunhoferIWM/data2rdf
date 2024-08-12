@@ -1,7 +1,7 @@
 # ABox generation from a json file or Python-dict with metadata and time series
 
 ```{note}
-This example is building up on the very first one about the [CSV file with metadata and time series](1.1_csv.md).
+This example is building up on the very first one about the [CSV file with metadata and time series](1_csv.md).
 Please start from this chapter in order to fully understand the content of this example.
 ```
 ## General understanding
@@ -283,4 +283,4 @@ fileid:WidthChange a <https://w3id.org/steel/ProcessOntology/WidthChange> ;
 ```
 
 
-Again, you will be able to investigate the `general_metadata`, `plain_metadata`, `time_series_metadata` and `time_series` attributes in the same way as stated in the [first example](1.1_csv).
+Again, you will be able to investigate the `general_metadata`, `plain_metadata`, `time_series_metadata` and `time_series` attributes in the same way as stated in the [first example](1_csv).

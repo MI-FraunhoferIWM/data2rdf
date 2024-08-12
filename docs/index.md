@@ -10,7 +10,7 @@ Get started!
 
 ::::{grid}
 :::{grid-item-card} Quick start
-:link: examples/abox/1.1_csv.html
+:link: examples/abox/1_csv.html
 Start with the first Data2RDF example.
 :::
 

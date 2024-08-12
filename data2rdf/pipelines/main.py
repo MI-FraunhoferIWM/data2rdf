@@ -39,7 +39,7 @@ class Data2RDF(BaseModel):
     - parser_args (Dict[str, Any]): A dictionary with specific arguments for the parser. These are passed to the parser
     as keyword arguments.
     - config (Union[Dict[str, Any], Config]): Configuration object. Defaults to a new instance of Config.
-    - extra_triples (Optional[Union[str, Graph]]): File path or rdflib-object for a Graph with extra triples for the
+    - additional_triples (Optional[Union[str, Graph]]): File path or rdflib-object for a Graph with extra triples for the
     resulting pipeline graph.
     """
 
@@ -76,7 +76,7 @@ class Data2RDF(BaseModel):
         default_factory=Config, description="Configuration object"
     )
 
-    extra_triples: Optional[Union[str, Graph]] = Field(
+    additional_triples: Optional[Union[str, Graph]] = Field(
         None,
         description="Filepath or rdflib-object for a Graph with extra triples for the resulting pipeline graph.",
     )
@@ -93,7 +93,7 @@ class Data2RDF(BaseModel):
             value = Config(**value)
         return value
 
-    def _validate_extra_triples(
+    def _validate_additional_triples(
         self,
         value: Union[str, Graph],
     ) -> Graph:
@@ -102,22 +102,22 @@ class Data2RDF(BaseModel):
             potential_path = Path(value)
             if potential_path.is_file():
                 with open(value, encoding=self.config.encoding) as file:
-                    extra_triples = file.read()
+                    additional_triples = file.read()
             else:
-                extra_triples = value
+                additional_triples = value
         elif isinstance(value, Graph):
-            extra_triples = value.serialize()
+            additional_triples = value.serialize()
         else:
             raise TypeError(
-                f"`extra_triples` must be of type {str}, {Graph} or {type(None)}, not {type(value)}."
+                f"`additional_triples` must be of type {str}, {Graph} or {type(None)}, not {type(value)}."
             )
 
-        extra_triples = extra_triples.replace(
+        additional_triples = additional_triples.replace(
             self.config.namespace_placeholder,
             make_prefix(self.config),
         )
         graph = Graph(identifier=self.config.graph_identifier)
-        graph.parse(data=extra_triples)
+        graph.parse(data=additional_triples)
 
         return graph
 
@@ -180,8 +180,8 @@ class Data2RDF(BaseModel):
         """Return graph object"""
         graph = Graph(identifier=cls.config.graph_identifier)
         graph.parse(data=json.dumps(cls.json_ld), format="json-ld")
-        if cls.extra_triples:
-            graph += cls._validate_extra_triples(cls.extra_triples)
+        if cls.additional_triples:
+            graph += cls._validate_additional_triples(cls.additional_triples)
         return graph
 
     @property

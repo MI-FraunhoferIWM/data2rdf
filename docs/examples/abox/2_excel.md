@@ -1,7 +1,7 @@
 # ABox generation from an excel file with metadata and time series
 
 ```{note}
-This example is building up on the previous one about the [CSV file with metadata and time series](1.1_csv.md).
+This example is building up on the previous one about the [CSV file with metadata and time series](1_csv.md).
 Please start from this chapter in order to fully understand the content of this example.
 ```
 
@@ -410,7 +410,7 @@ fileid:Temperature rdf:type prov:Entity ;
 data2rdf = Data2RDF(
     raw_file="path/to/file.xlsx",
     mapping=mapping,
-    extra_triples=additional_triples,
+    additional_triples=additional_triples,
     parser=Parser.excel,
 )
 ```
@@ -685,4 +685,4 @@ fileid:TensileTestSpecimen a prov:Agent,
 </Details>
 </blockQuote>
 
-Again, you will be able to investigate the `general_metadata`, `plain_metadata`, `time_series_metadata` and `time_series` attributes in the same way as stated in the [first example](1.1_csv).
+Again, you will be able to investigate the `general_metadata`, `plain_metadata`, `time_series_metadata` and `time_series` attributes in the same way as stated in the [first example](1_csv).

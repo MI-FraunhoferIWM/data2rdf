@@ -392,7 +392,7 @@ pipeline = Data2RDF(
     parser=Parser.csv,
     mapping=mapping_file,
     parser_args=parser_args,
-    extra_triples=extra,
+    additional_triples=extra,
     config={
       "base_url": "https://example.org/123", #this is optional and defaults to "https://example.org"
     }
@@ -447,7 +447,7 @@ pipeline = Data2RDF(
     parser=Parser.csv,
     mapping=mapping,
     parser_args=parser_args,
-    extra_triples=extra,
+    additional_triples=extra,
     config={
       "base_url": "https://example.org/123"
     }

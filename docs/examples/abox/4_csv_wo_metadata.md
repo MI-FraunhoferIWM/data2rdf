@@ -47,7 +47,7 @@ parser_args = {
 
 ### The mapping
 
-The **schema** of the mapping itself is very similar to the one of the [very first example](1.1_csv.md), but for different ontological classes and different keys this time:
+The **schema** of the mapping itself is very similar to the one of the [very first example](1_csv.md), but for different ontological classes and different keys this time:
 
 ```{json}
 [
@@ -208,4 +208,4 @@ fileid:tableGroup a csvw:TableGroup ;
 </blockQuote>
 
 
-Again, you will be able to investigate the `general_metadata`, `plain_metadata`, `time_series_metadata` and `time_series` attributes in the same way as stated in the [first example](1.1_csv).
+Again, you will be able to investigate the `general_metadata`, `plain_metadata`, `time_series_metadata` and `time_series` attributes in the same way as stated in the [first example](1_csv).

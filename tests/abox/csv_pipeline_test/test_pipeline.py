@@ -68,7 +68,7 @@ def test_csv_pipeline_bad_mapping() -> None:
         mapping=os.path.join(mapping_folder, "bad_tensile_test_mapping.json"),
         parser=Parser.csv,
         parser_args=parser_args,
-        extra_triples=template,
+        additional_triples=template,
     )
     expected_graph = Graph()
     expected_graph.parse(expected)
@@ -88,7 +88,7 @@ def test_csv_pipeline_no_match_in_mapping() -> None:
                 working_folder, "data", "BAD_DX56_D_FZ2_WR00_43.TXT"
             ),
             parser=Parser.csv,
-            extra_triples=template,
+            additional_triples=template,
             mapping=os.path.join(mapping_folder, "tensile_test_mapping.json"),
             parser_args={
                 "metadata_sep": "\t",
@@ -125,7 +125,7 @@ def test_csv_pipeline_config(config) -> None:
         mapping=os.path.join(mapping_folder, "tensile_test_mapping.json"),
         parser=Parser.csv,
         parser_args=parser_args,
-        extra_triples=template,
+        additional_triples=template,
         config=config,
     )
     expected_graph = Graph()
@@ -162,7 +162,7 @@ def test_csv_pipeline(extension) -> None:
         mapping=mapping,
         parser=Parser.csv,
         parser_args=parser_args,
-        extra_triples=template,
+        additional_triples=template,
     )
 
     assert len(pipeline.general_metadata) == 20
@@ -208,7 +208,7 @@ def test_csv_pipeline_inputs(input_kind) -> None:
         mapping=os.path.join(mapping_folder, "tensile_test_mapping.json"),
         parser=Parser.csv,
         parser_args=parser_args,
-        extra_triples=template,
+        additional_triples=template,
     )
 
     assert len(pipeline.general_metadata) == 20
