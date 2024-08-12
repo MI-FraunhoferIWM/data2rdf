@@ -4,7 +4,14 @@ import json
 from abc import abstractmethod
 from typing import Any, Dict, Optional, Union
 
-from pydantic import AnyUrl, BaseModel, Field, ValidationInfo, field_validator
+from pydantic import (
+    AnyUrl,
+    BaseModel,
+    ConfigDict,
+    Field,
+    ValidationInfo,
+    field_validator,
+)
 from rdflib import Graph
 
 from data2rdf.config import Config
@@ -16,6 +23,22 @@ class BaseConfigModel(BaseModel):
     config: Config = Field(
         default_factory=Config, description="Configuration object"
     )
+    model_config = ConfigDict(exclude={"config"})
+
+    def __str__(self) -> str:
+        """Pretty print the model"""
+        values = ",\n".join(
+            [
+                f"\t{key}={value}"
+                for key, value in self.__dict__.items()
+                if key not in self.model_config.get("exclude")
+            ]
+        )
+        return f"{self.__class__.__name__}(\n{values})"
+
+    def __repr__(self) -> str:
+        """Pretty print the model"""
+        return str(self)
 
     @field_validator("config")
     @classmethod
