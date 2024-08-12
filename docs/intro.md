@@ -15,7 +15,7 @@ Breaking this package down to the basic functionalities, one can describe it wit
 
     * parse the metadata and time series of this data source and make it available to other 3rd party software for further data storage and processing.
 
-    * express the SI-units of certain quantities in **QUDT**.
+    * express the SI-units of certain quantities through the **QUDT** ontology.
 
 For the **OWL/RDF** generation we consider:
 

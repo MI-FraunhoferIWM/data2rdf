@@ -16,39 +16,7 @@ We do not target to transform the time series itself into RDF, since it usually 
 
 The csv file produced by the tensile test machine looks like this:
 
-```
-"Prüfinstitut"	"institute_1"
-"Projektnummer"	"123456"
-"Projektname"	"proj_name_1"
-"Datum/Uhrzeit"	44335.4	""
-"Maschinendaten"	"maschine_1"
-"Kraftaufnehmer"	"Kraftaufnehmer_1"
-"Wegaufnehmer"	"Wegaufnehmer_1"
-"Prüfnorm"	"ISO-XX"
-"Werkstoff"	"Werkstoff_1"
-"Probentyp"	"Probentyp_1"
-"Prüfer"	"abc"
-"Probenkennung 2"	"Probentyp_2"
-"Messlänge Standardweg"	80	"mm"
-"Versuchslänge"	120	"mm"
-"Probendicke"	1.55	"mm"
-"Probenbreite"	20.04	"mm"
-"Prüfgeschwindigkeit"	0.1	"mm/s"
-"Vorkraft"	2	"MPa"
-"Temperatur"	22	"°C"
-"Bemerkung"	""
-"Prüfzeit"	"Standardkraft"	"Traversenweg absolut"	"Standardweg"	"Breitenänderung"	"Dehnung"
-"s"	"N"	"mm"	"mm"	"mm"	"mm"
-0.902359827	0.576537916	0.261094396	0.767421407	0.950183725	0.035807567
-0.440620562	0.989528723	0.983277189	0.765300358	0.83547718	0.86967659
-0.534511863	0.174351389	0.964046052	0.908144146	0.196001376	0.777251975
-0.077564232	0.483112915	0.043854329	0.235058804	0.162114934	0.17809479
-0.747648914	0.563390673	0.791011895	0.851891125	0.133555843	0.150183086
-0.290519566	0.50761779	0.251250803	0.339549835	0.581404705	0.18957134
-0.94014275	0.019307096	0.000430385	0.334206988	0.796205038	0.284730471
-0.02484182	0.498115846	0.116693561	0.991365858	0.913819806	0.938140356
-...
-```
+![details](../../assets/img/docu/CSV-Parser.png)
 
 The original file can be accessed [here](https://raw.githubusercontent.com/MI-FraunhoferIWM/data2rdf/f9e5adfe2c18dd0bd4887bc685459671b1fbb29a/tests/csv_pipeline_test/input/data/DX56_D_FZ2_WR00_43.TXT). Due to clarify reasons, we truncated the time series in this document here.
 
@@ -104,7 +72,6 @@ For the quantitative properties (e.g. `"Vorkraft"`=Preload) and non-quantitative
 <blockquote>
 <Details>
 <summary><b>Click here to expand</b></summary>
-
 ```{json}
 [
   {
@@ -181,6 +148,7 @@ For the quantitative properties (e.g. `"Vorkraft"`=Preload) and non-quantitative
 </blockquote>
 
 
+
 ```{note}
 We are using an ontology from the [*Stahldigital*](https://www.iwm.fraunhofer.de/de/warum-fraunhofer-iwm/loesungen-fuer-produktlebenzyklus/digitalisierung-in-der-werkstofftechnik/stahldigital.html) project (see [https://w3id.org/steel/ProcessOntology](https://w3id.org/steel/ProcessOntology)), in your usecase, it might be the case that you might need to establish your own ontology which describes your data set.
 ```
@@ -217,9 +185,9 @@ As you may see, we are able to provide the IRI of the QUDT unit directly. Howeve
     "unit": "mm/s"
   }
 ```
-### The additional triples
+### The additional triples (optional)
 
-In some cases, the content of the data file does not provide all of the information which which we would like to describe. For this purpose, we can add additional triples to the data graph. These triples are added to the data graph by using the _method graph_ which which we can provide as file, as a string with the direct content of this file, or as an RDFlib-Graph. For this example, the additional triples can be defined in the following way:
+In some cases, the content of the data file does not provide all of the information which which we would like to describe. For this purpose, we can add additional triples to the data graph. These triples are added to the _data graph_ as a so-called _method graph_ which which we can provide as file, as a string with the direct content of this file, or as an RDFlib-Graph. For this example, the additional triples can be defined in the following way:
 
 <blockquote>
 <Details>
@@ -385,8 +353,554 @@ When we assign a `base_iri` of e.g. `https://example.org/123`, the resulting IRI
 
 ## Running the pipeline
 
-
+Please apply the mapping, addtional triples and the parser arguments to the pipeline configuration and run the pipeline in the following manner:
 
 
 ```{python}
+from data2rdf import Data2RDF, Parser
+
+parser_args = {
+      "metadata_sep":"\t",
+      "time_series_sep":"\t",
+      "metadata_length":20
+   }
+
+raw_data = "path/to/file.csv"
+mapping = "path/to/mapping.json"
+extra = "path/to/additional_triples.ttl"
+
+pipeline = Data2RDF(
+    raw_data=raw_data,
+    parser=Parser.csv,
+    mapping=mapping_file,
+    parser_args=parser_args,
+    extra_triples=extra,
+    config={
+      "base_url": "https://example.org/123", #this is optional and defaults to "https://example.org"
+    }
+)
+```
+
+Alternatively, you are able to pass the mapping, the additional triples and the csv file with the data directly to the pipeline (the data has been shortened for readability - indicated by `[...]`):
+
+```{python}
+raw_data = """"Prüfinstitut"	"institute_1"
+"Projektnummer"	"123456"
+"Projektname"	"proj_name_1"
+"Datum/Uhrzeit"	44335.4	""
+[...]
+"Prüfzeit"	"Standardkraft"	"Traversenweg absolut"	"Standardweg"	"Breitenänderung"	"Dehnung"
+"s"	"N"	"mm"	"mm"	"mm"	"mm"
+0.902359827	0.576537916	0.261094396	0.767421407	0.950183725	0.035807567
+0.440620562	0.989528723	0.983277189	0.765300358	0.83547718	0.86967659
+[...]
+"""
+
+mapping = [
+  {
+    "iri": "https://w3id.org/steel/ProcessOntology/TestTime",
+    "key": "Pr\u00fcfzeit"
+  },
+  {
+    "iri": "https://w3id.org/steel/ProcessOntology/StandardForce",
+    "key": "Standardkraft"
+  },
+  [...]
+]
+
+extra="""
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
+@prefix fileid: <http://abox-namespace-placeholder.org/> .
+
+#  Describe the Tester and the Facility and lab
+
+fileid:TestingFacility rdf:type prov:Organization , prov:Location .
+
+fileid:TestingLab rdf:type prov:Location, prov:Agent ;
+                  prov:atLocation fileid:TestingFacility .
+
+[...]
+"""
+
+pipeline = Data2RDF(
+    raw_data=raw_data,
+    parser=Parser.csv,
+    mapping=mapping,
+    parser_args=parser_args,
+    extra_triples=extra,
+    config={
+      "base_url": "https://example.org/123"
+    }
+)
+```
+
+The mapping can also be provided as a csv or excel file (**only as a file writen to disk, not as a string in memory**):
+
+```{csv}
+key;iri;annotation
+Prüfinstitut;https://w3id.org/steel/ProcessOntology/TestingFacility;
+Projektnummer;https://w3id.org/steel/ProcessOntology/ProjectNumber;
+Projektname;https://w3id.org/steel/ProcessOntology/ProjectName;
+Datum/Uhrzeit;https://w3id.org/steel/ProcessOntology/TimeStamp;
+Maschinendaten;https://w3id.org/steel/ProcessOntology/MachineData;
+Kraftaufnehmer;https://w3id.org/steel/ProcessOntology/ForceMeasuringDevice;
+Wegaufnehmer;https://w3id.org/steel/ProcessOntology/DisplacementTransducer;
+Prüfnorm;https://w3id.org/steel/ProcessOntology/TestStandard;
+[...]
+```
+
+### The output
+
+When the pipeline run was succuessful, when no error has occured. If there are any missmatches in the mapping, the pipeline will raise it as a warning.
+
+You will be able to print the resulting graph with the following command:
+
+```{python}
+print(pipeline.graph.serialize())
+```
+
+The output will look like this:
+
+<blockquote>
+<Details>
+<summary><b>Click here to expand</b></summary>
+
+```{turtle}
+@prefix csvw: <http://www.w3.org/ns/csvw#> .
+@prefix dcat: <http://www.w3.org/ns/dcat#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix fileid: <https://www.example.org/> .
+@prefix foaf1: <http://xmlns.com/foaf/spec/> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
+@prefix qudt: <http://qudt.org/schema/qudt/> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+fileid:TensileTestExperiment a prov:Activity ;
+    prov:generated fileid:AbsoluteCrossheadTravel,
+        fileid:Extension,
+        fileid:Remark,
+        fileid:StandardForce,
+        fileid:TimeStamp,
+        fileid:dataset ;
+    prov:hadPlan fileid:TestStandard ;
+    prov:used fileid:DisplacementTransducer,
+        fileid:ForceMeasuringDevice,
+        fileid:TensileTestSpecimen,
+        fileid:TensileTestingMachine,
+        fileid:TestingFacility ;
+    prov:wasAssociatedWith fileid:Tester ;
+    prov:wasInfluencedBy fileid:ExperimentPreparation .
+
+fileid:TestingStandard a prov:Plan .
+
+fileid:Elongation a <https://w3id.org/steel/ProcessOntology/Elongation> ;
+    qudt:hasUnit "http://qudt.org/vocab/unit/MilliM"^^xsd:anyURI .
+
+fileid:ExperimentPreparation a prov:Activity ;
+    prov:atLocation fileid:TestingLab ;
+    prov:generated fileid:OriginalGaugeLength,
+        fileid:Preload,
+        fileid:TestingRate ;
+    prov:wasAssociatedWith fileid:DisplacementTransducer,
+        fileid:ForceMeasuringDevice,
+        fileid:TensileTestSpecimen,
+        fileid:TensileTestingMachine,
+        fileid:Tester ;
+    prov:wasInfluencedBy fileid:SamplePreparatation .
+
+fileid:MachineData a <https://w3id.org/steel/ProcessOntology/MachineData> ;
+    rdfs:label "maschine_1" .
+
+fileid:Project a prov:Activity ;
+    prov:generated fileid:ProjectName,
+        fileid:ProjectNumber ;
+    prov:wasAssociatedWith fileid:TestingFacility .
+
+fileid:SampleIdentifier-2 a <https://w3id.org/steel/ProcessOntology/SampleIdentifier-2> ;
+    rdfs:label "Probentyp_2" .
+
+fileid:SamplePreparatation a prov:Activity ;
+    prov:generated fileid:ParallelLength,
+        fileid:SpecimenThickness,
+        fileid:SpecimenType,
+        fileid:SpecimenWidth ;
+    prov:wasAssociatedWith fileid:Material,
+        fileid:TensileTestSpecimen ;
+    prov:wasInfluencedBy fileid:Project .
+
+fileid:Temperature a prov:Entity,
+        <https://w3id.org/steel/ProcessOntology/Temperature> ;
+    qudt:hasUnit "http://qudt.org/vocab/unit/DEG_C"^^xsd:anyURI ;
+    qudt:value "22.0"^^xsd:float ;
+    prov:wasAttributedTo fileid:TestingLab .
+
+fileid:TestTime a <https://w3id.org/steel/ProcessOntology/TestTime> ;
+    qudt:hasUnit "http://qudt.org/vocab/unit/SEC"^^xsd:anyURI .
+
+fileid:WidthChange a <https://w3id.org/steel/ProcessOntology/WidthChange> ;
+    qudt:hasUnit "http://qudt.org/vocab/unit/MilliM"^^xsd:anyURI .
+
+fileid:dataset a dcat:Dataset,
+        prov:Entity ;
+    dcterms:hasPart fileid:tableGroup ;
+    dcat:distribution [ a dcat:Distribution ;
+            dcat:accessURL "https://www.example.org/download"^^xsd:anyURI ;
+            dcat:mediaType "http://www.iana.org/assignments/media-types/text/csv"^^xsd:anyURI ] .
+
+fileid:tableGroup a csvw:TableGroup ;
+    csvw:table [ a csvw:Table ;
+            rdfs:label "Metadata" ;
+            csvw:row [ a csvw:Row ;
+                    csvw:describes fileid:TimeStamp ;
+                    csvw:rownum 3 ;
+                    csvw:titles "Datum/Uhrzeit"^^xsd:string ],
+                [ a csvw:Row ;
+                    qudt:quantity fileid:SpecimenThickness ;
+                    csvw:rownum 14 ;
+                    csvw:titles "Probendicke"^^xsd:string ],
+                [ a csvw:Row ;
+                    csvw:describes fileid:Remark ;
+                    csvw:rownum 19 ;
+                    csvw:titles "Bemerkung"^^xsd:string ],
+                [ a csvw:Row ;
+                    qudt:quantity fileid:ParallelLength ;
+                    csvw:rownum 13 ;
+                    csvw:titles "Versuchslänge"^^xsd:string ],
+                [ a csvw:Row ;
+                    csvw:describes fileid:TestingFacility ;
+                    csvw:rownum 0 ;
+                    csvw:titles "Prüfinstitut"^^xsd:string ],
+                [ a csvw:Row ;
+                    csvw:describes fileid:Material ;
+                    csvw:rownum 8 ;
+                    csvw:titles "Werkstoff"^^xsd:string ],
+                [ a csvw:Row ;
+                    csvw:describes fileid:DisplacementTransducer ;
+                    csvw:rownum 6 ;
+                    csvw:titles "Wegaufnehmer"^^xsd:string ],
+                [ a csvw:Row ;
+                    csvw:describes fileid:ProjectNumber ;
+                    csvw:rownum 1 ;
+                    csvw:titles "Projektnummer"^^xsd:string ],
+                [ a csvw:Row ;
+                    qudt:quantity fileid:OriginalGaugeLength ;
+                    csvw:rownum 12 ;
+                    csvw:titles "Messlänge Standardweg"^^xsd:string ],
+                [ a csvw:Row ;
+                    csvw:describes fileid:Tester ;
+                    csvw:rownum 10 ;
+                    csvw:titles "Prüfer"^^xsd:string ],
+                [ a csvw:Row ;
+                    qudt:quantity fileid:Preload ;
+                    csvw:rownum 17 ;
+                    csvw:titles "Vorkraft"^^xsd:string ],
+                [ a csvw:Row ;
+                    csvw:describes fileid:MachineData ;
+                    csvw:rownum 4 ;
+                    csvw:titles "Maschinendaten"^^xsd:string ],
+                [ a csvw:Row ;
+                    qudt:quantity fileid:Temperature ;
+                    csvw:rownum 18 ;
+                    csvw:titles "Temperatur"^^xsd:string ],
+                [ a csvw:Row ;
+                    csvw:describes fileid:TestStandard ;
+                    csvw:rownum 7 ;
+                    csvw:titles "Prüfnorm"^^xsd:string ],
+                [ a csvw:Row ;
+                    csvw:describes fileid:SampleIdentifier-2 ;
+                    csvw:rownum 11 ;
+                    csvw:titles "Probenkennung 2"^^xsd:string ],
+                [ a csvw:Row ;
+                    csvw:describes fileid:SpecimenType ;
+                    csvw:rownum 9 ;
+                    csvw:titles "Probentyp"^^xsd:string ],
+                [ a csvw:Row ;
+                    qudt:quantity fileid:SpecimenWidth ;
+                    csvw:rownum 15 ;
+                    csvw:titles "Probenbreite"^^xsd:string ],
+                [ a csvw:Row ;
+                    csvw:describes fileid:ProjectName ;
+                    csvw:rownum 2 ;
+                    csvw:titles "Projektname"^^xsd:string ],
+                [ a csvw:Row ;
+                    csvw:describes fileid:ForceMeasuringDevice ;
+                    csvw:rownum 5 ;
+                    csvw:titles "Kraftaufnehmer"^^xsd:string ],
+                [ a csvw:Row ;
+                    qudt:quantity fileid:TestingRate ;
+                    csvw:rownum 16 ;
+                    csvw:titles "Prüfgeschwindigkeit"^^xsd:string ] ],
+        [ a csvw:Table ;
+            rdfs:label "Time series data" ;
+            csvw:tableSchema [ a csvw:Schema ;
+                    csvw:column [ a csvw:Column ;
+                            qudt:quantity fileid:Elongation ;
+                            csvw:titles "Dehnung"^^xsd:string ;
+                            foaf1:page [ a foaf1:Document ;
+                                    dcterms:format "https://www.iana.org/assignments/media-types/application/json"^^xsd:anyURI ;
+                                    dcterms:identifier "https://www.example.org/column-5"^^xsd:anyURI ;
+                                    dcterms:type "http://purl.org/dc/terms/Dataset"^^xsd:anyURI ] ],
+                        [ a csvw:Column ;
+                            qudt:quantity fileid:WidthChange ;
+                            csvw:titles "Breitenänderung"^^xsd:string ;
+                            foaf1:page [ a foaf1:Document ;
+                                    dcterms:format "https://www.iana.org/assignments/media-types/application/json"^^xsd:anyURI ;
+                                    dcterms:identifier "https://www.example.org/column-4"^^xsd:anyURI ;
+                                    dcterms:type "http://purl.org/dc/terms/Dataset"^^xsd:anyURI ] ],
+                        [ a csvw:Column ;
+                            qudt:quantity fileid:AbsoluteCrossheadTravel ;
+                            csvw:titles "Traversenweg absolut"^^xsd:string ;
+                            foaf1:page [ a foaf1:Document ;
+                                    dcterms:format "https://www.iana.org/assignments/media-types/application/json"^^xsd:anyURI ;
+                                    dcterms:identifier "https://www.example.org/column-2"^^xsd:anyURI ;
+                                    dcterms:type "http://purl.org/dc/terms/Dataset"^^xsd:anyURI ] ],
+                        [ a csvw:Column ;
+                            qudt:quantity fileid:Extension ;
+                            csvw:titles "Standardweg"^^xsd:string ;
+                            foaf1:page [ a foaf1:Document ;
+                                    dcterms:format "https://www.iana.org/assignments/media-types/application/json"^^xsd:anyURI ;
+                                    dcterms:identifier "https://www.example.org/column-3"^^xsd:anyURI ;
+                                    dcterms:type "http://purl.org/dc/terms/Dataset"^^xsd:anyURI ] ],
+                        [ a csvw:Column ;
+                            qudt:quantity fileid:StandardForce ;
+                            csvw:titles "Standardkraft"^^xsd:string ;
+                            foaf1:page [ a foaf1:Document ;
+                                    dcterms:format "https://www.iana.org/assignments/media-types/application/json"^^xsd:anyURI ;
+                                    dcterms:identifier "https://www.example.org/column-1"^^xsd:anyURI ;
+                                    dcterms:type "http://purl.org/dc/terms/Dataset"^^xsd:anyURI ] ],
+                        [ a csvw:Column ;
+                            qudt:quantity fileid:TestTime ;
+                            csvw:titles "Prüfzeit"^^xsd:string ;
+                            foaf1:page [ a foaf1:Document ;
+                                    dcterms:format "https://www.iana.org/assignments/media-types/application/json"^^xsd:anyURI ;
+                                    dcterms:identifier "https://www.example.org/column-0"^^xsd:anyURI ;
+                                    dcterms:type "http://purl.org/dc/terms/Dataset"^^xsd:anyURI ] ] ] ] .
+
+fileid:AbsoluteCrossheadTravel a prov:Entity,
+        <https://w3id.org/steel/ProcessOntology/AbsoluteCrossheadTravel> ;
+    qudt:hasUnit "http://qudt.org/vocab/unit/MilliM"^^xsd:anyURI ;
+    prov:wasDerivedFrom fileid:DisplacementTransducer .
+
+fileid:Extension a prov:Entity,
+        <https://w3id.org/steel/ProcessOntology/Extension> ;
+    qudt:hasUnit "http://qudt.org/vocab/unit/MilliM"^^xsd:anyURI ;
+    prov:wasDerivedFrom fileid:DisplacementTransducer .
+
+fileid:Material a prov:Agent,
+        <https://w3id.org/steel/ProcessOntology/Material>,
+        <https://w3id.org/steel/ProcessOntology/Werkstoff_1> ;
+    rdfs:label "Werkstoff_1" .
+
+fileid:OriginalGaugeLength a prov:Entity,
+        <https://w3id.org/steel/ProcessOntology/OriginalGaugeLength> ;
+    qudt:hasUnit "http://qudt.org/vocab/unit/MilliM"^^xsd:anyURI ;
+    qudt:value "80.0"^^xsd:float ;
+    prov:wasAttributedTo fileid:DisplacementTransducer .
+
+fileid:ParallelLength a prov:Entity,
+        <https://w3id.org/steel/ProcessOntology/ParallelLength> ;
+    qudt:hasUnit "http://qudt.org/vocab/unit/MilliM"^^xsd:anyURI ;
+    qudt:value "120.0"^^xsd:float ;
+    prov:wasAttributedTo fileid:TensileTestSpecimen .
+
+fileid:Preload a prov:Entity,
+        <https://w3id.org/steel/ProcessOntology/Preload> ;
+    qudt:hasUnit "http://qudt.org/vocab/unit/MegaPA"^^xsd:anyURI ;
+    qudt:value "2.0"^^xsd:float ;
+    prov:wasAttributedTo fileid:TensileTestingMachine .
+
+fileid:ProjectName a prov:Entity,
+        <https://w3id.org/steel/ProcessOntology/ProjectName> ;
+    rdfs:label "proj_name_1" .
+
+fileid:ProjectNumber a prov:Entity,
+        <https://w3id.org/steel/ProcessOntology/ProjectNumber> ;
+    rdfs:label "123456" .
+
+fileid:Remark a <https://w3id.org/steel/ProcessOntology/Remark> ;
+    rdfs:label "" .
+
+fileid:SpecimenThickness a prov:Entity,
+        <https://w3id.org/steel/ProcessOntology/SpecimenThickness> ;
+    qudt:hasUnit "http://qudt.org/vocab/unit/MilliM"^^xsd:anyURI ;
+    qudt:value "1.55"^^xsd:float ;
+    prov:wasAttributedTo fileid:TensileTestSpecimen .
+
+fileid:SpecimenType a prov:Entity,
+        <https://w3id.org/steel/ProcessOntology/SpecimenType> ;
+    rdfs:label "Probentyp_1" ;
+    prov:wasAttributedTo fileid:TensileTestSpecimen .
+
+fileid:SpecimenWidth a prov:Entity,
+        <https://w3id.org/steel/ProcessOntology/SpecimenWidth> ;
+    qudt:hasUnit "http://qudt.org/vocab/unit/MilliM"^^xsd:anyURI ;
+    qudt:value "20.04"^^xsd:float ;
+    prov:wasAttributedTo fileid:TensileTestSpecimen .
+
+fileid:StandardForce a prov:Entity,
+        <https://w3id.org/steel/ProcessOntology/StandardForce> ;
+    qudt:hasUnit "http://qudt.org/vocab/unit/N"^^xsd:anyURI ;
+    prov:wasDerivedFrom fileid:ForceMeasuringDevice .
+
+fileid:TestStandard a <https://w3id.org/steel/ProcessOntology/TestStandard> ;
+    rdfs:label "ISO-XX" .
+
+fileid:TestingRate a prov:Entity,
+        <https://w3id.org/steel/ProcessOntology/TestingRate> ;
+    qudt:hasUnit "http://qudt.org/vocab/unit/MilliM-PER-SEC"^^xsd:anyURI ;
+    qudt:value "0.1"^^xsd:float ;
+    prov:wasAttributedTo fileid:TensileTestingMachine .
+
+fileid:TimeStamp a <https://w3id.org/steel/ProcessOntology/TimeStamp> ;
+    rdfs:label "44335.4" .
+
+fileid:Tester a prov:Agent,
+        <https://w3id.org/steel/ProcessOntology/Tester> ;
+    rdfs:label "abc" ;
+    prov:actedOnBehalfOf fileid:TestingFacility ;
+    prov:atLocation fileid:TestingLab .
+
+fileid:ForceMeasuringDevice a prov:Agent,
+        prov:Entity,
+        <https://w3id.org/steel/ProcessOntology/ForceMeasuringDevice> ;
+    rdfs:label "Kraftaufnehmer_1" ;
+    prov:atLocation fileid:TestingLab .
+
+fileid:TensileTestingMachine a prov:Agent,
+        prov:Entity ;
+    prov:atLocation fileid:TestingLab .
+
+fileid:TestingFacility a prov:Location,
+        prov:Organization,
+        <https://w3id.org/steel/ProcessOntology/TestingFacility> ;
+    rdfs:label "institute_1" .
+
+fileid:DisplacementTransducer a prov:Agent,
+        prov:Entity,
+        <https://w3id.org/steel/ProcessOntology/DisplacementTransducer> ;
+    rdfs:label "Wegaufnehmer_1" ;
+    prov:atLocation fileid:TestingLab .
+
+fileid:TestingLab a prov:Agent,
+        prov:Location ;
+    prov:atLocation fileid:TestingFacility .
+
+fileid:TensileTestSpecimen a prov:Agent,
+        prov:Entity .
+
+```
+</Details>
+</blockquote>
+
+
+```{info}
+You can see that the graph consist now out of several subgraphs:
+
+* the data graph
+    * graph describing the metadata of the experiment and the metadata of the time series.
+    * the graph describing the structure of the csv file
+* the additional triples
+
+Please see the following sections for more details.
+```
+
+#### Data graph
+
+The part of the graph describing the metadata of the experiment and the metadata of the time series may look like this:
+```{turtle}
+[...]
+
+
+# this is from the experiment metadata
+fileid:Material a prov:Agent,
+        <https://w3id.org/steel/ProcessOntology/Material> ;
+    rdfs:label "Werkstoff_1" .
+
+# this is from the experiment metadata
+fileid:OriginalGaugeLength a prov:Entity,
+        <https://w3id.org/steel/ProcessOntology/OriginalGaugeLength> ;
+    qudt:hasUnit "http://qudt.org/vocab/unit/MilliM"^^xsd:anyURI ;
+    qudt:value "80.0"^^xsd:float .
+
+# this is from the time series metadata
+fileid:AbsoluteCrossheadTravel a prov:Entity,
+        <https://w3id.org/steel/ProcessOntology/AbsoluteCrossheadTravel> ;
+    qudt:hasUnit "http://qudt.org/vocab/unit/MilliM"^^xsd:anyURI .
+
+# this is from the time series metadata
+fileid:Extension a prov:Entity,
+        <https://w3id.org/steel/ProcessOntology/Extension> ;
+    qudt:hasUnit "http://qudt.org/vocab/unit/MilliM"^^xsd:anyURI .
+[...]
+```
+
+Whereas the part of the graph describing the structure of the csv file may look like this:
+
+```{turtle}
+fileid:tableGroup a csvw:TableGroup ;
+    csvw:table [ a csvw:Table ;
+            rdfs:label "Metadata" ;
+            csvw:row [ a csvw:Row ;
+                    qudt:quantity fileid:OriginalGaugeLength ;
+                    csvw:rownum 12 ;
+                    csvw:titles "Messlänge Standardweg"^^xsd:string ],
+                [ a csvw:Row ;
+                    csvw:describes fileid:Material ;
+                    csvw:rownum 8 ;
+                    csvw:titles "Werkstoff"^^xsd:string ],
+
+            ...
+
+            ];
+
+
+        [ a csvw:Table ;
+            rdfs:label "Time series data" ;
+            csvw:tableSchema [ a csvw:Schema ;
+                    csvw:column [ a csvw:Column ;
+                            qudt:quantity fileid:AbsoluteCrossheadTravel ;
+                            csvw:titles "Traversenweg absolut"^^xsd:string ;
+                            foaf:page [ a foaf:Document ;
+                                    dcterms:format "https://www.iana.org/assignments/media-types/application/json"^^xsd:anyURI ;
+                                    dcterms:identifier "https://www.example.org/download/column-2"^^xsd:anyURI ;
+                                    dcterms:type "http://purl.org/dc/terms/Dataset"^^xsd:anyURI ] ],
+                        [ a csvw:Column ;
+                            qudt:quantity fileid:Extension ;
+                            csvw:titles "Standardweg"^^xsd:string ;
+                            foaf:page [ a foaf:Document ;
+                                    dcterms:format "https://www.iana.org/assignments/media-types/application/json"^^xsd:anyURI ;
+                                    dcterms:identifier "https://www.example.org/download/column-3"^^xsd:anyURI ;
+                                    dcterms:type "http://purl.org/dc/terms/Dataset"^^xsd:anyURI ] ],
+
+                          ...
+
+                          ] ] .
+```
+
+You may note here that the two kinds of metadata are described through two tables groups in the output graph: one with an `rdfs:label "Metadata" ` and one with an `rdfs:label "Time series data"`. Both table groups are either describing the rows (e.g. for `fileid:Material` and `fileid:OriginalGaugeLength`) or the columns (e.g. `fileid:AbsoluteCrossheadTravel` and `fileid:Extension`) of the respective metadata and are pointing to the definition of the individuals datum (see snippet above).
+
+Please note here that the concepts for the individuals `fileid:AbloluteCrossheadTravel` and `fileid:Extension` describing the time series data only make a reference to an access url described by `https://www.example.org/download/column-2` and `https://www.example.org/download/column-3`, which may be the routes in a web server or an access url in a database. The base of this access url is `https://www.example.org/download` and can be adjusted in the config of the pipeline by setting `config = {"data_download_uri": "https://www.example.org/download/dataset-123"}`.
+
+By setting `config = {"suppress_file_description": True}` this file description of the table groups will be neglected in the output graph.
+
+
+#### Method graph
+
+As already mentioned above, the method graph is not automatically derived from the data. The domain expert needs to supply the information in coordination with the ontologist.
+
+When the data graph is generated from the pipeline, the abox placeholder of the method graph is replaced with the base uri of the data graph so that the IRI of the individuals between the method graph and the data graph are the same. Have a look on this snipped below in order to see that the individual for `fileid:TestingRate` from the data graph is now connected with the individual for `fileid:TensileTestingMachine` from the method graph:
+
+```{turtle}
+fileid:TestingRate a prov:Entity,
+        <https://w3id.org/steel/ProcessOntology/TestingRate> ;
+    qudt:hasUnit "http://qudt.org/vocab/unit/MilliM-PER-SEC"^^xsd:anyURI ;
+    qudt:value "0.1"^^xsd:float ;
+    prov:wasAttributedTo fileid:TensileTestingMachine .
+
+fileid:TensileTestingMachine a prov:Agent,
+        prov:Entity ;
+    prov:atLocation fileid:TestingLab .
 ```
