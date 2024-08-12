@@ -51,7 +51,7 @@
 ### Base parser module
 
 ```{eval-rst}
-.. automodule:: data2rdf.parser.base
+.. automodule:: data2rdf.parsers.base
     :members:
     :undoc-members:
     :show-inheritance:
@@ -60,7 +60,7 @@
 ### CSV parser module
 
 ```{eval-rst}
-.. automodule:: data2rdf.parser.csv
+.. automodule:: data2rdf.parsers.csv
     :members:
     :undoc-members:
     :show-inheritance:
@@ -68,7 +68,7 @@
 ### Excel parser module
 
 ```{eval-rst}
-.. automodule:: data2rdf.parser.excel
+.. automodule:: data2rdf.parsers.excel
     :members:
     :undoc-members:
     :show-inheritance:
@@ -77,7 +77,7 @@
 ### Json parser module
 
 ```{eval-rst}
-.. automodule:: data2rdf.parser.json
+.. automodule:: data2rdf.parsers.json
     :members:
     :undoc-members:
     :show-inheritance:

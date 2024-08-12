@@ -8,11 +8,17 @@ In the previous examples, we were only creating abox graphs. In order to create 
 
 ## The inputs
 
+For this example, we will consider the following inputs:
+
+* the json file holding the class specificaiton
+* the mapping for describing the class generation
+* the parser arguments telling the pipeline which is the column for the suffix of each class. Additionally, we also need to provide the names of the authors and the ontology title
+
 ### The raw data
 
 Let us consider that we have a class definition like this:
 
-```{python}
+```
 [
   {
     "Author's name": "Jane Doe",
@@ -46,7 +52,7 @@ Note that we will need at least one key-value pair describing the suffix of the 
 ### The mapping
 
 
-```{json}
+```{python}
 [
   {
     "key": "Original name",
@@ -103,7 +109,7 @@ In order to generate the TBox graph properties, we need to take the following pa
 * `"authors"`: A list of authors of the ontology (required). In this case, we just name it `"Jane Doe"`.
 
 
-```{python}
+```
 parser_args={
     "suffix_location": "Ontological concept ID",
     "ontology_title": "Test Ontology",
@@ -115,7 +121,7 @@ parser_args={
 
 Please apply the mapping, addtional triples and the parser arguments to the pipeline configuration and run the pipeline in the following manner:
 
-```{python}
+```
 from data2rdf import Data2RDF, Parser
 
 data = [
@@ -200,7 +206,7 @@ Please note that we are running the pipeline in the `"tbox"` mode this time.
 
 When the pipeline run is succeded, you see the following output by running `print(pipeline.graph.serialize())`:
 
-```{turtle}
+```
 @prefix dcterms: <http://purl.org/dc/terms/> .
 @prefix foaf1: <http://xmlns.com/foaf/spec/> .
 @prefix ns1: <https://w3id.org/steel/ProcessOntology/> .
@@ -234,4 +240,4 @@ When the pipeline run is succeded, you see the following output by running `prin
     ns1:hasTypicalUnitLabel "GPa"^^xsd:string .
 ```
 
-In this case, there will be no `general_metadata`, `plain_metadata`, `time_series` or `time_series_metadata` attributes, since those outputs do not apply in the for the tbox mode of the pipeline.
+In this case, there will be **no** `general_metadata`, `plain_metadata`, `time_series` or `time_series_metadata` attributes, since those outputs do not apply in the for the tbox mode of the pipeline.

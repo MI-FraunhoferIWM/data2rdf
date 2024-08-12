@@ -19,6 +19,13 @@ Start with the first Data2RDF example.
 Investigate the options for the general options of the pipeline
 :::
 
+```{toctree}
+:hidden: true
+:caption: Introduction
+:maxdepth: 2
+
+intro
+```
 
 
 ```{toctree}
@@ -26,7 +33,13 @@ Investigate the options for the general options of the pipeline
 :caption: Examples
 :maxdepth: 3
 
-examples
+examples/abox/1_csv
+examples/abox/2_excel
+examples/abox/3_json
+examples/abox/4_csv_wo_metadata
+examples/abox/5_csv_w_na
+examples/abox/6_custom_relations
+examples/tbox/tbox
 ```
 
 ```{toctree}

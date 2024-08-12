@@ -1,9 +1,10 @@
-# ABox generation from a json file or Python-dict with metadata and time series
+# JSON file or Python-dict with metadata and time series
 
 ```{note}
 This example is building up on the very first one about the [CSV file with metadata and time series](1_csv.md).
 Please start from this chapter in order to fully understand the content of this example.
 ```
+
 ## General understanding
 
 Typically, data can also be provided in the serialization of a json file, which ulimately can be parsed in to a dict object in Python.
@@ -17,13 +18,13 @@ In this example we will need only two inputs:
 * the json file produced by the tensile test machine
 * the mapping for describing the data in RDF
 
-We generally do not need parser arguments at this point, since we are using the `json` parser. However, setting the `encoding` in the `config`-argument in the pipeline might be needed in case of any special characaters in the json file. Please for refer to the [Additional configuration](../config.md) for more details.
+We generally do not need parser arguments at this point, since we are using the `json` parser. However, setting the `encoding` in the `config`-argument in the pipeline might be needed in case of any special characaters in the json file. Please for refer to the [Additional configuration](../../config.md) for more details.
 
 ### The raw data
 
 We are considering the following dummy data as json input:
 
-```{json}
+```{python}
 raw_data = {
   "data": {
     "Breitenänderung": {
@@ -56,7 +57,7 @@ As you may notice, concepts like `Breitenänderung` and `Dehnung` both are time 
 
 A valid mapping for the json defined above may look like this:
 
-```{json}
+```{python}
 [
   {
     "iri": "https://w3id.org/steel/ProcessOntology/Remark",
@@ -88,7 +89,7 @@ Please note that we are using a querying-language called [`jsonpath`](https://su
 
 For example, we can specify the `key` as `data.Standardkraft.unit` and the `value_location` as `data.Standardkraft.array`, since we have seen that the `Standardkraft` concept is a dictionary/object with an additional subelement called `array` for the values and `unit` for the unit:
 
-```{json}
+```{python}
 ...
   {
     "iri": "https://w3id.org/steel/ProcessOntology/Force",
@@ -97,11 +98,11 @@ For example, we can specify the `key` as `data.Standardkraft.unit` and the `valu
     "value_location": "data.Standardkraft.array"
   }
 ...
-´´´
+```
 
 In the case of the `Dehnung` concept, we can specify the `key` as `data.Dehnung` and manually map the `unit` to `%`, since we cannot extract the information from the data:
 
-```{json}
+```{python}
 ...
   {
     "iri": "https://w3id.org/steel/ProcessOntology/PercentageElongation",
@@ -157,7 +158,7 @@ Data2RDF(
 Alternatively, you are also able to pass the data as a python dictionary directly:
 
 ```{python}
-from daata2rdf import Data2RDF, Parser
+from data2rdf import Data2RDF, Parser
 
 data = raw_data = {
   "data": {
@@ -226,7 +227,7 @@ When the pipeline run is succeded, you see the following output by running `prin
 <Details>
 <summary><b>Click here to expand</b></summary>
 
-```{turtle}
+```
 @prefix dcat: <http://www.w3.org/ns/dcat#> .
 @prefix dcterms: <http://purl.org/dc/terms/> .
 @prefix fileid: <https://www.example.org/> .
@@ -282,5 +283,7 @@ fileid:WidthChange a <https://w3id.org/steel/ProcessOntology/WidthChange> ;
     qudt:value "1.0"^^xsd:float .
 ```
 
+</Details>
+</blockQuote>
 
 Again, you will be able to investigate the `general_metadata`, `plain_metadata`, `time_series_metadata` and `time_series` attributes in the same way as stated in the [first example](1_csv).

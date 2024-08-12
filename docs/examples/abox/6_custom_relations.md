@@ -1,4 +1,4 @@
-# ABox generation for a graph with custom relations
+# Graph with custom relations
 
 ## General understanding
 
@@ -17,7 +17,7 @@ For this example, we will consider the following inputs:
 
 For this example, we will consider the following input data:
 
-```{json}
+```{python}
 {
     "data": {
       "name": "Jane Doe",
@@ -32,7 +32,7 @@ As you may have noticed, this json here simply features the name of a person and
 
 For this minimal example, we only need a very short mapping:
 
-´´´{json}
+```{python}
 [
   {
     "value_location": "data.name",
@@ -46,7 +46,7 @@ For this minimal example, we only need a very short mapping:
     "suffix": "CSM1"
   }
 ]
-´´´
+```
 
 You may notice here, that we are setting explicitly the `value_relation` for the first mapping to `foaf:name` and `suffix` for both mappings to `Operator1` and `CSM1`.
 
@@ -54,7 +54,7 @@ You may notice here, that we are setting explicitly the `value_relation` for the
 
 Since we want to connect the persons in the graph with its measurement, we need to add some additional triples:
 
-```{turtle}
+```
 @prefix : <http://abox-namespace-placeholder.org/> .
 @prefix chameo: <https://w3id.org/emmo/domain/characterisation-methodology/chameo#> .
 
@@ -69,7 +69,7 @@ In order to exclude the semantic description of the data file itself in the gene
 
 Optionally, we can also set the base IRI of the graph, its separator, as well as the prefix of the IRI in the header of the produced RDF:
 
-```{json}
+```{python}
 config = {
         "base_iri": "https://w3id.org/emmo/domain/domain-nanoindentation/nanoindentation",
         "separator": "#",
@@ -82,7 +82,7 @@ config = {
 
 Please apply the mapping, addtional triples and the parser arguments to the pipeline configuration and run the pipeline in the following manner:
 
-```{python}
+```
 from data2rdf import Data2RDF, Parser
 
 data = {
@@ -127,9 +127,7 @@ data2rdf = Data2RDF(
 
 When the pipeline run is succeded, you see the following output by running `print(pipeline.graph.serialize())`:
 
-<blockQuote>
-<Details>
-<summary><b>Click here to expand</b></summary>
+```
 @prefix foaf: <http://xmlns.com/foaf/0.1/> .
 @prefix ns1: <https://w3id.org/emmo/domain/characterisation-methodology/chameo#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
@@ -138,9 +136,7 @@ When the pipeline run is succeded, you see the following output by running `prin
     ns1:hasOperator <https://w3id.org/emmo/domain/domain-nanoindentation/nanoindentation#Operator1> .
 
 <https://w3id.org/emmo/domain/domain-nanoindentation/nanoindentation#Operator1> a ns1:Operator ;
-    foaf:name "G. Konstantopoulos" .
-
-</Details>
-</blockQuote>
+    foaf:name "Jane Doe" .
+```
 
 Again, you will be able to investigate the `general_metadata` and `plain_metadata` in the same way as stated in the [first example](1_csv). But this does take place for the `time_series_metadata` and `time_series` attributes, since we do not include any time series in this example here.

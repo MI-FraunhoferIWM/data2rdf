@@ -1,4 +1,4 @@
-# ABox generation from a csv file without metadata
+# CSV file without metadata
 
 ## General understanding
 
@@ -16,7 +16,7 @@ For this example, we will consider the following inputs:
 
 The csv file produced by the dummy sensors looks like this:
 
-´´´{csv}
+```{csv}
 time,column_01,column_02,column_03
 2,2,2,2
 3,3,3,3
@@ -24,7 +24,7 @@ time,column_01,column_02,column_03
 5,5,5,5
 6,6,6,6
 7,7,7,7
-´´´
+```
 
 You may note that the first column is the time and the rest of the columns are of the same class. As already mentioned above, there is no metadata, but only time series in this case.
 
@@ -37,7 +37,8 @@ Since we are considering the csv parser again, we need to take the following par
 * `time_series_header_length`: the length of the header of the time series in the csv file. In this case, it is 1, since the time series start at the second row.
 
 The resulting Python dictionary for the parser arguments would look like this:
-```{python}
+
+```
 parser_args = {
     "time_series_sep": ",",
     "metadata_length": 0,
@@ -49,7 +50,7 @@ parser_args = {
 
 The **schema** of the mapping itself is very similar to the one of the [very first example](1_csv.md), but for different ontological classes and different keys this time:
 
-```{json}
+```{python}
 [
   {
     "iri": "https://w3id.org/steel/ProcessOntology/Sensor",
@@ -76,20 +77,11 @@ The **schema** of the mapping itself is very similar to the one of the [very fir
 As you may notice, each column which is mapped to a `https://w3id.org/steel/ProcessOntology/Sensor` is of the same class. This results into the need, that each of those mappings will need a unique suffix.
 
 
-The resulting Python dictionary for the parser arguments would look like this:
-```{python}
-parser_args = {
-    "time_series_sep": ",",
-    "metadata_length": 0,
-    "time_series_header_length": 1
-}
-```
-
 ## Running the pipeline
 
 Please apply the mapping, addtional triples and the parser arguments to the pipeline configuration and run the pipeline in the following manner:
 
-```{python}
+```
 from data2rdf import Data2RDF, Parser
 
 data = """
@@ -146,7 +138,7 @@ When the pipeline run is succeded, you see the following output by running `prin
 <Details>
 <summary><b>Click here to expand</b></summary>
 
-```{turtle}
+```
 @prefix csvw: <http://www.w3.org/ns/csvw#> .
 @prefix dcat: <http://www.w3.org/ns/dcat#> .
 @prefix dcterms: <http://purl.org/dc/terms/> .

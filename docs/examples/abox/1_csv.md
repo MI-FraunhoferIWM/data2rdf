@@ -1,4 +1,4 @@
-# ABox generation from a CSV file with metadata and time series
+# CSV file with metadata and time series
 
 ## General understanding
 
@@ -84,7 +84,7 @@ For the quantitative properties (e.g. `"Vorkraft"`=Preload) and non-quantitative
 <Details>
 <summary><b>Click here to expand</b></summary>
 
-```{json}
+```
 [
   {
     "iri": "https://w3id.org/steel/ProcessOntology/Remark",
@@ -181,7 +181,7 @@ During the pipeline run, the units extracted from the metadata and timeseries wi
 
 In the case that the unit cannot be extracted from the respective section in the data file, we also have the opportunity to map it manually like this:
 
-```{json}
+```{python}
   {
     "iri": "https://w3id.org/steel/ProcessOntology/TestingRate",
     "key": "Pr\u00fcfgeschwindigkeit"
@@ -190,13 +190,15 @@ In the case that the unit cannot be extracted from the respective section in the
 ```
 
 As you may see, we are able to provide the IRI of the QUDT unit directly. However, we als are able to provide the string of the symbols for the unit:
-```{json}
+
+```{python}
   {
     "iri": "https://w3id.org/steel/ProcessOntology/TestingRate",
     "key": "Pr\u00fcfgeschwindigkeit"
     "unit": "mm/s"
   }
 ```
+
 ### The additional triples (optional)
 
 In some cases, the content of the data file does not provide all of the information which which we would like to describe. For this purpose, we can add additional triples to the data graph. These triples are added to the _data graph_ as a so-called _method graph_ which which we can provide as file, as a string with the direct content of this file, or as an RDFlib-Graph. For this example, the additional triples can be defined in the following way:
@@ -205,7 +207,7 @@ In some cases, the content of the data file does not provide all of the informat
 <Details>
 <summary><b>Click here to expand</b></summary>
 
-```{turtle}
+```
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix prov: <http://www.w3.org/ns/prov#> .
@@ -329,11 +331,13 @@ fileid:Extension rdf:type prov:Entity ;
 
 fileid:TestingStandard rdf:type prov:Plan .
 ```
+
 </Details>
 </blockquote>
 
 Let us take the following snippet from the additional triples:
-```{turtle}
+
+```
 fileid:SamplePreparatation rdf:type prov:Activity ;
                            prov:wasAssociatedWith fileid:TensileTestSpecimen ,
                                                   fileid:Material ;
@@ -353,7 +357,7 @@ The placeholder in the additional triples will be then replace with the actual n
 
 In case if there are the same IRI mapped to multiple keys in the data file, the might be a conflict in the generated RDF, since there only one IRI can be mapped to a key in the data file. In such cases, we are able to provide an additional parameter `suffix` in the mapping, which is giving us the opportunity to assign the same IRI to different keys in the data file, but with a different suffix:
 
-```{json}
+```{python}
 {
     "key": "Probentyp",
     "iri": "https://w3id.org/steel/ProcessOntology/SpecimenType",
@@ -363,10 +367,6 @@ In case if there are the same IRI mapped to multiple keys in the data file, the 
 
 When we assign a `base_iri` of e.g. `https://example.org/123`, the resulting IRI will be `https://example.org/123/ProbenArt` and the placeholder in the additional triples will need to have the value of `http://abox-namespace-placeholder.org/ProbenArt` as placeholder.
 
-## Next steps
-
-Please refer to the next sections for investigating more pipeline usecases or go to the [Run pipeline and retrieve outputs](3_pipeline_run_and_outputs) section for more details how to run the pipeline with the given setup.
-
 
 ## Running the pipeline
 
@@ -374,7 +374,7 @@ Please refer to the next sections for investigating more pipeline usecases or go
 Please apply the mapping, addtional triples and the parser arguments to the pipeline configuration and run the pipeline in the following manner:
 
 
-```{python}
+```
 from data2rdf import Data2RDF, Parser
 
 parser_args = {
@@ -484,7 +484,7 @@ The pipeline will deliver you the following outputs:
 
 You will be able to print the resulting graph with the following command:
 
-```{python}
+```
 print(pipeline.graph.serialize())
 ```
 
@@ -494,7 +494,7 @@ The output will look like this:
 <Details>
 <summary><b>Click here to expand</b></summary>
 
-```{turtle}
+```
 @prefix csvw: <http://www.w3.org/ns/csvw#> .
 @prefix dcat: <http://www.w3.org/ns/dcat#> .
 @prefix dcterms: <http://purl.org/dc/terms/> .
@@ -819,6 +819,7 @@ fileid:TensileTestSpecimen a prov:Agent,
         prov:Entity .
 
 ```
+
 </Details>
 </blockquote>
 
@@ -837,27 +838,24 @@ Please see the following sections for more details.
 #### Data graph
 
 The part of the graph describing the metadata of the experiment and the metadata of the time series may look like this:
-```{turtle}
+
+```
 [...]
 
 
-# this is from the experiment metadata
 fileid:Material a prov:Agent,
         <https://w3id.org/steel/ProcessOntology/Material> ;
     rdfs:label "Werkstoff_1" .
 
-# this is from the experiment metadata
 fileid:OriginalGaugeLength a prov:Entity,
         <https://w3id.org/steel/ProcessOntology/OriginalGaugeLength> ;
     qudt:hasUnit "http://qudt.org/vocab/unit/MilliM"^^xsd:anyURI ;
     qudt:value "80.0"^^xsd:float .
 
-# this is from the time series metadata
 fileid:AbsoluteCrossheadTravel a prov:Entity,
         <https://w3id.org/steel/ProcessOntology/AbsoluteCrossheadTravel> ;
     qudt:hasUnit "http://qudt.org/vocab/unit/MilliM"^^xsd:anyURI .
 
-# this is from the time series metadata
 fileid:Extension a prov:Entity,
         <https://w3id.org/steel/ProcessOntology/Extension> ;
     qudt:hasUnit "http://qudt.org/vocab/unit/MilliM"^^xsd:anyURI .
@@ -866,7 +864,13 @@ fileid:Extension a prov:Entity,
 
 Whereas the part of the graph describing the structure of the csv file may look like this:
 
-```{turtle}
+
+<blockquote>
+<Details>
+<summary><b>Click here to expand</b></summary>
+
+
+```
 fileid:tableGroup a csvw:TableGroup ;
     csvw:table [ a csvw:Table ;
             rdfs:label "Metadata" ;
@@ -907,6 +911,9 @@ fileid:tableGroup a csvw:TableGroup ;
                           ] ] .
 ```
 
+</Details>
+</blockquote>
+
 You may note here that the two kinds of metadata are described through two tables groups in the output graph: one with an `rdfs:label "Metadata" ` and one with an `rdfs:label "Time series data"`. Both table groups are either describing the rows (e.g. for `fileid:Material` and `fileid:OriginalGaugeLength`) or the columns (e.g. `fileid:AbsoluteCrossheadTravel` and `fileid:Extension`) of the respective metadata and are pointing to the definition of the individuals datum (see snippet above).
 
 Please note here that the concepts for the individuals `fileid:AbloluteCrossheadTravel` and `fileid:Extension` describing the time series data only make a reference to an access url described by `https://www.example.org/download/column-2` and `https://www.example.org/download/column-3`, which may be the routes in a web server or an access url in a database. The base of this access url is `https://www.example.org/download` and can be adjusted in the config of the pipeline by setting `config = {"data_download_uri": "https://www.example.org/download/dataset-123"}`.
@@ -920,7 +927,7 @@ As already mentioned above, the method graph is not automatically derived from t
 
 When the data graph is generated from the pipeline, the abox placeholder of the method graph is replaced with the base uri of the data graph so that the IRI of the individuals between the method graph and the data graph are the same. Have a look on this snipped below in order to see that the individual for `fileid:TestingRate` from the data graph is now connected with the individual for `fileid:TensileTestingMachine` from the method graph:
 
-```{turtle}
+```
 fileid:TestingRate a prov:Entity,
         <https://w3id.org/steel/ProcessOntology/TestingRate> ;
     qudt:hasUnit "http://qudt.org/vocab/unit/MilliM-PER-SEC"^^xsd:anyURI ;
@@ -936,7 +943,7 @@ fileid:TensileTestingMachine a prov:Agent,
 
 In case of the need of further processing the general metadata (key-value pairs) resulting from the pipeline after parsing, the `general_metadata` property can be accessed as follows:
 
-```{python}
+```
 print(pipeline.general_metadata)
 ```
 
@@ -946,7 +953,7 @@ The result should look like this:
 <Details>
 <summary><b>Click here to expand</b></summary>
 
-```{python}
+```
 [PropertyGraph(
 	iri=https://w3id.org/steel/ProcessOntology/TestingFacility,
 	suffix=TestingFacility,
@@ -1102,7 +1109,7 @@ The result is a list of `PropertyGraph` and `QuantityGraph` objects which result
 
 The properties for each of the objects in the list can be accessed as follows (in this case the key, value, suffix and unit are printed):
 
-```{python}
+```
 print([
     (obj.key, obj.value, obj.suffix, obj.unit)
     if hasattr(obj,"unit") else (obj.key, obj.value, obj.suffix)
@@ -1111,7 +1118,8 @@ print([
 ```
 
 The output should look like this:
-```{python}
+
+```
 [('Prüfinstitut', 'institute_1', 'TestingFacility'),
  ('Projektnummer', '123456', 'ProjectNumber'),
  ('Projektname', 'proj_name_1', 'ProjectName'),
@@ -1137,12 +1145,13 @@ The output should look like this:
 
 The data2rdf package is built in a modular way and all of the single `PropertyGraph` and `QuantityGraph` objects are producing small subgraphs describing their individual concept and finally are contributing to the merged `pipeline.graph` object. The individual subgraphs which are describing these entities can be accessed as follows:
 
-```{python}
+```
 for object in pipeline.general_metadata:
     print("Subgraph for concept `", object.key,"`:\n")
     print(object.graph.serialize())
     print("\n")
 ```
+
 The result should look like this:
 
 <blockQuote>
@@ -1344,6 +1353,7 @@ Subgraph for concept ` Bemerkung `:
 fileid:Remark a <https://w3id.org/steel/ProcessOntology/Remark> ;
     rdfs:label "" .
 ```
+
 </Details>
 </blockQuote>
 
@@ -1353,13 +1363,13 @@ Note that all of the `obj.graph` objects are of type `rdflib.graph.Graph` and ca
 
 In case of the need of further processing the plain metadata (key-value pairs with out units) resulting from the pipeline after parsing, the `plain_metadata` property can be accessed as follows:
 
-```{python}
+```
 print(pipeline.plain_metadata)
 ```
 
 The result should look like this:
 
-```{python}
+```
 {'DisplacementTransducer': 'Wegaufnehmer_1',
  'ForceMeasuringDevice': 'Kraftaufnehmer_1',
  'MachineData': 'maschine_1',
@@ -1384,7 +1394,7 @@ The result should look like this:
 
 You will notice that this `plain_metadata` is a shorthand for a code snippet like:
 
-```{python}
+```
 print({obj.suffix: obj.value for obj in pipeline.general_metadata})
 ```
 
@@ -1392,11 +1402,12 @@ print({obj.suffix: obj.value for obj in pipeline.general_metadata})
 
 In case of the need of further processing the time series metadata (header of the time series) resulting from the pipeline after parsing, the `time_series_metadata` property can be accessed as follows:
 
-```{python}
+```
 print(pipeline.time_series_metadata)
 ```
 
 The result should look like this:
+
 ```
 [QuantityGraph(
 	iri=https://w3id.org/steel/ProcessOntology/TestTime,
@@ -1455,13 +1466,13 @@ The result is a list of `QuantityGraph` which (or `PropertyGraph` in case of non
 
 In case of the need of further processing the time series data (tabular data) resulting from the pipeline after parsing, the `time_series` property can be accessed as follows:
 
-```{python}
+```
 print(pipeline.time_series)
 ```
 
 The result is a pandas dataframe and should look like this:
 
-```{python}
+```
          TestTime StandardForce AbsoluteCrossheadTravel    Extension  \
 0     0.902359827   0.576537916             0.261094396  0.767421407
 1     0.440620562   0.989528723             0.983277189  0.765300358

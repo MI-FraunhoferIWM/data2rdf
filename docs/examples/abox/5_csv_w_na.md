@@ -1,4 +1,4 @@
-# ABox generation from a csv file without metadata and with missing values
+# CSV file without metadata and with missing values
 
 ## General understanding
 
@@ -67,7 +67,7 @@ According to the condition of the csv parser, we need to take the following pars
 * `drop_na`: whether to drop the rows with missing values. In this case, it is `False`.
 
 The according Python dict for the parser arguments would look like this:
-```{python}
+```
 parser_args = {
     "time_series_sep": ";",
     "metadata_length": 0,
@@ -80,7 +80,7 @@ parser_args = {
 
 The **schema** of the mapping itself is very similar to the one of the [very first example](1_csv.md), but for different ontological classes and different keys this time:
 
-```{json}
+```{python}
 [
   {
     "iri": "https://w3id.org/steel/ProcessOntology/ThermalExpansionCoefficient",
@@ -126,7 +126,7 @@ As you may notice, we need to specify the unit in the mappings here, since the r
 
 Please apply the mapping, addtional triples and the parser arguments to the pipeline configuration and run the pipeline in the following manner:
 
-```{python}
+```
 from data2rdf import Data2RDF, Parser
 
 data = """Temperature[°C];Coefficient of thermal exapansion[1/K];Specific heat[J/kgK];Young's modulus[Pa];Poison's ratio[-];Thermal conductivity[W/mK];Density[kg/m3]
@@ -226,7 +226,7 @@ When the pipeline run is succeded, you see the following output by running `prin
 <Details>
 <summary><b>Click here to expand</b></summary>
 
-```{turtle}
+```
 @prefix csvw: <http://www.w3.org/ns/csvw#> .
 @prefix dcat: <http://www.w3.org/ns/dcat#> .
 @prefix dcterms: <http://purl.org/dc/terms/> .

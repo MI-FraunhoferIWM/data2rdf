@@ -1,4 +1,4 @@
-# ABox generation from an excel file with metadata and time series
+# Excel file with metadata and time series
 
 ```{note}
 This example is building up on the previous one about the [CSV file with metadata and time series](1_csv.md).
@@ -46,7 +46,7 @@ A valid mapping for the example file show above may look like this:
 <Details>
 <summary><b>Click here to expand</b></summary>
 
-```{json}
+```
 [
   {
     "iri": "https://w3id.org/steel/ProcessOntology/Remark",
@@ -190,7 +190,7 @@ Please note that a mapping for a metadatum looks like this:
 
 Whereas the mapping of a time series looks like this:
 
-```{python}
+```
 {
 "iri": "https://w3id.org/steel/ProcessOntology/TestTime",
 "key": "Zeit",
@@ -204,7 +204,7 @@ Again, the `unit_location` is only needed if the concept is a quantity, of cours
 
 In case if the unit cannot be parsed from the excel sheet, we again have the opportunity to specify the unit in the mapping:
 
-```{python}
+```
 ...
 {
     "iri": "https://w3id.org/steel/ProcessOntology/Elongation",
@@ -225,7 +225,7 @@ The method graph for this example is almost the same as from the previous csv-ex
 <Details>
 <summary><b>Click here to expand</b></summary>
 
-```{turtle}
+```
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix prov: <http://www.w3.org/ns/prov#> .
@@ -362,7 +362,7 @@ For readability, we are truncating the mapping as well as the additional triples
 
 In order to apply the pipeline to the Excel file, run the following Python code:
 
-```{python}
+```
 from data2rdf import Data2RDF, Parser
 
 mapping = [
@@ -423,7 +423,7 @@ When the pipeline run is succeded, you see the following output by running `prin
 <Details>
 <summary><b>Click here to expand</b></summary>
 
-```{turtle}
+```
 @prefix csvw: <http://www.w3.org/ns/csvw#> .
 @prefix dcat: <http://www.w3.org/ns/dcat#> .
 @prefix dcterms: <http://purl.org/dc/terms/> .
