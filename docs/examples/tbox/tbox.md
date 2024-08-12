@@ -52,7 +52,7 @@ Note that we will need at least one key-value pair describing the suffix of the 
 ### The mapping
 
 
-```{python}
+```
 [
   {
     "key": "Original name",

@@ -16,7 +16,7 @@ For this example, we will consider the following inputs:
 
 The csv file produced by the dummy sensors looks like this:
 
-```{csv}
+```
 time,column_01,column_02,column_03
 2,2,2,2
 3,3,3,3
@@ -50,7 +50,7 @@ parser_args = {
 
 The **schema** of the mapping itself is very similar to the one of the [very first example](1_csv.md), but for different ontological classes and different keys this time:
 
-```{python}
+```
 [
   {
     "iri": "https://w3id.org/steel/ProcessOntology/Sensor",

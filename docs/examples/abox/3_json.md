@@ -24,7 +24,7 @@ We generally do not need parser arguments at this point, since we are using the 
 
 We are considering the following dummy data as json input:
 
-```{python}
+```
 raw_data = {
   "data": {
     "Breitenänderung": {
@@ -57,7 +57,7 @@ As you may notice, concepts like `Breitenänderung` and `Dehnung` both are time 
 
 A valid mapping for the json defined above may look like this:
 
-```{python}
+```
 [
   {
     "iri": "https://w3id.org/steel/ProcessOntology/Remark",
@@ -89,7 +89,7 @@ Please note that we are using a querying-language called [`jsonpath`](https://su
 
 For example, we can specify the `key` as `data.Standardkraft.unit` and the `value_location` as `data.Standardkraft.array`, since we have seen that the `Standardkraft` concept is a dictionary/object with an additional subelement called `array` for the values and `unit` for the unit:
 
-```{python}
+```
 ...
   {
     "iri": "https://w3id.org/steel/ProcessOntology/Force",
@@ -102,7 +102,7 @@ For example, we can specify the `key` as `data.Standardkraft.unit` and the `valu
 
 In the case of the `Dehnung` concept, we can specify the `key` as `data.Dehnung` and manually map the `unit` to `%`, since we cannot extract the information from the data:
 
-```{python}
+```
 ...
   {
     "iri": "https://w3id.org/steel/ProcessOntology/PercentageElongation",
@@ -118,7 +118,7 @@ In the case of the `Dehnung` concept, we can specify the `key` as `data.Dehnung`
 
 Please apply the mapping, addtional triples and the parser arguments to the pipeline configuration and run the pipeline in the following manner:
 
-```{python}
+```
 from data2rdf import Data2RDF, Parser
 
 mapping = [
@@ -157,7 +157,7 @@ Data2RDF(
 
 Alternatively, you are also able to pass the data as a python dictionary directly:
 
-```{python}
+```
 from data2rdf import Data2RDF, Parser
 
 data = raw_data = {

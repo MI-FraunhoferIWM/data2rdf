@@ -17,7 +17,7 @@ For this example, we will consider the following inputs:
 
 For this example, we will consider the following input data:
 
-```{python}
+```
 {
     "data": {
       "name": "Jane Doe",
@@ -32,7 +32,7 @@ As you may have noticed, this json here simply features the name of a person and
 
 For this minimal example, we only need a very short mapping:
 
-```{python}
+```
 [
   {
     "value_location": "data.name",
@@ -69,7 +69,7 @@ In order to exclude the semantic description of the data file itself in the gene
 
 Optionally, we can also set the base IRI of the graph, its separator, as well as the prefix of the IRI in the header of the produced RDF:
 
-```{python}
+```
 config = {
         "base_iri": "https://w3id.org/emmo/domain/domain-nanoindentation/nanoindentation",
         "separator": "#",

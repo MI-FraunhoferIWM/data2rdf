@@ -80,7 +80,7 @@ parser_args = {
 
 The **schema** of the mapping itself is very similar to the one of the [very first example](1_csv.md), but for different ontological classes and different keys this time:
 
-```{python}
+```
 [
   {
     "iri": "https://w3id.org/steel/ProcessOntology/ThermalExpansionCoefficient",
