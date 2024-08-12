@@ -3,67 +3,82 @@
 ## Pipeline
 
 ```{eval-rst}
-.. automodule:: data2rdf.annotation_pipeline
+.. automodule:: data2rdf.pipelines.main
     :members:
     :undoc-members:
     :show-inheritance:
 ```
 
-## Abox template
+## Mappings and graph models
 
-### abox template module
+### Base
 
 ```{eval-rst}
-.. automodule:: data2rdf.abox_template_generation
+.. automodule:: data2rdf.models.base
     :members:
     :undoc-members:
     :show-inheritance:
 ```
 
-## Parser code
-
-### csv_parser module
+### Graph
 
 ```{eval-rst}
-.. automodule:: data2rdf.csv_parser
+.. automodule:: data2rdf.models.graph
     :members:
     :undoc-members:
     :show-inheritance:
 ```
 
-### excel_parser module
+### Mapping
 
 ```{eval-rst}
-.. automodule:: data2rdf.excel_parser
+.. automodule:: data2rdf.models.mapping
+    :members:
+    :undoc-members:
+    :show-inheritance:
+```
+## Configuration
+
+```{eval-rst}
+.. automodule:: data2rdf.config
     :members:
     :undoc-members:
     :show-inheritance:
 ```
 
-## RDF Generator code
+## Parsers
 
-### rdf_generation module
+### Base parser module
 
 ```{eval-rst}
-.. automodule:: data2rdf.rdf_generation
+.. automodule:: data2rdf.parsers.base
     :members:
     :undoc-members:
     :show-inheritance:
 ```
 
-## Mapper code
-
-### mapper module
+### CSV parser module
 
 ```{eval-rst}
-.. automodule:: data2rdf.mapper
+.. automodule:: data2rdf.parsers.csv
+    :members:
+    :undoc-members:
+    :show-inheritance:
+```
+### Excel parser module
+
+```{eval-rst}
+.. automodule:: data2rdf.parsers.excel
     :members:
     :undoc-members:
     :show-inheritance:
 ```
 
-### Emmo utils
+### Json parser module
 
 ```{eval-rst}
-.. autofunction:: data2rdf.emmo_lib.emmo_utils.simple_unit_lookup
+.. automodule:: data2rdf.parsers.json
+    :members:
+    :undoc-members:
+    :show-inheritance:
 ```

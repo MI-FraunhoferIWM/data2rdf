@@ -1,0 +1,8 @@
+key;relation;relation_type
+Original name;http://www.w3.org/2000/01/rdf-schema#label;annotation_property
+Ontological concept ID;http://www.w3.org/2004/02/skos/core#altlabel;annotation_property
+Description;http://purl.org/dc/terms/description;data_property
+Source;https://w3id.org/steel/ProcessOntology/hasLabelSource;data_property
+Measurement unit;https://w3id.org/steel/ProcessOntology/hasTypicalUnitLabel;data_property
+Comment;http://www.w3.org/2000/01/rdf-schema#comment;data_property
+Author's name;http://purl.org/dc/terms/contributor;data_property

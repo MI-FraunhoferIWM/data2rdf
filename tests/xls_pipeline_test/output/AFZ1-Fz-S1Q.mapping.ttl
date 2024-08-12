@@ -1,3 +1,0 @@
-@prefix owl: <http://www.w3.org/2002/07/owl#> .
-
-<http://www.test2.de/metadata-34> owl:sameAs <http://tensile-test-method.org#AbsoluteCrossheadTravel> .

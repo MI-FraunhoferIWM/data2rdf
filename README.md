@@ -1,8 +1,11 @@
 # data2rdf
 
-A pipeline for generating data representation in RDF out of raw data given in ASCII, CSV or EXCEL format.
+A pipeline for generating data representation in RDF out of raw data given in ASCII, CSV, JSON or EXCEL format.
 
 https://data2rdf.readthedocs.io/en/latest/
+
+<!-- Pytest Coverage Comment:Begin -->
+<!-- Pytest Coverage Comment:End -->
 
 # Installation
 
@@ -23,24 +26,19 @@ cd data2rdf
 pip install -e .
 ```
 
-## Windows specific
+# Unit tests
 
-In windows it might be necessary to install curses manually. This can be done with:
+Before running the unit tests, please install the needed packages:
 
+```{bash}
+pip install data2rdf[tests]
 ```
-pip install windows-curses
+
+Afterwards, run the unittest with:
+
+```{bash}
+pytest
 ```
-
-## Debug a Chowlk XML File
-
-In some cases when the syntax of the draw.io file is not correct (e.g.: missing label on arrow, bracket in class file) chowlk crashes. The only (pretty annoying but working) way to find the wrong syntax is to execute chowlk with the command line for that file and inclemently remove elements from the draw.io diagram. This way you can find the wrong syntax by process of elimination.
-
-# Version Updates
-
-* Chowlk is installed via pip through the dependencies
-* Running csv and excel pipeline
-* Abox pipeline CLI
-* Unnittest for csv and excel pipeline and abox pipeline
 
 # Building the docs locally
 ### HTML

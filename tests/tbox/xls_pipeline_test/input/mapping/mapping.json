@@ -1,0 +1,37 @@
+[
+  {
+    "key": "Original name",
+    "relation": "http://www.w3.org/2000/01/rdf-schema#label",
+    "relation_type": "annotation_property"
+  },
+  {
+    "key": "Ontological concept ID",
+    "relation": "http://www.w3.org/2004/02/skos/core#altlabel",
+    "relation_type": "annotation_property"
+  },
+  {
+    "key": "Description",
+    "relation": "http://purl.org/dc/terms/description",
+    "relation_type": "data_property"
+  },
+  {
+    "key": "Source",
+    "relation": "https://w3id.org/steel/ProcessOntology/hasLabelSource",
+    "relation_type": "data_property"
+  },
+  {
+    "key": "Measurement unit",
+    "relation": "https://w3id.org/steel/ProcessOntology/hasTypicalUnitLabel",
+    "relation_type": "data_property"
+  },
+  {
+    "key": "Comment",
+    "relation": "http://www.w3.org/2000/01/rdf-schema#comment",
+    "relation_type": "data_property"
+  },
+  {
+    "key": "Author's name",
+    "relation": "http://purl.org/dc/terms/contributor",
+    "relation_type": "data_property"
+  }
+]

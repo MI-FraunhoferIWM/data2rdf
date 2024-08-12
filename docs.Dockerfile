@@ -1,4 +1,4 @@
-FROM python:3.8-buster
+FROM python:3.10
 
 RUN apt-get update && apt-get install -y \
     pandoc default-jre graphviz \
@@ -10,8 +10,7 @@ RUN apt-get update && apt-get install -y \
 WORKDIR /app
 ADD . .
 
-RUN git submodule update --init --recursive
-
+RUN python -m pip install --upgrade pip
 RUN python -m pip install -e .[docs]
 
 CMD sphinx-autobuild --host 0.0.0.0 docs docs/_build/html
