@@ -8,44 +8,38 @@ A pipeline that allows for the conversion of various data formats into RDF.
 Get started!
 :::
 
-:::{grid-item-card} Workflow
-:link: workflow.html
-Follow the workflow of the pipeline
+::::{grid}
+:::{grid-item-card} Quick start
+:link: examples/abox/1.1_csv.html
+Start with the first Data2RDF example.
 :::
 
-:::{grid-item-card} Examples
-:link: examples.html
-Sample notebooks and tutorials
+:::{grid-item-card} Configuration
+:link: config.html
+Investigate the options for the general options of the pipeline
 :::
-::::
 
-```{toctree}
-:hidden: true
-:caption: Introduction
-:maxdepth: 2
 
-intro
-```
-
-```{toctree}
-:hidden: true
-:caption: Workflow
-:maxdepth: 2
-
-workflow
-```
 
 ```{toctree}
 :hidden: true
 :caption: Examples
-:maxdepth: 2
+:maxdepth: 3
 
 examples
 ```
 
 ```{toctree}
 :hidden: true
-:caption: Additional
+:caption: Configuration
+:maxdepth: 2
+
+config
+```
+
+```{toctree}
+:hidden: true
+:caption: API Reference
 :maxdepth: 2
 
 code
