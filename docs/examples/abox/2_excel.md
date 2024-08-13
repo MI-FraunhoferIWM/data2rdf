@@ -33,7 +33,7 @@ The excel file produced by the tensile test machine looks like this:
 
 Again, we are facing metadata of the experiment like e.g. `Projekt`, `Prüfer`, `Werkstoff`, etc. and time series with the quantities of `Zeit`, `F`, `B`, which need to be mapped to ontological concepts.
 
-The original file can be accessed [here](https://github.com/MI-FraunhoferIWM/data2rdf/raw/enh/annotations/tests/abox/xls_pipeline_test/input/data/AFZ1-Fz-S1Q.xlsm).
+The original file can be accessed [here](https://github.com/MI-FraunhoferIWM/data2rdf/raw/bbde50919c50f3428eec179f94f29315f31165fe/tests/abox/xls_pipeline_test/input/data/AFZ1-Fz-S1Q.xlsm).
 
 
 ### The mapping

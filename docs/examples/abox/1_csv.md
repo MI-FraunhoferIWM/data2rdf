@@ -25,7 +25,7 @@ The csv file produced by the tensile test machine looks like this:
 
 ![details](../../assets/img/docu/CSV-Parser.png)
 
-The original file can be accessed [here](https://raw.githubusercontent.com/MI-FraunhoferIWM/data2rdf/f9e5adfe2c18dd0bd4887bc685459671b1fbb29a/tests/csv_pipeline_test/input/data/DX56_D_FZ2_WR00_43.TXT). Due to clarify reasons, we truncated the time series in this document here.
+The original file can be accessed [here](https://github.com/MI-FraunhoferIWM/data2rdf/raw/bbde50919c50f3428eec179f94f29315f31165fe/tests/abox/csv_pipeline_test/input/data/DX56_D_FZ2_WR00_43.TXT). Due to clarify reasons, we truncated the time series in this document here.
 
 ```{note}
 We are strictly assuming that metadata is on top of the time series and has a the key-value-unit pattern. Therefore the metadata up to now needs to have a width of 2 to 3 columns. In the future, we may support extending the default width of the metadata, in case if we need to have a width of 4 or more columns, e.g. if there are be more concepts than just value and unit.
