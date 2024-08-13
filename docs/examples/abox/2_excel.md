@@ -1,6 +1,11 @@
 # Excel file with metadata and time series
 
 ```{note}
+Please follow [this link here](https://github.com/MI-FraunhoferIWM/data2rdf/blob/b29be66cb57beef8bd8f84e2cd588ccb8e17559c/examples/2_excel.ipynb) in order to access the related jupyter notebook.
+```
+
+
+```{note}
 This example is building up on the previous one about the [CSV file with metadata and time series](1_csv.md).
 Please start from this chapter in order to fully understand the content of this example.
 ```

@@ -1,5 +1,9 @@
 # Graph with custom relations
 
+```{note}
+Please follow [this link here](https://github.com/MI-FraunhoferIWM/data2rdf/blob/b29be66cb57beef8bd8f84e2cd588ccb8e17559c/examples/6_graph_custom_relations.ipynb) in order to access the related jupyter notebook.
+```
+
 ## General understanding
 
 In this very small example, we would like to generate a graph without quantitative data, but some other alpha-numeric properties, like names or labels. Additionally, we would like to set a custom relation like an annotation property or datatype property between the node of the individual and the data which we parse.

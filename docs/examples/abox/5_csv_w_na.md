@@ -1,5 +1,9 @@
 # CSV file without metadata and with missing values
 
+```{note}
+Please follow [this link here](https://github.com/MI-FraunhoferIWM/data2rdf/blob/b29be66cb57beef8bd8f84e2cd588ccb8e17559c/examples/5_csv_w_na.ipynb) in order to access the related jupyter notebook.
+```
+
 ## General understanding
 
 In comparision to the [previous example of the csv file without metadata](1.4_csv_wo_metadata.md), we are using the similar data again, but now we have some missing values in the time series. Again, there will be no metadata in this case.
@@ -17,7 +21,7 @@ For this example, we will consider the following inputs:
 
 For this example, we will consider the following input data:
 
-```{csv}
+```
 Temperature[°C];Coefficient of thermal exapansion[1/K];Specific heat[J/kgK];Young's modulus[Pa];Poison's ratio[-];Thermal conductivity[W/mK];Density[kg/m3]
 20;8.70E-06;8.46E+02;7.47E+10;0.218;0.99;2.47E+03
 100;9.00E-06;8.70E+02;7.43E+10;0.223;1.06;

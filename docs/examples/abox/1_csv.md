@@ -1,5 +1,9 @@
 # CSV file with metadata and time series
 
+```{note}
+Please follow [this link here](https://github.com/MI-FraunhoferIWM/data2rdf/blob/b29be66cb57beef8bd8f84e2cd588ccb8e17559c/examples/1_csv.ipynb) in order to access the related jupyter notebook.
+```
+
 ## General understanding
 
 In this example, we want to transfor a csv file which encorporates stress/strain of the measurement and some metadata about the experiment into an RDF repesentation.
@@ -71,6 +75,15 @@ Since we are assuming to have a csv file, we can assume the following parser arg
 * `"fillna"`: The value to fill NaN values in the parsed dataframe.
     In this example, we assume that the NaN values in the dataframe are filled with `""`. Hence the argument is `""`. This is in particular of importance when the time series is parsed from the csv file. Since we are using pandas to parse the csv file, we need to make sure that gaps in the time series are filled with `""`, instead of the default `np.nan` values in the dataframe. If not applied here, this might lead to problems in the data2rdf pipeline.
 
+The according parser args hence will look like this:
+
+```{python}
+parser_args = {
+      "metadata_sep":"\t",
+      "time_series_sep":"\t",
+      "metadata_length":20
+   }
+```
 
 ### The mapping
 
@@ -154,6 +167,43 @@ For the quantitative properties (e.g. `"Vorkraft"`=Preload) and non-quantitative
     "iri": "https://w3id.org/steel/ProcessOntology/TestStandard",
     "key": "Pr\u00fcfnorm"
   },
+  {
+    "iri": "https://w3id.org/steel/ProcessOntology/TestTime",
+    "key": "Pr\u00fcfzeit"
+  },
+  {
+    "iri": "https://w3id.org/steel/ProcessOntology/StandardForce",
+    "key": "Standardkraft"
+  },
+  {
+    "iri": "https://w3id.org/steel/ProcessOntology/Extension",
+    "key": "Standardweg"
+  },
+  {
+    "iri": "https://w3id.org/steel/ProcessOntology/Temperature",
+    "key": "Temperatur"
+  },
+  {
+    "iri": "https://w3id.org/steel/ProcessOntology/AbsoluteCrossheadTravel",
+    "key": "Traversenweg absolut"
+  },
+  {
+    "iri": "https://w3id.org/steel/ProcessOntology/ParallelLength",
+    "key": "Versuchsl\u00e4nge"
+  },
+  {
+    "iri": "https://w3id.org/steel/ProcessOntology/Preload",
+    "key": "Vorkraft"
+  },
+  {
+    "iri": "https://w3id.org/steel/ProcessOntology/DisplacementTransducer",
+    "key": "Wegaufnehmer"
+  },
+  {
+    "annotation": "https://w3id.org/steel/ProcessOntology",
+    "iri": "https://w3id.org/steel/ProcessOntology/Material",
+    "key": "Werkstoff"
+  }
 ]
 ```
 </Details>
@@ -456,7 +506,7 @@ pipeline = Data2RDF(
 
 The mapping can also be provided as a csv or excel file (**only as a file writen to disk, not as a string in memory**):
 
-```{csv}
+```
 key;iri;annotation
 Prüfinstitut;https://w3id.org/steel/ProcessOntology/TestingFacility;
 Projektnummer;https://w3id.org/steel/ProcessOntology/ProjectNumber;
