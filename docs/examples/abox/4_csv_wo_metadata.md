@@ -1,5 +1,9 @@
 # CSV file without metadata
 
+```{note}
+Please follow [this link here](https://github.com/MI-FraunhoferIWM/data2rdf/blob/b29be66cb57beef8bd8f84e2cd588ccb8e17559c/examples/4_csv_wo_metadata.ipynb) in order to access the related jupyter notebook.
+```
+
 ## General understanding
 
 In this example, we are looking into dummy sensor data which is provided by a csv file. However, we do not have any metadata in this case, but directly start with the time series. Additionaly, each column in this time series is of the same ontological class, but was recorded by a different sensor.

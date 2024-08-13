@@ -1,6 +1,11 @@
 # JSON file or Python-dict with metadata and time series
 
 ```{note}
+Please follow [this link here](https://github.com/MI-FraunhoferIWM/data2rdf/blob/b29be66cb57beef8bd8f84e2cd588ccb8e17559c/examples/3_json.ipynb) in order to access the related jupyter notebook.
+```
+
+
+```{note}
 This example is building up on the very first one about the [CSV file with metadata and time series](1_csv.md).
 Please start from this chapter in order to fully understand the content of this example.
 ```
@@ -27,7 +32,7 @@ We are considering the following dummy data as json input:
 ```
 raw_data = {
   "data": {
-    "Breitenänderung": {
+    "Breitenaenderung": {
       "unit": "mm",
       "value": 1.0
     },
@@ -67,7 +72,7 @@ A valid mapping for the json defined above may look like this:
   {
     "iri": "https://w3id.org/steel/ProcessOntology/WidthChange",
     "key": "Breitenaenderung",
-    "unit": "data.Breitenaenderung.unit",
+    "unit_location": "data.Breitenaenderung.unit",
     "value_location": "data.Breitenaenderung.value"
   },
   {
