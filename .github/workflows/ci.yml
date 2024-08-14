@@ -91,5 +91,5 @@ jobs:
               if: ${{ github.event_name == 'push' && matrix.python-version  == '3.12'}}
               uses: actions-js/push@master
               with:
-              message: Update coverage on Readme
-              github_token: ${{ secrets.GITHUB_TOKEN }}
+                message: Update coverage on Readme
+                github_token: ${{ secrets.GITHUB_TOKEN }}
