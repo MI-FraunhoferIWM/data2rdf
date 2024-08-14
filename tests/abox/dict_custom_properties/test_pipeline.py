@@ -8,7 +8,7 @@ def test_pipeline_dict_custom_properties() -> None:
 
     data = {
         "data": {
-            "name": "G. Konstantopoulos",
+            "name": "Jane Doe",
             "measurement": "Continuous Stiffness Measurement",
         }
     }
@@ -22,7 +22,7 @@ def test_pipeline_dict_custom_properties() -> None:
         },
         {
             "value_location": "data.measurement",
-            "iri": "https://w3id.org/emmo/domain/domain-nanoindentation/nanoindentation#EMMO_5ca6e1c1-93e9-5e1a-881b-2c2bd38074b1 ",
+            "iri": "https://w3id.org/emmo/domain/domain-nanoindentation/nanoindentation#EMMO_5ca6e1c1-93e9-5e1a-881b-2c2bd38074b1",
             "suffix": "CSM1",
         },
     ]
@@ -42,12 +42,14 @@ def test_pipeline_dict_custom_properties() -> None:
     @prefix foaf: <http://xmlns.com/foaf/0.1/> .
     @prefix ns1: <https://w3id.org/emmo/domain/characterisation-methodology/chameo#> .
     @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+    @prefix ns2: <https://w3id.org/emmo/domain/domain-nanoindentation/nanoindentation#> .
 
-    <https://w3id.org/emmo/domain/domain-nanoindentation/nanoindentation#CSM1> rdfs:label "Continuous Stiffness Measurement" ;
-        ns1:hasOperator <https://w3id.org/emmo/domain/domain-nanoindentation/nanoindentation#Operator1> .
+    ns2:CSM1 a ns2:EMMO_5ca6e1c1-93e9-5e1a-881b-2c2bd38074b1 ;
+             rdfs:label "Continuous Stiffness Measurement" ;
+             ns1:hasOperator ns2:Operator1 .
 
-    <https://w3id.org/emmo/domain/domain-nanoindentation/nanoindentation#Operator1> a ns1:Operator ;
-        foaf:name "G. Konstantopoulos" .
+    ns2:Operator1 a ns1:Operator ;
+                  foaf:name "Jane Doe" .
     """
 
     pipeline = Data2RDF(

@@ -225,7 +225,7 @@ class PropertyGraph(BasicGraphModel, BasicSuffixModel):
     value: Optional[str] = Field(
         None, description="Non-quantitative Value of the property"
     )
-    annotation: Optional[AnyUrl] = Field(
+    annotation: Optional[Union[str, AnyUrl]] = Field(
         None, description="Base IRI with which the value shall be concatenated"
     )
     value_relation: Optional[Union[str, AnyUrl]] = Field(
@@ -233,6 +233,14 @@ class PropertyGraph(BasicGraphModel, BasicSuffixModel):
         description="""Data or annotation property
         for mapping the data value to the individual.""",
     )
+
+    @field_validator("annotation")
+    @classmethod
+    def validate_annotation(cls, value: AnyUrl) -> AnyUrl:
+        """Make sure that there are not blank spaces in the IRI"""
+        if value:
+            value = AnyUrl(str(value).strip())
+        return value
 
     @model_validator(mode="after")
     @classmethod

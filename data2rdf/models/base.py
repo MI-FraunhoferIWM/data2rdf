@@ -87,6 +87,16 @@ class BasicSuffixModel(BaseConfigModel):
         validate_default=True,
     )
 
+    @field_validator("iri")
+    @classmethod
+    def validate_iri(cls, value: Union[str, AnyUrl]) -> AnyUrl:
+        """Make sure that there are not blank spaces in the IRI"""
+        if isinstance(value, str):
+            value = AnyUrl(value.strip())
+        else:
+            value = AnyUrl(str(value).strip())
+        return value
+
     @field_validator("suffix")
     @classmethod
     def validate_suffix(
