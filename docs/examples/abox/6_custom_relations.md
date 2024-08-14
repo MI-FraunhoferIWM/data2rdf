@@ -136,11 +136,13 @@ When the pipeline run is succeded, you see the following output by running `prin
 @prefix ns1: <https://w3id.org/emmo/domain/characterisation-methodology/chameo#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 
-<https://w3id.org/emmo/domain/domain-nanoindentation/nanoindentation#CSM1> rdfs:label "Continuous Stiffness Measurement" ;
+<https://w3id.org/emmo/domain/domain-nanoindentation/nanoindentation#CSM1> a <https://w3id.org/emmo/domain/domain-nanoindentation/nanoindentation#EMMO_5ca6e1c1-93e9-5e1a-881b-2c2bd38074b1> ;
+    rdfs:label "Continuous Stiffness Measurement" ;
     ns1:hasOperator <https://w3id.org/emmo/domain/domain-nanoindentation/nanoindentation#Operator1> .
 
 <https://w3id.org/emmo/domain/domain-nanoindentation/nanoindentation#Operator1> a ns1:Operator ;
     foaf:name "Jane Doe" .
+
 ```
 
 Again, you will be able to investigate the `general_metadata` and `plain_metadata` in the same way as stated in the [first example](1_csv). But this does take place for the `time_series_metadata` and `time_series` attributes, since we do not include any time series in this example here.
