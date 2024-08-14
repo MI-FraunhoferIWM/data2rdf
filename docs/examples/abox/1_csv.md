@@ -77,7 +77,7 @@ Since we are assuming to have a csv file, we can assume the following parser arg
 
 The according parser args hence will look like this:
 
-```{python}
+```
 parser_args = {
       "metadata_sep":"\t",
       "time_series_sep":"\t",
