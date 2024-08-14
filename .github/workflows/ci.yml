@@ -46,4 +46,33 @@ jobs:
                   python -m pip freeze
 
             - name: Run tests
-              run: python -m pytest -v
+              run: |
+                pytest --junitxml=pytest.xml  --cov=data2rdf | tee pytest-coverage.txt
+
+            - name: Pytest coverage comment on pull request
+              if: ${{ github.event_name == 'pull_request' && matrix.python-version  == '3.12'}}
+              uses: MishaKav/pytest-coverage-comment@main
+              with:
+                pytest-coverage-path: ./pytest-coverage.txt
+                junitxml-path: ./pytest.xml
+
+            - name: Pytest coverage comment on push
+              if: ${{ github.event_name == 'push' && matrix.python-version  == '3.12' && github.ref == 'refs/heads/main'}}
+              id: coverageComment
+              uses: MishaKav/pytest-coverage-comment@main
+              with:
+                pytest-coverage-path: ./pytest-coverage.txt
+                junitxml-path: ./pytest.xml
+                hide-comment: true
+
+            - name: Update Readme with Coverage Html
+              if: ${{ github.event_name == 'push' && matrix.python-version  == '3.12' && github.ref == 'refs/heads/main'}}
+              run: |
+                sed -i '/<!-- Pytest Coverage Comment:Begin -->/,/<!-- Pytest Coverage Comment:End -->/c\<!-- Pytest Coverage Comment:Begin -->\n\${{ steps.coverageComment.outputs.coverageHtml }}\n<!-- Pytest Coverage Comment:End -->' ./README.md
+
+            - name: Commit & Push changes to Readme
+              if: ${{ github.event_name == 'push' && matrix.python-version  == '3.12' && github.ref == 'refs/heads/main'}}
+              uses: actions-js/push@master
+              with:
+                message: Update coverage on Readme
+                github_token: ${{ secrets.GITHUB_TOKEN }}
