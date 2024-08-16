@@ -101,7 +101,19 @@ class AnyBoxBaseParser(BaseParser):
     @model_validator(mode="after")
     @classmethod
     def run_parser(cls, self: "BaseParser") -> "BaseParser":
-        """Run parser"""
+        """
+        Runs the parser for the given data file and mapping.
+
+        This function is a class method that takes in a `self` parameter, which is an instance of the `BaseParser` class.
+        It loads the data file using the `_load_data_file` method and loads the mapping file using the `load_mapping_file` function.
+        It then runs the parser using the `_run_parser` method and returns the parsed `BaseParser` instance.
+
+        Args:
+            self (BaseParser): The instance of the `BaseParser` class.
+
+        Returns:
+            BaseParser: The parsed `BaseParser` instance.
+        """
 
         datafile: Any = cls._load_data_file(self)
         mapping: "Dict[str, BaseParser]" = load_mapping_file(
@@ -227,6 +239,15 @@ class BaseFileParser(BaseParser):
     @model_validator(mode="after")
     @classmethod
     def execute_parser(cls, self: "BaseFileParser") -> "BaseFileParser":
+        """
+        Validates the parser model and executes the parser based on the specified mode.
+
+        Args:
+            self: An instance of the BaseFileParser class.
+
+        Returns:
+            An instance of the BaseFileParser class with the parser executed.
+        """
         arguments = {
             "mapping": self.mapping,
             "raw_data": self.raw_data,

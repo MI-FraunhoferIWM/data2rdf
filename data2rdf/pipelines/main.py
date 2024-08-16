@@ -137,7 +137,23 @@ class Data2RDF(BaseModel):
 
     @property
     def json_ld(cls) -> Dict[str, Any]:
-        """Return dict of json-ld for graph"""
+        """
+        Returns a dictionary of JSON-LD for the graph based on the pipeline mode.
+
+        If the pipeline mode is ABOX, it returns a dictionary containing the context,
+        id, type, and distribution information of the dataset. If the
+        `suppress_file_description` config is False, it also includes the file
+        description. Otherwise, it returns the JSON-LD of the ABox parser.
+
+        If the pipeline mode is TBOX, it returns the JSON-LD of the TBox parser.
+
+        Args:
+            None
+
+        Returns:
+            Dict[str, Any]: A dictionary of JSON-LD for the graph.
+        """
+
         if cls.mode == PipelineMode.ABOX:
             if not cls.config.suppress_file_description:
                 model = {
@@ -177,7 +193,17 @@ class Data2RDF(BaseModel):
 
     @property
     def graph(cls) -> Graph:
-        """Return graph object"""
+        """
+        Returns a graph object based on the pipeline's JSON-LD data.
+
+        The graph object is created with the identifier specified through the pipeline.
+        It is then populated with the JSON-LD data from the pipeline, and if additional
+        triples are provided, they are validated and added to the graph.
+
+        Returns:
+            Graph: A graph object containing the pipeline's data.
+        """
+
         graph = Graph(identifier=cls.config.graph_identifier)
         graph.parse(data=json.dumps(cls.json_ld), format="json-ld")
         if cls.additional_triples:

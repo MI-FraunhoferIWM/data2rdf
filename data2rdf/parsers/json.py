@@ -69,7 +69,18 @@ class JsonTBoxParser(TBoxBaseParser):
         datafile: "List[Dict[str, Any]]",
         mapping: "Dict[str, TBoxBaseMapping]",
     ) -> None:
-        """Run parser in TBox mode"""
+        """
+        Runs the parser in TBox mode.
+
+        Args:
+            self: An instance of JsonTBoxParser.
+            datafile: A list of dictionaries containing the data to be parsed.
+            mapping: A dictionary containing the mapping of the data.
+
+        Returns:
+            None
+        """
+
         df = pd.DataFrame(datafile)
         _make_tbox_classes(self, df, mapping)
 
@@ -98,6 +109,18 @@ class JsonABoxParser(ABoxBaseParser):
     # OVERRIDE
     @property
     def json_ld(cls) -> Dict[str, Any]:
+        """
+        Returns the JSON-LD representation of the parser's data.
+
+        This method generates the JSON-LD representation of the parser's data,
+        including the context, id, type, and members. The members are generated
+        based on the general metadata and time series metadata.
+
+        The method returns a dictionary containing the JSON-LD representation.
+
+        :return: A dictionary containing the JSON-LD representation.
+        :rtype: Dict[str, Any]
+        """
         if not cls.config.suppress_file_description:
             members = []
 
@@ -202,6 +225,16 @@ class JsonABoxParser(ABoxBaseParser):
     # OVERRIDE
     @classmethod
     def _load_data_file(cls, self: "JsonABoxParser") -> "Dict[str, Any]":
+        """
+        Class method for loading data file.
+
+        Args:
+            cls: The class of the parser.
+            self: An instance of JsonABoxParser.
+
+        Returns:
+            Dict[str, Any]: The loaded data file.
+        """
         return _load_data_file(self)
 
     # OVERRIDE
@@ -213,9 +246,18 @@ class JsonABoxParser(ABoxBaseParser):
         mapping: "List[ABoxJsonMapping]",
     ) -> None:
         """
-        Parse metadata, time series metadata and time series
-        """
+        Class method for parsing metadata, time series metadata,
+        and time series from a given data file and mapping.
 
+        Args:
+            self: An instance of JsonABoxParser.
+            datafile: A dictionary containing the data to be parsed.
+            mapping: A list of ABoxJsonMapping objects defining the
+                     mapping from the data to the ABox.
+
+        Returns:
+            None
+        """
         self._general_metadata = []
         self._time_series_metadata = []
         self._time_series = {}
