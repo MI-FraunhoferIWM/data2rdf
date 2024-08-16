@@ -37,6 +37,7 @@ def test_json_pipeline_tbox(extension) -> None:
             "suffix_location": "Ontological concept ID",
             "ontology_title": "Test Ontology",
             "authors": ["Jane Doe"],
+            "version_info": "1.0.0",
         },
         config={
             "base_iri": "https://w3id.org/dimat",
@@ -73,6 +74,7 @@ def test_json_pipeline_inputs_tbox(input_kind) -> None:
             "suffix_location": "Ontological concept ID",
             "ontology_title": "Test Ontology",
             "authors": ["Jane Doe"],
+            "version_info": "1.0.0",
         },
         config={
             "base_iri": "https://w3id.org/dimat",
