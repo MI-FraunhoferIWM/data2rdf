@@ -137,17 +137,19 @@ class TBoxBaseParser(AnyBoxBaseParser):
     )
 
     version_info: Optional[str] = Field(
-        "1.0.0", description="Version of the ontplpgy"
+        None, description="Version of the ontplpgy"
     )
 
     ontology_iri: Optional[Union[str, AnyUrl]] = Field(
         None, description="General IRI of the ontology."
     )
 
-    ontology_title: str = Field(..., description="Title of the ontology")
+    ontology_title: Optional[str] = Field(
+        None, description="Title of the ontology"
+    )
 
-    authors: List[str] = Field(
-        ..., description="Name of the authors contributing to the ontology."
+    authors: Optional[List[str]] = Field(
+        None, description="Name of the authors contributing to the ontology."
     )
 
     _classes: Any = PrivateAttr()

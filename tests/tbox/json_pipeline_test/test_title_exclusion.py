@@ -31,6 +31,7 @@ def test_json_pipeline_tbox_wo_title() -> None:
         },
         config={
             "base_iri": "https://w3id.org/dimat",
+            "exclude_ontology_title": True,
         },
     )
 

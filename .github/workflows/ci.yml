@@ -47,6 +47,11 @@ jobs:
 
             - name: Run tests
               run: |
+                pytest -v
+
+            - name: Make coverage
+              if: ${{ matrix.python-version == '3.12' }}
+              run: |
                 pytest --junitxml=pytest.xml  --cov=data2rdf | tee pytest-coverage.txt
 
             - name: Pytest coverage comment on pull request
