@@ -36,7 +36,6 @@ def test_parser_csv_tbox(extension) -> None:
             "suffix_location": "Ontological concept ID",
             "ontology_title": "Test Ontology",
             "authors": ["Jane Doe"],
-            "header_length": 2,
         },
         config={
             "base_iri": "https://w3id.org/dimat",
@@ -72,7 +71,6 @@ def test_parser_csv_inputs_tbox(input_kind) -> None:
             "suffix_location": "Ontological concept ID",
             "ontology_title": "Test Ontology",
             "authors": ["Jane Doe"],
-            "header_length": 2,
         },
         config={
             "base_iri": "https://w3id.org/dimat",
