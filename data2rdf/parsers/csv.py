@@ -86,7 +86,20 @@ class CSVTBoxParser(TBoxBaseParser):
         datafile: StringIO,
         mapping: "List[TBoxBaseMapping]",
     ) -> None:
-        """Run excel parser in tbox mode"""
+        """
+        Class method for running the CSVTBoxParser. This method reads a CSV file
+        into a pandas DataFrame and then uses the provided mapping to create TBox
+        classes.
+
+        Parameters:
+            self (CSVTBoxParser): The instance of the parser.
+            datafile (StringIO): The CSV file to be parsed.
+            mapping (List[TBoxBaseMapping]): The list of mappings to be applied.
+
+        Returns:
+            None
+        """
+
         df = pd.read_csv(datafile, sep=self.column_sep)
         _make_tbox_classes(self, df, mapping)
 
@@ -131,7 +144,23 @@ class CSVABoxParser(ABoxBaseParser):
     # OVERRIDE
     @property
     def json_ld(cls) -> "Dict[str, Any]":
-        """Return dict for json-ld for the graph in abox mode"""
+        """
+        Returns a JSON-LD representation of the CSV data in ABox mode.
+
+        This method generates a JSON-LD object that describes the CSV data,
+        including its metadata, time series data, and relationships between them.
+
+        The returned JSON-LD object is in the format of a csvw:TableGroup,
+        which contains one or more csvw:Table objects. Each csvw:Table object
+        represents a table in the CSV data, and contains information about its
+        columns, rows, and relationships to other tables.
+
+        The JSON-LD object also includes context information, such as namespace
+        prefixes and base URLs, to help with serialization and deserialization.
+
+        Returns:
+        Dict[str, Any]: A JSON-LD object representing the CSV data in ABox mode.
+        """
 
         if not cls.config.suppress_file_description:
             tables = []
@@ -273,7 +302,21 @@ class CSVABoxParser(ABoxBaseParser):
         mapping: "List[ABoxBaseMapping]",
     ) -> None:
         """
-        Parse metadata, time series metadata and time series
+        This function is responsible for parsing metadata, time series metadata, and time series data from a CSV file.
+
+        It takes in three parameters:
+        - `self`: The CSVParser instance.
+        - `datafile`: The StringIO object containing the CSV data.
+        - `mapping`: A list of ABoxBaseMapping instances that map the CSV data to the desired output format.
+
+        The function returns None, but it populates the following instance variables:
+        - `self._general_metadata`: A list of PropertyGraph or QuantityGraph instances representing the general metadata.
+        - `self._time_series_metadata`: A list of QuantityGraph instances representing the time series metadata.
+        - `self._time_series`: A pandas DataFrame containing the time series data.
+
+        The function also raises ValueError if the `metadata_length` is greater than 0 but `metadata_sep` is not set.
+        It raises TypeError if the unit for a key is not a string.
+        It raises MappingMissmatchWarning if no match is found in the mapping for a key.
         """
 
         mapping = {model.key: model for model in mapping}

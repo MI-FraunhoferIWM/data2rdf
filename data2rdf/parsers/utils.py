@@ -139,8 +139,37 @@ def _make_tbox_classes(
         self._classes.append(subgraph)
 
 
-def _make_tbox_json_ld(cls: "TBoxBaseParser") -> "Dict[str, Any]":
-    ontology_iri = cls.ontology_iri or cls.config.base_iri
+def _make_tbox_json_ld(model: "TBoxBaseParser") -> "Dict[str, Any]":
+    ontology_iri = model.ontology_iri or model.config.base_iri
+    classes = [model.json_ld for model in model.classes]
+    if not model.config.exclude_ontology_title:
+        if model.ontology_title:
+            title = {"dcterms:title": model.ontology_title}
+        else:
+            title = {}
+        if model.authors:
+            authors = {
+                "dcterms:creator": [
+                    {"@type": "foaf:Person", "foaf:name": author}
+                    for author in model.authors
+                ]
+            }
+        else:
+            authors = {}
+        if model.version_info:
+            version = {"owl:versionInfo": model.version_info}
+        else:
+            version = {}
+
+        classes += [
+            {
+                "@id": str(ontology_iri),
+                "@type": "owl:Ontology",
+                **title,
+                **authors,
+                **version,
+            },
+        ]
     return {
         "@context": {
             "owl": "http://www.w3.org/2002/07/owl#",
@@ -148,17 +177,5 @@ def _make_tbox_json_ld(cls: "TBoxBaseParser") -> "Dict[str, Any]":
             "dcterms": "http://purl.org/dc/terms/",
             "foaf": "http://xmlns.com/foaf/spec/",
         },
-        "@graph": [model.json_ld for model in cls.classes]
-        + [
-            {
-                "@id": str(ontology_iri),
-                "@type": "owl:Ontology",
-                "dcterms:title": cls.ontology_title,
-                "owl:versionInfo": cls.version_info,
-                "dcterms:creator": [
-                    {"@type": "foaf:Person", "foaf:name": author}
-                    for author in cls.authors
-                ],
-            },
-        ],
+        "@graph": classes,
     }

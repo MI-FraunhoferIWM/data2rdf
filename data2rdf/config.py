@@ -72,4 +72,9 @@ class Config(BaseSettings):
         This will be suppressed if enabled.""",
     )
 
+    exclude_ontology_title: bool = Field(
+        False,
+        description="In TBox mode, exclude the title of the ontology in the graph.",
+    )
+
     model_config = ConfigDict(extra="ignore")

@@ -18,6 +18,8 @@ The configuration of the package is crucial for the correct parsing and transfor
 | mapping_csv_separator | str | When the mapping file is a csv, the separator to be used for parsing | ; | No |
 | remove_from_datafile | List[str] | In plain text parsers, e.g. the CSV-parser, there might be the need to remove certain characters when parsing | ['"', "\r", "\n"] | No |
 | suppress_file_description | bool | In ABox mode, the pipeline is producing an additional subgraph graph for describing the data file in its structure, mime type, etc. This will be suppressed if enabled. | False | No |
+| exclude_ontology_file | bool | In TBox mode, exclude the title of the ontology in the graph. | False | No |
+
 
 ```{python}
 example_config = {
@@ -34,5 +36,6 @@ example_config = {
     "mapping_csv_separator": ";",
     "remove_from_datafile": ['"', "\r", "\n"],
     "suppress_file_description": False,
+    "exclude_ontology_file": False,
 }
 ```

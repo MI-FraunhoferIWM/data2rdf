@@ -80,7 +80,23 @@ class ExcelTBoxParser(TBoxBaseParser):
         datafile: BytesIO,
         mapping: "List[TBoxBaseMapping]",
     ) -> None:
-        """Run excel parser in tbox mode"""
+        """
+        Run excel parser in tbox mode.
+
+        Parameters
+        ----------
+        self : ExcelTBoxParser
+            The instance of the parser.
+        datafile : BytesIO
+            The excel file to be parsed.
+        mapping : List[TBoxBaseMapping]
+            The list of mappings to be applied.
+
+        Returns
+        -------
+        None
+            This function does not return any value.
+        """
         df = pd.read_excel(datafile, sheet_name=self.sheet)
         _make_tbox_classes(self, df, mapping)
 
@@ -122,7 +138,15 @@ class ExcelABoxParser(ABoxBaseParser):
     # OVERRIDE
     @property
     def json_ld(cls) -> Dict[str, Any]:
-        """Make the json-ld if pipeline is in abox-mode"""
+        """
+        Returns the JSON-LD representation of the data in ABox mode.
+
+        The JSON-LD is constructed based on the metadata and time series data.
+        If the file description is not suppressed, it includes the metadata and time series data tables.
+        Otherwise, it returns a list of JSON-LD representations of the individual models.
+
+        :return: A dictionary representing the JSON-LD data.
+        """
 
         if not cls.config.suppress_file_description:
             tables = []
@@ -256,7 +280,15 @@ class ExcelABoxParser(ABoxBaseParser):
         mapping: "List[ABoxExcelMapping]",
     ) -> None:
         """
-        Parse metadata, time series metadata and time series
+        Parses the metadata, time series metadata, and time series from an Excel file.
+
+        Args:
+            self (ExcelABoxParser): The instance of the ExcelABoxParser class.
+            datafile (BytesIO): The file object containing the Excel file.
+            mapping (List[ABoxExcelMapping]): The list of mappings to use for parsing.
+
+        Returns:
+            None: This function does not return anything.
         """
 
         mapping = {model.key: model for model in mapping}
