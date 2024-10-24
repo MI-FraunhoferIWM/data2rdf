@@ -446,6 +446,7 @@ class JsonABoxParser(ABoxBaseParser):
                 value=value,
                 iri=datum.iri,
                 suffix=suffix,
+                datatype=relation.object_data_type,
                 config=self.config,
             )
             self._general_metadata.append(model)
