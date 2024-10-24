@@ -15,7 +15,6 @@ from pydantic import (
 from data2rdf.models.base import BasicGraphModel, BasicSuffixModel
 from data2rdf.qudt.utils import _get_query_match
 from data2rdf.utils import is_bool, is_float, is_integer, is_uri, make_prefix
-from data2rdf.warnings import MappingMissmatchWarning
 
 
 class ValueRelationMapping(BaseModel):
@@ -192,12 +191,12 @@ class QuantityGraph(BasicGraphModel, BasicSuffixModel):
     def value_json(self) -> "Dict[str, Any]":
         """Return json with value definition"""
         if self.value:
-            if is_integer(self.value):
-                dtype = "xsd:integer"
-                value = int(self.value)
-            elif is_float(self.value):
+            if is_float(self.value):
                 dtype = "xsd:float"
                 value = float(self.value)
+            elif is_integer(self.value):
+                dtype = "xsd:integer"
+                value = int(self.value)
             elif is_bool(self.value):
                 dtype = "xsd:bool"
                 value = bool(self.value)
@@ -289,12 +288,6 @@ class PropertyGraph(BasicGraphModel, BasicSuffixModel):
                     dtype = "xsd:anyURI"
                     value = str(self.value)
                 else:
-                    warnings.warn(
-                        f"""Datatype not recognized for concept with iri
-                        `{self.iri}` and value:
-                        `{self.value}`. Will be set to string""",
-                        MappingMissmatchWarning,
-                    )
                     value = str(self.value)
                     dtype = "xsd:string"
             else:

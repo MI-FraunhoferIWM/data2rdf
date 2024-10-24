@@ -46,7 +46,7 @@ fileid:PercentageElongation a <https://w3id.org/steel/ProcessOntology/Percentage
     qudt:hasUnit "http://qudt.org/vocab/unit/PERCENT"^^xsd:anyURI .
 
 fileid:Remark a <https://w3id.org/steel/ProcessOntology/Remark> ;
-    rdfs:label "foobar" .
+    rdfs:label "foobar"^^xsd:string .
 
 fileid:WidthChange a <https://w3id.org/steel/ProcessOntology/WidthChange> ;
     qudt:hasUnit "http://qudt.org/vocab/unit/MilliM"^^xsd:anyURI ;

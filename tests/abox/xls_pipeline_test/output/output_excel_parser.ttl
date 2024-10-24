@@ -98,11 +98,11 @@ fileid:Extension a <https://w3id.org/steel/ProcessOntology/Extension> ;
     qudt:hasUnit "http://qudt.org/vocab/unit/MilliM"^^xsd:anyURI .
 
 fileid:MachineData a <https://w3id.org/steel/ProcessOntology/MachineData> ;
-    rdfs:label "M_1" .
+    rdfs:label "M_1"^^xsd:string .
 
 fileid:Material a <https://w3id.org/steel/ProcessOntology/Material>,
         <https://w3id.org/steel/ProcessOntology/Werkstoff_1> ;
-    rdfs:label "Werkstoff_1" .
+    rdfs:label "Werkstoff_1"^^xsd:string .
 
 fileid:OriginalGaugeLength a <https://w3id.org/steel/ProcessOntology/OriginalGaugeLength> ;
     qudt:hasUnit "http://qudt.org/vocab/unit/MilliM"^^xsd:anyURI ;
@@ -112,17 +112,17 @@ fileid:PercentageElongation a <https://w3id.org/steel/ProcessOntology/Percentage
     qudt:hasUnit "http://qudt.org/vocab/unit/FRACTION"^^xsd:anyURI .
 
 fileid:ProjectNumber a <https://w3id.org/steel/ProcessOntology/ProjectNumber> ;
-    rdfs:label "Projekt_1" .
+    rdfs:label "Projekt_1"^^xsd:string .
 
 fileid:SampleIdentifier-2 a <https://w3id.org/steel/ProcessOntology/SampleIdentifier-2> ;
-    rdfs:label "123456" .
+    rdfs:label 123456 .
 
 fileid:SpecimenThickness a <https://w3id.org/steel/ProcessOntology/SpecimenThickness> ;
     qudt:hasUnit "http://qudt.org/vocab/unit/MilliM"^^xsd:anyURI ;
     qudt:value "1.5"^^xsd:float .
 
 fileid:SpecimenType a <https://w3id.org/steel/ProcessOntology/SpecimenType> ;
-    rdfs:label "Fz 10x20" .
+    rdfs:label "Fz 10x20"^^xsd:string .
 
 fileid:SpecimenWidth a <https://w3id.org/steel/ProcessOntology/SpecimenWidth> ;
     qudt:hasUnit "http://qudt.org/vocab/unit/MilliM"^^xsd:anyURI ;
@@ -139,14 +139,14 @@ fileid:TestTime a <https://w3id.org/steel/ProcessOntology/TestTime> ;
     qudt:hasUnit "http://qudt.org/vocab/unit/SEC"^^xsd:anyURI .
 
 fileid:Tester a <https://w3id.org/steel/ProcessOntology/Tester> ;
-    rdfs:label "Fe" .
+    rdfs:label "Fe"^^xsd:string .
 
 fileid:TestingRate a <https://w3id.org/steel/ProcessOntology/TestingRate> ;
     qudt:hasUnit "http://qudt.org/vocab/unit/MilliM-PER-SEC"^^xsd:anyURI ;
     qudt:value "0.02"^^xsd:float .
 
 fileid:TimeStamp a <https://w3id.org/steel/ProcessOntology/TimeStamp> ;
-    rdfs:label "2016-10-11 00:00:00" .
+    rdfs:label "2016-10-11 00:00:00"^^xsd:string .
 
 fileid:WidthChange a <https://w3id.org/steel/ProcessOntology/WidthChange> ;
     qudt:hasUnit "http://qudt.org/vocab/unit/MilliM"^^xsd:anyURI .

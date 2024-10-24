@@ -42,7 +42,7 @@ fileid:ExperimentPreparation a ns1:Activity ;
     ns1:wasInfluencedBy fileid:SamplePreparatation .
 
 fileid:MachineData a <https://w3id.org/steel/ProcessOntology/MachineData> ;
-    rdfs:label "maschine_1" .
+    rdfs:label "maschine_1"^^xsd:string .
 
 fileid:Project a ns1:Activity ;
     ns1:generated fileid:ProjectName,
@@ -50,7 +50,7 @@ fileid:Project a ns1:Activity ;
     ns1:wasAssociatedWith fileid:TestingFacility .
 
 fileid:SampleIdentifier-2 a <https://w3id.org/steel/ProcessOntology/SampleIdentifier-2> ;
-    rdfs:label "Probentyp_2" .
+    rdfs:label "Probentyp_2"^^xsd:string .
 
 fileid:SamplePreparatation a ns1:Activity ;
     ns1:generated fileid:ParallelLength,
@@ -77,7 +77,7 @@ fileid:dataset a dcat:Dataset,
         ns1:Entity ;
     dcterms:hasPart fileid:tableGroup ;
     dcat:distribution [ a dcat:Distribution ;
-            dcat:accessURL "https://www.example.org/download/"^^xsd:anyURI ;
+            dcat:accessURL "https://www.example.org/download"^^xsd:anyURI ;
             dcat:mediaType "http://www.iana.org/assignments/media-types/text/csv"^^xsd:anyURI ] .
 
 fileid:tableGroup a csvw:TableGroup ;
@@ -222,7 +222,7 @@ fileid:Extension a ns1:Entity,
 fileid:Material a ns1:Agent,
         <https://w3id.org/steel/ProcessOntology/Material>,
         <https://w3id.org/steel/ProcessOntology/Werkstoff_1> ;
-    rdfs:label "Werkstoff_1" .
+    rdfs:label "Werkstoff_1"^^xsd:string .
 
 fileid:OriginalGaugeLength a ns1:Entity,
         <https://w3id.org/steel/ProcessOntology/OriginalGaugeLength> ;
@@ -244,14 +244,14 @@ fileid:Preload a ns1:Entity,
 
 fileid:ProjectName a ns1:Entity,
         <https://w3id.org/steel/ProcessOntology/ProjectName> ;
-    rdfs:label "proj_name_1" .
+    rdfs:label "proj_name_1"^^xsd:string .
 
 fileid:ProjectNumber a ns1:Entity,
         <https://w3id.org/steel/ProcessOntology/ProjectNumber> ;
-    rdfs:label "123456" .
+    rdfs:label 123456 .
 
 fileid:Remark a <https://w3id.org/steel/ProcessOntology/Remark> ;
-    rdfs:label "" .
+    rdfs:label ""^^xsd:string .
 
 fileid:SpecimenThickness a ns1:Entity,
         <https://w3id.org/steel/ProcessOntology/SpecimenThickness> ;
@@ -261,7 +261,7 @@ fileid:SpecimenThickness a ns1:Entity,
 
 fileid:SpecimenType a ns1:Entity,
         <https://w3id.org/steel/ProcessOntology/SpecimenType> ;
-    rdfs:label "Probentyp_1" ;
+    rdfs:label "Probentyp_1"^^xsd:string ;
     ns1:wasAttributedTo fileid:TensileTestSpecimen .
 
 fileid:SpecimenWidth a ns1:Entity,
@@ -276,7 +276,7 @@ fileid:StandardForce a ns1:Entity,
     ns1:wasDerivedFrom fileid:ForceMeasuringDevice .
 
 fileid:TestStandard a <https://w3id.org/steel/ProcessOntology/TestStandard> ;
-    rdfs:label "ISO-XX" .
+    rdfs:label "ISO-XX"^^xsd:string .
 
 fileid:TestingRate a ns1:Entity,
         <https://w3id.org/steel/ProcessOntology/TestingRate> ;
@@ -285,18 +285,18 @@ fileid:TestingRate a ns1:Entity,
     ns1:wasAttributedTo fileid:TensileTestingMachine .
 
 fileid:TimeStamp a <https://w3id.org/steel/ProcessOntology/TimeStamp> ;
-    rdfs:label "44335.4" .
+    rdfs:label "44335.4"^^xsd:float .
 
 fileid:Tester a ns1:Agent,
         <https://w3id.org/steel/ProcessOntology/Tester> ;
-    rdfs:label "abc" ;
+    rdfs:label "abc"^^xsd:string ;
     ns1:actedOnBehalfOf fileid:TestingFacility ;
     ns1:atLocation fileid:TestingLab .
 
 fileid:ForceMeasuringDevice a ns1:Agent,
         ns1:Entity,
         <https://w3id.org/steel/ProcessOntology/ForceMeasuringDevice> ;
-    rdfs:label "Kraftaufnehmer_1" ;
+    rdfs:label "Kraftaufnehmer_1"^^xsd:string ;
     ns1:atLocation fileid:TestingLab .
 
 fileid:TensileTestingMachine a ns1:Agent,
@@ -306,12 +306,12 @@ fileid:TensileTestingMachine a ns1:Agent,
 fileid:TestingFacility a ns1:Location,
         ns1:Organization,
         <https://w3id.org/steel/ProcessOntology/TestingFacility> ;
-    rdfs:label "institute_1" .
+    rdfs:label "institute_1"^^xsd:string .
 
 fileid:DisplacementTransducer a ns1:Agent,
         ns1:Entity,
         <https://w3id.org/steel/ProcessOntology/DisplacementTransducer> ;
-    rdfs:label "Wegaufnehmer_1" ;
+    rdfs:label "Wegaufnehmer_1"^^xsd:string ;
     ns1:atLocation fileid:TestingLab .
 
 fileid:TestingLab a ns1:Agent,

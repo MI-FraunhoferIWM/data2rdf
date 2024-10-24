@@ -202,32 +202,22 @@ def test_pipeline_json_custom_relations(mapping) -> None:
     from rdflib import Graph
 
     from data2rdf import Data2RDF, Parser
-    from data2rdf.warnings import MappingMissmatchWarning
 
-    with pytest.warns(
-        UserWarning, match="Datatype not recognized for concept"
-    ) as warnings:
-        pipeline = Data2RDF(
-            raw_data=DATA,
-            mapping=mapping,
-            parser=Parser.json,
-            config={
-                "base_iri": BASE_IRI,
-                "separator": "#",
-                "prefix_name": "nanoindentation",
-                "suppress_file_description": True,
-            },
-        )
-        expected_graph = Graph()
-        expected_graph.parse(data=EXPECTED)
+    pipeline = Data2RDF(
+        raw_data=DATA,
+        mapping=mapping,
+        parser=Parser.json,
+        config={
+            "base_iri": BASE_IRI,
+            "separator": "#",
+            "prefix_name": "nanoindentation",
+            "suppress_file_description": True,
+        },
+    )
+    expected_graph = Graph()
+    expected_graph.parse(data=EXPECTED)
 
-        assert pipeline.graph.isomorphic(expected_graph)
-    missmatches = [
-        warning
-        for warning in warnings
-        if warning.category == MappingMissmatchWarning
-    ]
-    assert len(missmatches) == 2
+    assert pipeline.graph.isomorphic(expected_graph)
 
 
 @pytest.mark.parametrize(
