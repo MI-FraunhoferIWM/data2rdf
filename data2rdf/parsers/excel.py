@@ -291,8 +291,6 @@ class ExcelABoxParser(ABoxBaseParser):
             None: This function does not return anything.
         """
 
-        mapping = {model.key: model for model in mapping}
-
         workbook = load_workbook(filename=datafile, data_only=True)
         datafile.seek(0)
         macros = load_workbook(filename=datafile)
@@ -301,7 +299,8 @@ class ExcelABoxParser(ABoxBaseParser):
         self._general_metadata = []
         self._time_series_metadata = []
         self._time_series = {}
-        for key, datum in mapping.items():
+
+        for datum in mapping:
             worksheet = workbook[datum.worksheet]
 
             if datum.suffix_from_location:
@@ -336,7 +335,7 @@ class ExcelABoxParser(ABoxBaseParser):
                             cell[0].value for cell in column
                         ]
                     else:
-                        message = f"""Concept with key `{key}`
+                        message = f"""Concept with key `{datum.key}`
                                     does not have a time series from `{datum.time_series_start}`
                                     until `{time_series_end}` .
                                     Concept will be omitted in graph.
@@ -360,7 +359,7 @@ class ExcelABoxParser(ABoxBaseParser):
                 if datum.unit_location:
                     unit_location = worksheet[datum.unit_location].value
                     if not unit_location:
-                        message = f"""Concept with key `{key}`
+                        message = f"""Concept with key `{datum.key}`
                                     does not have a unit at location `{datum.unit_location}`.
                                     This mapping for the unit will be omitted in graph.
                                     """
@@ -395,7 +394,7 @@ class ExcelABoxParser(ABoxBaseParser):
                     elif not model_data.get("unit") and value:
                         model_data["value"] = str(value)
                     else:
-                        message = f"""Concept with key `{key}`
+                        message = f"""Concept with key `{datum.key}`
                                     does not have a value at location `{datum.value_location}`.
                                     Concept will be omitted in graph.
                                     """
