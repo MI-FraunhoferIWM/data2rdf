@@ -217,13 +217,13 @@ class QuantityGraph(BasicGraphModel, BasicSuffixModel):
 
 
 class PropertyGraph(BasicGraphModel, BasicSuffixModel):
-    """Mapping for a non-quantitative property. E.g. the
+    """Mapping for an individual with arbitrary property. E.g. the
     name of a tester or a testing facility. The value must not have a
     discrete value but can also be a reference to a column in a table or
     time series."""
 
-    value: Optional[str] = Field(
-        None, description="Non-quantitative Value of the property"
+    value: Optional[Union[str, int, float, bool, AnyUrl]] = Field(
+        None, description="Value of the property"
     )
     annotation: Optional[Union[str, AnyUrl]] = Field(
         None, description="Base IRI with which the value shall be concatenated"
@@ -232,6 +232,9 @@ class PropertyGraph(BasicGraphModel, BasicSuffixModel):
         "rdfs:label",
         description="""Data or annotation property
         for mapping the data value to the individual.""",
+    )
+    datatype: Optional[str] = Field(
+        None, description="XSD Datatype of the value"
     )
 
     @field_validator("annotation")

@@ -319,6 +319,12 @@ class CSVABoxParser(ABoxBaseParser):
         It raises MappingMissmatchWarning if no match is found in the mapping for a key.
         """
 
+        for model in mapping:
+            if model.custom_relations:
+                raise RuntimeError(
+                    "Custom relations for CSV parser is currently not supported"
+                )
+
         mapping = {model.key: model for model in mapping}
 
         time_series: Union[pd.DataFrame, List[None]] = cls._parse_time_series(
