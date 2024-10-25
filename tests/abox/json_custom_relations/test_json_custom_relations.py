@@ -196,6 +196,34 @@ BASE_IRI = (
     "https://w3id.org/emmo/domain/domain-nanoindentation/nanoindentation"
 )
 
+ADDITIONAL_TRIPLES = """
+@prefix : <http://abox-namespace-placeholder.org/> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+
+:John foaf:knows :Jane .
+"""
+
+EXPECTED_ADDITIONAL_TRIPLES = """
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix ns1: <https://w3id.org/emmo/domain/characterisation-methodology/chameo#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix ns2: <https://w3id.org/emmo/domain/domain-nanoindentation/nanoindentation#> .
+@prefix ns3: <https://w3id.org/steel/ProcessOntology/> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+ns2:Jane a ns1:Operator ;
+            foaf:name "Jane"^^xsd:string ;
+            foaf:age "28"^^xsd:integer ;
+            ns3:hasLaboratory "123"^^xsd:integer .
+
+
+ns2:John a ns1:Operator ;
+            foaf:name "John"^^xsd:string ;
+            foaf:age "32"^^xsd:integer ;
+            ns3:hasLaboratory "345"^^xsd:integer ;
+            foaf:knows ns2:Jane .
+"""
+
 
 @pytest.mark.parametrize("mapping", [MAPPING_WILDCARD, MAPPING_INDEX])
 def test_pipeline_json_custom_relations(mapping) -> None:
@@ -244,5 +272,28 @@ def test_pipeline_json_custom_relations_datatype(mapping) -> None:
 
     expected_graph = Graph()
     expected_graph.parse(data=EXPECTED_DATATYPE)
+
+    assert pipeline.graph.isomorphic(expected_graph)
+
+
+def test_pipeline_json_custom_relations_additional_triples() -> None:
+    from rdflib import Graph
+
+    from data2rdf import Data2RDF, Parser
+
+    pipeline = Data2RDF(
+        raw_data=DATA,
+        mapping=MAPPING_WILDCARD,
+        parser=Parser.json,
+        config={
+            "base_iri": BASE_IRI,
+            "separator": "#",
+            "prefix_name": "nanoindentation",
+            "suppress_file_description": True,
+        },
+        additional_triples=ADDITIONAL_TRIPLES,
+    )
+    expected_graph = Graph()
+    expected_graph.parse(data=EXPECTED_ADDITIONAL_TRIPLES)
 
     assert pipeline.graph.isomorphic(expected_graph)
