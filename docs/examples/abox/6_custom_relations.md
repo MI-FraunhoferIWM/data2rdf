@@ -1,12 +1,12 @@
 # Graph with custom relations
 
 ```{note}
-Please follow [this link here](https://github.com/MI-FraunhoferIWM/data2rdf/blob/b29be66cb57beef8bd8f84e2cd588ccb8e17559c/examples/6_graph_custom_relations.ipynb) in order to access the related jupyter notebook.
+Please follow [this link here](https://github.com/MI-FraunhoferIWM/data2rdf/blob/main/examples/6_graph_custom_relations.ipynb) in order to access the related jupyter notebook.
 ```
 
 ## General understanding
 
-In this very small example, we would like to generate a graph without quantitative data, but some other alpha-numeric properties, like names or labels. Additionally, we would like to set a custom relation like an annotation property or datatype property between the node of the individual and the data which we parse.
+In this very small example, we would like to generate a graph with custom relations, e.g. labels and other arbitrary properties. However, we are going to show how to use wildcards in order to apply the mapping to an arbitrary number of individuals.
 
 ## The inputs
 
@@ -23,10 +23,18 @@ For this example, we will consider the following input data:
 
 ```
 {
-    "data": {
-      "name": "Jane Doe",
-      "measurement": "Continuous Stiffness Measurement"
-    }
+    "data": [
+        {
+            "name": "Jane",
+            "age": 28,
+            "lab_no": 123,
+        },
+        {
+            "name": "John",
+            "age": 32,
+            "lab_no": 345,
+        },
+    ]
 }
 ```
 
@@ -38,21 +46,45 @@ For this minimal example, we only need a very short mapping:
 
 ```
 [
-  {
-    "value_location": "data.name",
-    "value_relation": "http://xmlns.com/foaf/0.1/name",
-    "iri": "https://w3id.org/emmo/domain/characterisation-methodology/chameo#Operator",
-    "suffix": "Operator1"
-  },
-  {
-    "value_location": "data.measurement",
-    "iri": "https://w3id.org/emmo/domain/domain-nanoindentation/nanoindentation#EMMO_5ca6e1c1-93e9-5e1a-881b-2c2bd38074b1 ",
-    "suffix": "CSM1"
-  }
+    {
+        "iri": "https://w3id.org/emmo/domain/characterisation-methodology/chameo#Operator",
+        "suffix": "name",
+        "source": "data[*]",
+        "suffix_from_location": True,
+        "custom_relations": [
+            {
+                "object_location": "name",
+                "relation": "http://xmlns.com/foaf/0.1/name",
+            },
+            {
+                "object_location": "age",
+                "relation": "http://xmlns.com/foaf/0.1/age",
+            },
+            {
+                "object_location": "lab_no",
+                "relation": "https://w3id.org/steel/ProcessOntology/hasLaboratory",
+                "object_data_type": "string",
+            },
+        ],
+    }
 ]
 ```
 
-You may notice here, that we are setting explicitly the `value_relation` for the first mapping to `foaf:name` and `suffix` for both mappings to `Operator1` and `CSM1`.
+You may notice here, that we are not using the `value_location` here but use a field called `custom_relations` instead. The `custom_relations` field contains a list of predicates and objects that we need to add to the graph. Here again, the `object_location` can be a jsonpath or the cell number of a spreadsheet which is pointing to a value in the respective file. The `relation` must be an IRI which is used in order to point towards this object resolved from the `object_location`.
+
+
+We can also set the `object_data_type` if we want to set the datatype of the object.
+Important to note here is that this datatype must be an existing [xsd](https://www.w3.org/TR/xmlschema-2/)-datatype.
+
+Note, that we are using a wildcard with `data[*]` in order to apply the mapping to an arbitrary number of individuals in the list under the key `data`. This wild card is going to be set in the `source` field of the mapping. By looking into the `suffix` field, we can see that the suffix of the individual is going to be the name of the person, which is stored under the key `name`.
+We are setting `suffix_from_location` to `True` in order to use the location of the individual as suffix. Otherwise simply the provided string with the value `"name"` will be used as suffix.
+
+Once the `source` field is set with the according wildcard, we are assuming that the jsonpath specified there returns a list (or an iterable) of objects (here in our data a list of dictionaries with the keys `name`, `age` and `lab_no`). The `suffix` and `object_location` fields will then be used as a relative path in order to resolve the values from this list of objects. If the `source` is not set, the `object_location` and `suffix` will be treated as absolute paths.
+
+
+```{warning}
+Once you use the `custom_relations` field, the `value_location`, `time_series_start`, and `unit_location` fields will be ignored.
+```
 
 ### Additional triples
 
@@ -60,12 +92,12 @@ Since we want to connect the persons in the graph with its measurement, we need 
 
 ```
 @prefix : <http://abox-namespace-placeholder.org/> .
-@prefix chameo: <https://w3id.org/emmo/domain/characterisation-methodology/chameo#> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
 
-:CSM1 chameo:hasOperator :Operator1 .
+:John foaf:knows :Jane .
 ```
 
-Is is important to note here that we are using the suffixes `CSM1` and `Operator1` for the individuals of the operator and the measurement. Both of these suffixes need to match with the ones from the mapping above.
+Is is important to note here that we are using the suffixes `John` and `Jane` for the individuals which are going to be parsed from the `name` key of the dictionary.
 
 ### The configuration arguments
 
@@ -90,25 +122,50 @@ Please apply the mapping, addtional triples and the parser arguments to the pipe
 from data2rdf import Data2RDF, Parser
 
 data = {
-    "data": {
-      "name": "Jane Doe",
-      "measurement": "Continuous Stiffness Measurement"
-    }
+    "data": [
+        {
+            "name": "Jane",
+            "age": 28,
+            "lab_no": 123,
+        },
+        {
+            "name": "John",
+            "age": 32,
+            "lab_no": 345,
+        },
+    ]
 }
 
 mapping = [
-  {
-    "value_location": "data.name",
-    "value_relation": "http://xmlns.com/foaf/0.1/name",
-    "iri": "https://w3id.org/emmo/domain/characterisation-methodology/chameo#Operator",
-    "suffix": "Operator1"
-  },
-  {
-    "value_location": "data.measurement",
-    "iri": "https://w3id.org/emmo/domain/domain-nanoindentation/nanoindentation#EMMO_5ca6e1c1-93e9-5e1a-881b-2c2bd38074b1 ",
-    "suffix": "CSM1"
-  }
+    {
+        "iri": "https://w3id.org/emmo/domain/characterisation-methodology/chameo#Operator",
+        "suffix": "name",
+        "source": "data[*]",
+        "suffix_from_location": True,
+        "custom_relations": [
+            {
+                "object_location": "name",
+                "relation": "http://xmlns.com/foaf/0.1/name",
+            },
+            {
+                "object_location": "age",
+                "relation": "http://xmlns.com/foaf/0.1/age",
+            },
+            {
+                "object_location": "lab_no",
+                "relation": "https://w3id.org/steel/ProcessOntology/hasLaboratory",
+            },
+        ],
+    }
 ]
+
+additional_triples = """
+@prefix : <http://abox-namespace-placeholder.org/> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+
+:John foaf:knows :Jane .
+"""
+
 
 config = {
     "base_iri": "https://w3id.org/emmo/domain/domain-nanoindentation/nanoindentation",
@@ -121,7 +178,8 @@ data2rdf = Data2RDF(
     raw_data = data,
     mapping = mapping,
     parser = Parser.json,
-    config = config
+    config = config,
+    additional_triples = additional_triples
 )
 
 ```
@@ -133,15 +191,21 @@ When the pipeline run is succeded, you see the following output by running `prin
 
 ```
 @prefix foaf: <http://xmlns.com/foaf/0.1/> .
-@prefix ns1: <https://w3id.org/emmo/domain/characterisation-methodology/chameo#> .
-@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix ns1: <https://w3id.org/steel/ProcessOntology/> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix chameo: <https://w3id.org/emmo/domain/characterisation-methodology/chameo#> .
+@prefix nanoindentation: <https://w3id.org/emmo/domain/domain-nanoindentation/nanoindentation#> .
 
-<https://w3id.org/emmo/domain/domain-nanoindentation/nanoindentation#CSM1> a <https://w3id.org/emmo/domain/domain-nanoindentation/nanoindentation#EMMO_5ca6e1c1-93e9-5e1a-881b-2c2bd38074b1> ;
-    rdfs:label "Continuous Stiffness Measurement" ;
-    ns1:hasOperator <https://w3id.org/emmo/domain/domain-nanoindentation/nanoindentation#Operator1> .
+nanoindentation:John a chameo:Operator ;
+    foaf:age 32 ;
+    foaf:knows nanoindentation:Jane ;
+    foaf:name "John"^^xsd:string ;
+    ns1:hasLaboratory 345 .
 
-<https://w3id.org/emmo/domain/domain-nanoindentation/nanoindentation#Operator1> a ns1:Operator ;
-    foaf:name "Jane Doe" .
+nanoindentation:Jane a chameo:Operator ;
+    foaf:age 28 ;
+    foaf:name "Jane"^^xsd:string ;
+    ns1:hasLaboratory 123 .
 
 ```
 

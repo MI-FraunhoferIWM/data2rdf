@@ -139,7 +139,7 @@ fileid:AbsoluteCrossheadTravel a <https://w3id.org/steel/ProcessOntology/Absolut
     qudt:hasUnit "http://qudt.org/vocab/unit/MilliM"^^xsd:anyURI .
 
 fileid:DisplacementTransducer a <https://w3id.org/steel/ProcessOntology/DisplacementTransducer> ;
-    rdfs:label "Wegaufnehmer_1" .
+    rdfs:label "Wegaufnehmer_1"^^xsd:string .
 
 fileid:Elongation a <https://w3id.org/steel/ProcessOntology/Elongation> ;
     qudt:hasUnit "http://qudt.org/vocab/unit/MilliM"^^xsd:anyURI .
@@ -148,14 +148,14 @@ fileid:Extension a <https://w3id.org/steel/ProcessOntology/Extension> ;
     qudt:hasUnit "http://qudt.org/vocab/unit/MilliM"^^xsd:anyURI .
 
 fileid:ForceMeasuringDevice a <https://w3id.org/steel/ProcessOntology/ForceMeasuringDevice> ;
-    rdfs:label "Kraftaufnehmer_1" .
+    rdfs:label "Kraftaufnehmer_1"^^xsd:string .
 
 fileid:MachineData a <https://w3id.org/steel/ProcessOntology/MachineData> ;
-    rdfs:label "maschine_1" .
+    rdfs:label "maschine_1"^^xsd:string .
 
 fileid:Material a <https://w3id.org/steel/ProcessOntology/Material>,
         <https://w3id.org/steel/ProcessOntology/Werkstoff_1> ;
-    rdfs:label "Werkstoff_1" .
+    rdfs:label "Werkstoff_1"^^xsd:string .
 
 fileid:OriginalGaugeLength a <https://w3id.org/steel/ProcessOntology/OriginalGaugeLength> ;
     qudt:hasUnit "http://qudt.org/vocab/unit/MilliM"^^xsd:anyURI ;
@@ -170,23 +170,23 @@ fileid:Preload a <https://w3id.org/steel/ProcessOntology/Preload> ;
     qudt:value "2.0"^^xsd:float .
 
 fileid:ProjectName a <https://w3id.org/steel/ProcessOntology/ProjectName> ;
-    rdfs:label "proj_name_1" .
+    rdfs:label "proj_name_1"^^xsd:string .
 
 fileid:ProjectNumber a <https://w3id.org/steel/ProcessOntology/ProjectNumber> ;
-    rdfs:label "123456" .
+    rdfs:label 123456 .
 
 fileid:Remark a <https://w3id.org/steel/ProcessOntology/Remark> ;
-    rdfs:label "" .
+    rdfs:label ""^^xsd:string .
 
 fileid:SampleIdentifier-2 a <https://w3id.org/steel/ProcessOntology/SampleIdentifier-2> ;
-    rdfs:label "Probentyp_2" .
+    rdfs:label "Probentyp_2"^^xsd:string .
 
 fileid:SpecimenThickness a <https://w3id.org/steel/ProcessOntology/SpecimenThickness> ;
     qudt:hasUnit "http://qudt.org/vocab/unit/MilliM"^^xsd:anyURI ;
     qudt:value "1.55"^^xsd:float .
 
 fileid:SpecimenType a <https://w3id.org/steel/ProcessOntology/SpecimenType> ;
-    rdfs:label "Probentyp_1" .
+    rdfs:label "Probentyp_1"^^xsd:string .
 
 fileid:SpecimenWidth a <https://w3id.org/steel/ProcessOntology/SpecimenWidth> ;
     qudt:hasUnit "http://qudt.org/vocab/unit/MilliM"^^xsd:anyURI ;
@@ -200,23 +200,23 @@ fileid:Temperature a <https://w3id.org/steel/ProcessOntology/Temperature> ;
     qudt:value "22.0"^^xsd:float .
 
 fileid:TestStandard a <https://w3id.org/steel/ProcessOntology/TestStandard> ;
-    rdfs:label "ISO-XX" .
+    rdfs:label "ISO-XX"^^xsd:string .
 
 fileid:TestTime a <https://w3id.org/steel/ProcessOntology/TestTime> ;
     qudt:hasUnit "http://qudt.org/vocab/unit/SEC"^^xsd:anyURI .
 
 fileid:Tester a <https://w3id.org/steel/ProcessOntology/Tester> ;
-    rdfs:label "abc" .
+    rdfs:label "abc"^^xsd:string .
 
 fileid:TestingFacility a <https://w3id.org/steel/ProcessOntology/TestingFacility> ;
-    rdfs:label "institute_1" .
+    rdfs:label "institute_1"^^xsd:string .
 
 fileid:TestingRate a <https://w3id.org/steel/ProcessOntology/TestingRate> ;
     qudt:hasUnit "http://qudt.org/vocab/unit/MilliM-PER-SEC"^^xsd:anyURI ;
     qudt:value "0.1"^^xsd:float .
 
 fileid:TimeStamp a <https://w3id.org/steel/ProcessOntology/TimeStamp> ;
-    rdfs:label "44335.4" .
+    rdfs:label "44335.4"^^xsd:float .
 
 fileid:WidthChange a <https://w3id.org/steel/ProcessOntology/WidthChange> ;
     qudt:hasUnit "http://qudt.org/vocab/unit/MilliM"^^xsd:anyURI .

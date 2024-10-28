@@ -3,7 +3,7 @@
 import warnings
 from io import BytesIO
 from typing import Any, Dict, List, Optional, Union
-from urllib.parse import urljoin
+from urllib.parse import quote, urljoin
 
 import pandas as pd
 from openpyxl import load_workbook
@@ -291,8 +291,6 @@ class ExcelABoxParser(ABoxBaseParser):
             None: This function does not return anything.
         """
 
-        mapping = {model.key: model for model in mapping}
-
         workbook = load_workbook(filename=datafile, data_only=True)
         datafile.seek(0)
         macros = load_workbook(filename=datafile)
@@ -301,105 +299,143 @@ class ExcelABoxParser(ABoxBaseParser):
         self._general_metadata = []
         self._time_series_metadata = []
         self._time_series = {}
-        for key, datum in mapping.items():
+
+        for datum in mapping:
             worksheet = workbook[datum.worksheet]
 
-            if datum.value_location and datum.time_series_start:
-                raise RuntimeError(
-                    """Both, `value_location` and `time_series_start
-                       are set. Only one of them must be set."""
-                )
-
-            # find data for time series
-            if datum.time_series_start:
-                column_name = datum.time_series_start.rstrip("0123456789")
-                time_series_end = f"{column_name}{worksheet.max_row}"
-
-                column = worksheet[datum.time_series_start : time_series_end]
-                if column:
-                    self._time_series[datum.suffix] = [
-                        cell[0].value for cell in column
-                    ]
-                else:
-                    message = f"""Concept with key `{key}`
-                                  does not have a time series from `{datum.time_series_start}`
-                                  until `{time_series_end}` .
-                                  Concept will be omitted in graph.
-                                  """
+            if datum.suffix_from_location:
+                suffix = worksheet[datum.suffix].value
+                if not suffix:
+                    suffix = datum.suffix
+                    message = f"""Could not properly resolve suffix location `{datum.suffix}`
+                                  Will use the location itself as suffix.
+                                """
                     warnings.warn(message, MappingMissmatchWarning)
+            else:
+                suffix = datum.suffix
+            suffix = quote(suffix)
 
-            # check if there is a macro for the unit of the entity
-            if self.unit_from_macro and datum.value_location:
-                macro_worksheet = macros[datum.worksheet]
-                macro_value_cell = macro_worksheet[
-                    datum.value_location
-                ].number_format.split()
-                if len(macro_value_cell) != 1:
-                    macro_unit = macro_value_cell[self.unit_macro_location]
+            if not datum.custom_relations:
+                if datum.value_location and datum.time_series_start:
+                    raise RuntimeError(
+                        """Both, `value_location` and `time_series_start
+                        are set. Only one of them must be set."""
+                    )
+
+                # find data for time series
+                if datum.time_series_start:
+                    column_name = datum.time_series_start.rstrip("0123456789")
+                    time_series_end = f"{column_name}{worksheet.max_row}"
+
+                    column = worksheet[
+                        datum.time_series_start : time_series_end
+                    ]
+                    if column:
+                        self._time_series[suffix] = [
+                            cell[0].value for cell in column
+                        ]
+                    else:
+                        message = f"""Concept with key `{datum.key}`
+                                    does not have a time series from `{datum.time_series_start}`
+                                    until `{time_series_end}` .
+                                    Concept will be omitted in graph.
+                                    """
+                        warnings.warn(message, MappingMissmatchWarning)
+
+                # check if there is a macro for the unit of the entity
+                if self.unit_from_macro and datum.value_location:
+                    macro_worksheet = macros[datum.worksheet]
+                    macro_value_cell = macro_worksheet[
+                        datum.value_location
+                    ].number_format.split()
+                    if len(macro_value_cell) != 1:
+                        macro_unit = macro_value_cell[self.unit_macro_location]
+                    else:
+                        macro_unit = None
                 else:
                     macro_unit = None
+
+                # check if there is a unit somewhere in the sheet
+                if datum.unit_location:
+                    unit_location = worksheet[datum.unit_location].value
+                    if not unit_location:
+                        message = f"""Concept with key `{datum.key}`
+                                    does not have a unit at location `{datum.unit_location}`.
+                                    This mapping for the unit will be omitted in graph.
+                                    """
+                        warnings.warn(message, MappingMissmatchWarning)
+                else:
+                    unit_location = None
+
+                # decide which unit to take
+                unit = datum.unit or unit_location or macro_unit
+                if unit:
+                    if not isinstance(unit, str):
+                        raise TypeError(
+                            f"""Unit `{unit}` for key `{datum.key}` is not a string.
+                            Is it a bad mapping?"""
+                        )
+                    unit = _strip_unit(unit, self.config.remove_from_unit)
+
+                # make model
+                model_data = {
+                    "key": datum.key,
+                    "unit": unit,
+                    "iri": datum.iri,
+                    "suffix": suffix,
+                    "annotation": datum.annotation,
+                    "config": self.config,
+                }
+
+                if datum.value_location and not datum.time_series_start:
+                    value = worksheet[datum.value_location].value
+                    if model_data.get("unit") and value:
+                        model_data["value"] = value
+                    elif not model_data.get("unit") and value:
+                        model_data["value"] = str(value)
+                    else:
+                        message = f"""Concept with key `{datum.key}`
+                                    does not have a value at location `{datum.value_location}`.
+                                    Concept will be omitted in graph.
+                                    """
+                        warnings.warn(message, MappingMissmatchWarning)
+
+                if model_data.get("value") or suffix in self.time_series:
+                    if datum.value_relation:
+                        model_data["value_relation"] = datum.value_relation
+                    if model_data.get("unit"):
+                        if datum.unit_relation:
+                            model_data["unit_relation"] = datum.unit_relation
+                        model = QuantityGraph(**model_data)
+                    else:
+                        model = PropertyGraph(**model_data)
+
+                    if model_data.get("value"):
+                        self._general_metadata.append(model)
+                    else:
+                        self._time_series_metadata.append(model)
+
             else:
-                macro_unit = None
+                for relation in datum.custom_relations:
+                    value = worksheet[relation.object_location].value
 
-            # check if there is a unit somewhere in the sheet
-            if datum.unit_location:
-                unit_location = worksheet[datum.unit_location].value
-                if not unit_location:
-                    message = f"""Concept with key `{key}`
-                                  does not have a unit at location `{datum.unit_location}`.
-                                  This mapping for the unit will be omitted in graph.
-                                  """
-                    warnings.warn(message, MappingMissmatchWarning)
-            else:
-                unit_location = None
+                    if not value:
+                        message = f"""Concept with for iri `{datum.iri}`
+                                        does not have a value at location `{relation.object_location}`.
+                                        Concept will be omitted in graph.
+                                        """
+                        warnings.warn(message, MappingMissmatchWarning)
 
-            # decide which unit to take
-            unit = datum.unit or unit_location or macro_unit
-            if unit:
-                if not isinstance(unit, str):
-                    raise TypeError(
-                        f"""Unit `{unit}` for key `{datum.key}` is not a string.
-                          Is it a bad mapping?"""
-                    )
-                unit = _strip_unit(unit, self.config.remove_from_unit)
-
-            # make model
-            model_data = {
-                "key": datum.key,
-                "unit": unit,
-                "iri": datum.iri,
-                "suffix": datum.suffix,
-                "annotation": datum.annotation,
-                "config": self.config,
-            }
-
-            if datum.value_location and not datum.time_series_start:
-                value = worksheet[datum.value_location].value
-                if model_data.get("unit") and value:
-                    model_data["value"] = value
-                elif not model_data.get("unit") and value:
-                    model_data["value"] = str(value)
-                else:
-                    message = f"""Concept with key `{key}`
-                                  does not have a value at location `{datum.value_location}`.
-                                  Concept will be omitted in graph.
-                                  """
-                    warnings.warn(message, MappingMissmatchWarning)
-
-            if model_data.get("value") or datum.suffix in self.time_series:
-                if datum.value_relation:
-                    model_data["value_relation"] = datum.value_relation
-                if model_data.get("unit"):
-                    if datum.unit_relation:
-                        model_data["unit_relation"] = datum.unit_relation
-                    model = QuantityGraph(**model_data)
-                else:
-                    model = PropertyGraph(**model_data)
-
-                if model_data.get("value"):
-                    self._general_metadata.append(model)
-                else:
-                    self._time_series_metadata.append(model)
+                    if value:
+                        model = PropertyGraph(
+                            value_relation=relation.relation,
+                            value=value,
+                            iri=datum.iri,
+                            suffix=suffix,
+                            datatype=relation.object_data_type,
+                            config=self.config,
+                        )
+                        self._general_metadata.append(model)
 
         # set time series as pd dataframe
         self._time_series = pd.DataFrame.from_dict(

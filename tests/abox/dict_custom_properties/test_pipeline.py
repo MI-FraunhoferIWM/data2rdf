@@ -43,13 +43,14 @@ def test_pipeline_dict_custom_properties() -> None:
     @prefix ns1: <https://w3id.org/emmo/domain/characterisation-methodology/chameo#> .
     @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
     @prefix ns2: <https://w3id.org/emmo/domain/domain-nanoindentation/nanoindentation#> .
+    @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
     ns2:CSM1 a ns2:EMMO_5ca6e1c1-93e9-5e1a-881b-2c2bd38074b1 ;
-             rdfs:label "Continuous Stiffness Measurement" ;
+             rdfs:label "Continuous Stiffness Measurement"^^xsd:string ;
              ns1:hasOperator ns2:Operator1 .
 
     ns2:Operator1 a ns1:Operator ;
-                  foaf:name "Jane Doe" .
+                  foaf:name "Jane Doe"^^xsd:string .
     """
 
     pipeline = Data2RDF(

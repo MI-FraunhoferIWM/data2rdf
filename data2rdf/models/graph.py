@@ -12,10 +12,9 @@ from pydantic import (
     model_validator,
 )
 
+from data2rdf.models.base import BasicGraphModel, BasicSuffixModel
 from data2rdf.qudt.utils import _get_query_match
 from data2rdf.utils import is_bool, is_float, is_integer, is_uri, make_prefix
-
-from .base import BasicGraphModel, BasicSuffixModel
 
 
 class ValueRelationMapping(BaseModel):
@@ -56,12 +55,12 @@ class ClassTypeGraph(BasicGraphModel):
     @classmethod
     def value_json(cls, value) -> "Dict[str, Any]":
         """Return json with value definition"""
-        if is_float(value):
-            dtype = "xsd:float"
-            value = float(value)
-        elif is_integer(value):
+        if is_integer(value):
             dtype = "xsd:integer"
             value = int(value)
+        elif is_float(value):
+            dtype = "xsd:float"
+            value = float(value)
         elif is_bool(value):
             dtype = "xsd:bool"
             value = bool(value)
@@ -217,13 +216,13 @@ class QuantityGraph(BasicGraphModel, BasicSuffixModel):
 
 
 class PropertyGraph(BasicGraphModel, BasicSuffixModel):
-    """Mapping for a non-quantitative property. E.g. the
+    """Mapping for an individual with arbitrary property. E.g. the
     name of a tester or a testing facility. The value must not have a
     discrete value but can also be a reference to a column in a table or
     time series."""
 
-    value: Optional[str] = Field(
-        None, description="Non-quantitative Value of the property"
+    value: Optional[Union[str, int, float, bool, AnyUrl]] = Field(
+        None, description="Value of the property"
     )
     annotation: Optional[Union[str, AnyUrl]] = Field(
         None, description="Base IRI with which the value shall be concatenated"
@@ -232,6 +231,9 @@ class PropertyGraph(BasicGraphModel, BasicSuffixModel):
         "rdfs:label",
         description="""Data or annotation property
         for mapping the data value to the individual.""",
+    )
+    datatype: Optional[str] = Field(
+        None, description="XSD Datatype of the value"
     )
 
     @field_validator("annotation")
@@ -270,9 +272,45 @@ class PropertyGraph(BasicGraphModel, BasicSuffixModel):
         }
 
     @property
-    def value_json(cls) -> "Optional[Dict[str, str]]":
-        if not isinstance(cls.value, type(None)):
-            response = {cls.value_relation: cls.value}
+    def value_json(self) -> "Optional[Dict[str, str]]":
+        if not isinstance(self.value, type(None)):
+            if not self.datatype:
+                if is_integer(self.value):
+                    dtype = "xsd:integer"
+                    value = int(self.value)
+                elif is_float(self.value):
+                    dtype = "xsd:float"
+                    value = float(self.value)
+                elif is_bool(self.value):
+                    dtype = "xsd:bool"
+                    value = bool(self.value)
+                elif is_uri(self.value):
+                    dtype = "xsd:anyURI"
+                    value = str(self.value)
+                else:
+                    value = str(self.value)
+                    dtype = "xsd:string"
+            else:
+                dtype = f"xsd:{self.datatype}"
+                if dtype == "xsd:anyURI":
+                    value = str(self.value)
+                elif dtype == "xsd:bool":
+                    value = bool(self.value)
+                elif dtype == "xsd:integer":
+                    value = int(self.value)
+                elif dtype == "xsd:float":
+                    value = float(self.value)
+                elif dtype == "xsd:string":
+                    value = str(self.value)
+                else:
+                    raise ValueError(
+                        f"""Datatype not recognized for concept with iri
+                        `{self.iri}` and value:
+                        `{self.value}`"""
+                    )
+
+            response = {self.value_relation: {"@type": dtype, "@value": value}}
+
         else:
             response = {}
         return response

@@ -1,7 +1,7 @@
 # Excel file with metadata and time series
 
 ```{note}
-Please follow [this link here](https://github.com/MI-FraunhoferIWM/data2rdf/blob/b29be66cb57beef8bd8f84e2cd588ccb8e17559c/examples/2_excel.ipynb) in order to access the related jupyter notebook.
+Please follow [this link here](https://github.com/MI-FraunhoferIWM/data2rdf/blob/main/examples/2_excel.ipynb) in order to access the related jupyter notebook.
 ```
 
 

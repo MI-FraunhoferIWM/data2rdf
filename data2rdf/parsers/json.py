@@ -4,19 +4,32 @@ import json
 import os
 import warnings
 from typing import Any, Dict, List, Union
-from urllib.parse import urljoin
+from urllib.parse import quote, urljoin
 
 import pandas as pd
 from jsonpath_ng import parse
 from pydantic import Field
 
 from data2rdf.models.graph import PropertyGraph, QuantityGraph
-from data2rdf.models.mapping import ABoxJsonMapping, TBoxBaseMapping
 from data2rdf.utils import make_prefix
 from data2rdf.warnings import MappingMissmatchWarning
 
-from .base import ABoxBaseParser, BaseFileParser, TBoxBaseParser
-from .utils import _make_tbox_classes, _make_tbox_json_ld, _strip_unit
+from data2rdf.parsers.base import (  # isort:skip
+    ABoxBaseParser,
+    BaseFileParser,
+    TBoxBaseParser,
+)
+from data2rdf.parsers.utils import (  # isort:skip
+    _make_tbox_classes,
+    _make_tbox_json_ld,
+    _strip_unit,
+)
+
+from data2rdf.models.mapping import (  # isort:skip
+    ABoxBaseMapping,
+    CustomRelation,
+    TBoxBaseMapping,
+)
 
 
 def _load_data_file(
@@ -94,7 +107,7 @@ class JsonABoxParser(ABoxBaseParser):
     """Parser for JSON in ABox mode"""
 
     # OVERRIDE
-    mapping: Union[str, List[ABoxJsonMapping]] = Field(
+    mapping: Union[str, List[ABoxBaseMapping]] = Field(
         ...,
         description="""File path to the mapping file to be parsed or
         a list with the mapping.""",
@@ -102,9 +115,9 @@ class JsonABoxParser(ABoxBaseParser):
 
     # OVERRIDE
     @property
-    def mapping_model(cls) -> ABoxJsonMapping:
+    def mapping_model(cls) -> ABoxBaseMapping:
         "ABox mapping model"
-        return ABoxJsonMapping
+        return ABoxBaseMapping
 
     # OVERRIDE
     @property
@@ -243,7 +256,7 @@ class JsonABoxParser(ABoxBaseParser):
         cls,
         self: "JsonABoxParser",
         datafile: "Dict[str, Any]",
-        mapping: "List[ABoxJsonMapping]",
+        mapping: "List[ABoxBaseMapping]",
     ) -> None:
         """
         Class method for parsing metadata, time series metadata,
@@ -263,98 +276,122 @@ class JsonABoxParser(ABoxBaseParser):
         self._time_series = {}
         numericals = (int, str, float, bool)
         for datum in mapping:
-            value_expression = parse(datum.value_location)
+            subdataset = self._get_optional_subdataset(datafile, datum)
 
-            results = [
-                match.value for match in value_expression.find(datafile)
-            ]
+            if not datum.custom_relations:
+                suffix = self._make_suffix_from_location(datum, subdataset)
+                value_expression = parse(datum.value_location)
 
-            if len(results) == 0:
-                value = None
-                message = f"""Concept with key `{datum.key or datum.value_location}`
-                                does not have a value at location `{datum.value_location}`.
-                                Concept will be omitted in graph.
-                                """
-                warnings.warn(message, MappingMissmatchWarning)
-            elif len(results) == 1:
-                value = results.pop()
-            else:
-                value = results
+                results = [
+                    match.value for match in value_expression.find(subdataset)
+                ]
 
-            if value:
-                # check if there is a unit somewhere in the sheet
-                if datum.unit_location:
-                    unit_expression = parse(datum.unit_location)
+                if len(results) == 0:
+                    value = None
+                    message = f"""Concept with key `{datum.key or datum.value_location}`
+                                    does not have a value at location `{datum.value_location}`.
+                                    Concept will be omitted in graph.
+                                    """
+                    warnings.warn(message, MappingMissmatchWarning)
+                elif len(results) == 1:
+                    value = results.pop()
+                else:
+                    value = results
 
-                    results = [
-                        match.value for match in unit_expression.find(datafile)
-                    ]
+                if value:
+                    # check if there is a unit somewhere in the sheet
+                    if datum.unit_location:
+                        unit_expression = parse(datum.unit_location)
 
-                    if len(results) == 0:
-                        unit = None
-                        message = f"""Concept with key `{datum.key or datum.value_location}`
-                                        does not have a unit at location `{datum.unit_location}`.
+                        results = [
+                            match.value
+                            for match in unit_expression.find(subdataset)
+                        ]
+
+                        if len(results) == 0:
+                            unit = None
+                            message = f"""Concept with key `{datum.key or datum.value_location}`
+                                            does not have a unit at location `{datum.unit_location}`.
+                                            Concept will be omitted in graph."""
+                            warnings.warn(message, MappingMissmatchWarning)
+                        elif len(results) == 1:
+                            unit = results.pop()
+                        else:
+                            unit = None
+                            message = f"""Concept with key `{datum.key or datum.value_location}`
+                                        has multiple units at location `{datum.unit_location}`.
                                         Concept will be omitted in graph."""
-                        warnings.warn(message, MappingMissmatchWarning)
-                    elif len(results) == 1:
-                        unit = results.pop()
+                            warnings.warn(message, MappingMissmatchWarning)
+
                     else:
                         unit = None
-                        message = f"""Concept with key `{datum.key or datum.value_location}`
-                                    has multiple units at location `{datum.unit_location}`.
+
+                    # decide which unit to take
+                    unit = datum.unit or unit
+                    if unit:
+                        if not isinstance(unit, str):
+                            raise TypeError(
+                                f"""Unit `{unit}` for key `{datum.key}` is not a string.
+                                Is it a bad mapping?"""
+                            )
+                        unit = _strip_unit(unit, self.config.remove_from_unit)
+
+                    # make model
+                    model_data = {
+                        "key": datum.key or datum.value_location,
+                        "iri": datum.iri,
+                        "suffix": suffix,
+                        "annotation": datum.annotation,
+                        "config": self.config,
+                    }
+                    if datum.value_relation:
+                        model_data["value_relation"] = datum.value_relation
+
+                    if not isinstance(value, numericals) and unit:
+                        model_data["unit"] = unit
+                        if datum.unit_relation:
+                            model_data["unit_relation"] = datum.unit_relation
+                        model = QuantityGraph(**model_data)
+
+                        self._time_series[suffix] = value
+                        self._time_series_metadata.append(model)
+                    if not isinstance(value, numericals) and not unit:
+                        message = f"""Series with with key `{datum.key or datum.value_locationy}`
+                                    must be a quantity does not have a unit.
                                     Concept will be omitted in graph."""
                         warnings.warn(message, MappingMissmatchWarning)
+                    elif isinstance(value, numericals) and unit:
+                        model_data["value"] = value
+                        model_data["unit"] = unit
+                        if datum.unit_relation:
+                            model_data["unit_relation"] = datum.unit_relation
+                        model = QuantityGraph(**model_data)
 
-                else:
-                    unit = None
+                        self._general_metadata.append(model)
+                    elif isinstance(value, numericals) and not unit:
+                        model_data["value"] = str(value)
+                        model = PropertyGraph(**model_data)
 
-                # decide which unit to take
-                unit = datum.unit or unit
-                if unit:
-                    if not isinstance(unit, str):
-                        raise TypeError(
-                            f"""Unit `{unit}` for key `{datum.key}` is not a string.
-                            Is it a bad mapping?"""
+                        self._general_metadata.append(model)
+
+            else:
+                for relation in datum.custom_relations:
+                    if datum.source:
+                        for sub in subdataset:
+                            suffix = self._make_suffix_from_location(
+                                datum, sub
+                            )
+                            self._make_custom_relation(
+                                relation, sub, datum, suffix
+                            )
+                    else:
+                        suffix = self._make_suffix_from_location(
+                            datum, subdataset
                         )
-                    unit = _strip_unit(unit, self.config.remove_from_unit)
+                        self._make_custom_relation(
+                            relation, subdataset, datum, suffix
+                        )
 
-                # make model
-                model_data = {
-                    "key": datum.key or datum.value_location,
-                    "iri": datum.iri,
-                    "suffix": datum.suffix,
-                    "annotation": datum.annotation,
-                    "config": self.config,
-                }
-                if datum.value_relation:
-                    model_data["value_relation"] = datum.value_relation
-
-                if not isinstance(value, numericals) and unit:
-                    model_data["unit"] = unit
-                    if datum.unit_relation:
-                        model_data["unit_relation"] = datum.unit_relation
-                    model = QuantityGraph(**model_data)
-
-                    self._time_series[datum.suffix] = value
-                    self._time_series_metadata.append(model)
-                if not isinstance(value, numericals) and not unit:
-                    message = f"""Series with with key `{datum.key or datum.value_locationy}`
-                                must be a quantity does not have a unit.
-                                Concept will be omitted in graph."""
-                    warnings.warn(message, MappingMissmatchWarning)
-                elif isinstance(value, numericals) and unit:
-                    model_data["value"] = value
-                    model_data["unit"] = unit
-                    if datum.unit_relation:
-                        model_data["unit_relation"] = datum.unit_relation
-                    model = QuantityGraph(**model_data)
-
-                    self._general_metadata.append(model)
-                elif isinstance(value, numericals) and not unit:
-                    model_data["value"] = str(value)
-                    model = PropertyGraph(**model_data)
-
-                    self._general_metadata.append(model)
         # set time series as pd dataframe
         self._time_series = pd.DataFrame.from_dict(
             self._time_series, orient="index"
@@ -362,6 +399,81 @@ class JsonABoxParser(ABoxBaseParser):
         # check if drop na:
         if self.dropna:
             self._time_series.dropna(how="all", inplace=True)
+
+    def _get_optional_subdataset(
+        self, datafile: Any, datum: ABoxBaseMapping
+    ) -> Any:
+        if datum.custom_relations and datum.source:
+            value_expression = parse(datum.source)
+            results = [
+                match.value for match in value_expression.find(datafile)
+            ]
+            if len(results) == 0:
+                message = f"""Could not properly resolve location `{datum.source}` for curstom relations."""
+                warnings.warn(message, MappingMissmatchWarning)
+            else:
+                subdataset = results
+        else:
+            subdataset = datafile
+        return subdataset
+
+    def _make_custom_relation(
+        self,
+        relation: CustomRelation,
+        subdataset: Any,
+        datum: ABoxBaseMapping,
+        suffix: str,
+    ) -> None:
+        value_expression = parse(relation.object_location)
+
+        results = [match.value for match in value_expression.find(subdataset)]
+
+        if len(results) == 0:
+            value = None
+            message = f"""Concept with for iri `{datum.iri}`
+                            does not have a value at location `{relation.object_location}`.
+                            Concept will be omitted in graph.
+                            """
+            warnings.warn(message, MappingMissmatchWarning)
+        elif len(results) == 1:
+            value = results.pop()
+        else:
+            value = results
+
+        if value:
+            model = PropertyGraph(
+                value_relation=relation.relation,
+                value=value,
+                iri=datum.iri,
+                suffix=suffix,
+                datatype=relation.object_data_type,
+                config=self.config,
+            )
+            self._general_metadata.append(model)
+
+    def _make_suffix_from_location(
+        self, datum: ABoxBaseMapping, subdataset: Any
+    ) -> str:
+        if datum.suffix_from_location:
+            value_expression = parse(datum.suffix)
+            results = [
+                match.value for match in value_expression.find(subdataset)
+            ]
+
+            if len(results) == 0 or len(results) > 1:
+                suffix = datum.suffix
+                message = f"""Could not properly resolve suffix location `{datum.suffix}`
+                                Will use the location itself as suffix.
+                            """
+                warnings.warn(message, MappingMissmatchWarning)
+            else:
+                suffix = results.pop()
+        else:
+            suffix = datum.suffix
+
+        suffix = quote(suffix)
+
+        return suffix
 
 
 class JsonParser(BaseFileParser):

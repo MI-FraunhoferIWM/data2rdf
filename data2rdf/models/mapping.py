@@ -1,9 +1,9 @@
 """Mapping models for data2rdf"""
 
 from enum import Enum
-from typing import Optional, Union
+from typing import List, Optional, Union
 
-from pydantic import AnyUrl, Field, field_validator
+from pydantic import AnyUrl, BaseModel, Field, field_validator, model_validator
 
 from .base import BasicConceptMapping, BasicSuffixModel
 
@@ -36,6 +36,23 @@ class TBoxBaseMapping(BasicConceptMapping):
     )
 
 
+class CustomRelation(BaseModel):
+    """Custom relation model"""
+
+    relation: Union[str, AnyUrl] = Field(
+        ...,
+        description="""Object/Data/Annotation property for the value
+        resolving from `key` of this model""",
+    )
+    object_location: Optional[str] = Field(
+        ...,
+        description="Cell number or Jsonpath to the value of the quantity or property",
+    )
+    object_data_type: Optional[str] = Field(
+        None, description="XSD Data type of the object"
+    )
+
+
 class ABoxBaseMapping(BasicConceptMapping, BasicSuffixModel):
     """Base class for mapping during A Box modelling"""
 
@@ -44,6 +61,28 @@ class ABoxBaseMapping(BasicConceptMapping, BasicSuffixModel):
     )
     annotation: Optional[Union[str, AnyUrl]] = Field(
         None, description="Base IRI with which the value shall be concatenated"
+    )
+    custom_relations: Optional[List[CustomRelation]] = Field(
+        None,
+        description="""In case if `value_location`, `unit_location` ,
+        `value_relation` and `unit_relation` is not used, a user can also
+        specify the properties of the individual produced in this custom relation
+        fields.""",
+    )
+
+    source: Optional[str] = Field(
+        None,
+        description="""In case if the json parser is used and the `custom_relations` are set:
+                                  Source and iterate over mupltiple objects from a given jsonpath, e.g. "$.data[*]".
+                                  The mapping will be applied to all the iterated objects.""",
+    )
+
+    value_location: Optional[str] = Field(
+        None,
+        description="Cell number or Jsonpath to the value of the quantity or property",
+    )
+    unit_location: Optional[str] = Field(
+        None, description="cell number or Jsonpath to the unit of the property"
     )
     value_relation: Optional[Union[str, AnyUrl]] = Field(
         None,
@@ -57,6 +96,10 @@ class ABoxBaseMapping(BasicConceptMapping, BasicSuffixModel):
          of the unit to the individual, in case the concept
          is a quantity and has a unit""",
     )
+    suffix_from_location: bool = Field(
+        False,
+        description="When enabled, the suffix will be taken from the location, e.g. a cell number",
+    )
 
     @field_validator("annotation", mode="after")
     @classmethod
@@ -68,27 +111,25 @@ class ABoxBaseMapping(BasicConceptMapping, BasicSuffixModel):
         ):
             return value
 
-
-class ABoxJsonMapping(ABoxBaseMapping):
-    """A special model for mapping from json files to semantic concepts in the ABox"""
-
-    value_location: str = Field(
-        ..., description="Json path for the value of the quantity or property"
-    )
-    unit_location: Optional[str] = Field(
-        None, description="Json path to the unit of the property"
-    )
+    @model_validator(mode="after")
+    @classmethod
+    def validate_model(cls, self: "ABoxBaseMapping") -> "ABoxBaseMapping":
+        """Validate model"""
+        if (
+            self.value_location
+            or self.unit_location
+            or self.value_relation
+            or self.unit_relation
+        ) and self.custom_relations:
+            raise ValueError(
+                "value_location, unit_location, value_relation and unit_relation are mutually exclusive with custom_relations"
+            )
+        return self
 
 
 class ABoxExcelMapping(ABoxBaseMapping):
     """A special model for mapping from excel files to semantic concepts in the ABox"""
 
-    value_location: Optional[str] = Field(
-        None, description="Cell location for the value of the quantity"
-    )
-    unit_location: Optional[str] = Field(
-        None, description="Cell location for the unit of the quantity"
-    )
     time_series_start: Optional[str] = Field(
         None,
         description="Cell location for the start of the time series quantity",

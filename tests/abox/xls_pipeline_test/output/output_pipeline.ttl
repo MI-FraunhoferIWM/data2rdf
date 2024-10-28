@@ -39,7 +39,7 @@ fileid:ExperimentPreparation a ns1:Activity ;
     ns1:wasInfluencedBy fileid:SamplePreparatation .
 
 fileid:MachineData a <https://w3id.org/steel/ProcessOntology/MachineData> ;
-    rdfs:label "M_1" .
+    rdfs:label "M_1"^^xsd:string .
 
 fileid:ParallelLength a ns1:Entity ;
     ns1:wasAttributedTo fileid:TensileTestSpecimen .
@@ -58,7 +58,7 @@ fileid:Project a ns1:Activity ;
 fileid:ProjectName a ns1:Entity .
 
 fileid:SampleIdentifier-2 a <https://w3id.org/steel/ProcessOntology/SampleIdentifier-2> ;
-    rdfs:label "123456" .
+    rdfs:label 123456 .
 
 fileid:SamplePreparatation a ns1:Activity ;
     ns1:generated fileid:ParallelLength,
@@ -186,7 +186,7 @@ fileid:Extension a ns1:Entity,
 fileid:Material a ns1:Agent,
         <https://w3id.org/steel/ProcessOntology/Material>,
         <https://w3id.org/steel/ProcessOntology/Werkstoff_1> ;
-    rdfs:label "Werkstoff_1" .
+    rdfs:label "Werkstoff_1"^^xsd:string .
 
 fileid:OriginalGaugeLength a ns1:Entity,
         <https://w3id.org/steel/ProcessOntology/OriginalGaugeLength> ;
@@ -196,7 +196,7 @@ fileid:OriginalGaugeLength a ns1:Entity,
 
 fileid:ProjectNumber a ns1:Entity,
         <https://w3id.org/steel/ProcessOntology/ProjectNumber> ;
-    rdfs:label "Projekt_1" .
+    rdfs:label "Projekt_1"^^xsd:string .
 
 fileid:SpecimenThickness a ns1:Entity,
         <https://w3id.org/steel/ProcessOntology/SpecimenThickness> ;
@@ -206,7 +206,7 @@ fileid:SpecimenThickness a ns1:Entity,
 
 fileid:SpecimenType a ns1:Entity,
         <https://w3id.org/steel/ProcessOntology/SpecimenType> ;
-    rdfs:label "Fz 10x20" ;
+    rdfs:label "Fz 10x20"^^xsd:string ;
     ns1:wasAttributedTo fileid:TensileTestSpecimen .
 
 fileid:SpecimenWidth a ns1:Entity,
@@ -227,7 +227,7 @@ fileid:TestingRate a ns1:Entity,
     ns1:wasAttributedTo fileid:TensileTestingMachine .
 
 fileid:TimeStamp a <https://w3id.org/steel/ProcessOntology/TimeStamp> ;
-    rdfs:label "2016-10-11 00:00:00" .
+    rdfs:label "2016-10-11 00:00:00"^^xsd:string .
 
 fileid:ForceMeasuringDevice a ns1:Agent,
         ns1:Entity ;
@@ -235,7 +235,7 @@ fileid:ForceMeasuringDevice a ns1:Agent,
 
 fileid:Tester a ns1:Agent,
         <https://w3id.org/steel/ProcessOntology/Tester> ;
-    rdfs:label "Fe" ;
+    rdfs:label "Fe"^^xsd:string ;
     ns1:actedOnBehalfOf fileid:TestingFacility ;
     ns1:atLocation fileid:TestingLab .
 

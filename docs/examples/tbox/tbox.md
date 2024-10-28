@@ -1,7 +1,7 @@
 # TBox generation from a Python dictionary
 
 ```{note}
-Please follow [this link here](https://github.com/MI-FraunhoferIWM/data2rdf/blob/b29be66cb57beef8bd8f84e2cd588ccb8e17559c/examples/7_tbox.ipynb) in order to access the related jupyter notebook.
+Please follow [this link here](https://github.com/MI-FraunhoferIWM/data2rdf/blob/main/examples/7_tbox.ipynb) in order to access the related jupyter notebook.
 ```
 
 ## General understanding
