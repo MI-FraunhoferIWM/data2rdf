@@ -29,6 +29,9 @@ class ValueRelationMapping(BaseModel):
         description="""Object/Data/Annotation property for the value
         resolving from `key` of this model""",
     )
+    datatype: Optional[str] = Field(
+        None, description="XSD Datatype of the value"
+    )
 
 
 class ClassTypeGraph(BasicGraphModel):
@@ -39,7 +42,7 @@ class ClassTypeGraph(BasicGraphModel):
         description="""Value of the suffix of the
         ontological class to be used""",
     )
-    rdfs_type: AnyUrl = Field(
+    rdfs_type: str = Field(
         "owl:Class", description="rdfs:type for this concept"
     )
     annotation_properties: Optional[List[ValueRelationMapping]] = Field(
@@ -80,16 +83,23 @@ class ClassTypeGraph(BasicGraphModel):
     @property
     def json_ld(self) -> "Dict[str, Any]":
         annotations = {
-            model.relation: self.value_json(model.value)
+            model.relation: (
+                {"@type": f"xsd:{model.datatype}", "@value": model.value}
+                if model.datatype
+                else self.value_json(model.value)
+            )
             for model in self.annotation_properties
         }
         datatypes = {
-            model.relation: self.value_json(model.value)
+            model.relation: (
+                {"@type": f"xsd:{model.datatype}", "@value": model.value}
+                if model.datatype
+                else self.value_json(model.value)
+            )
             for model in self.data_properties
         }
         objects = {
-            model.relation: str(model.value)
-            for model in self.object_properties
+            model.relation: model.value for model in self.object_properties
         }
         return {
             "@context": {

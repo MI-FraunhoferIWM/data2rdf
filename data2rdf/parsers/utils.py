@@ -1,6 +1,7 @@
 """Data2RDF parser utilities"""
 
 import json
+import warnings
 from typing import TYPE_CHECKING
 
 import numpy as np
@@ -113,23 +114,43 @@ def _make_tbox_classes(
                 value = row[key]
                 if isinstance(value, float) and np.isnan(value):
                     value = self.fillna
-                relation_mapping = {
-                    "value": value,
-                    "relation": model.relation,
-                }
-                if model.relation_type == RelationType.ANNOTATION_PROPERTY:
-                    annotations.append(relation_mapping)
-                if model.relation_type == RelationType.DATA_PROPERTY:
-                    datatypes.append(relation_mapping)
-                if model.relation_type == RelationType.OBJECT_PROPERTY:
-                    objects.append(relation_mapping)
+                if value:
+                    relation_mapping = {
+                        "value": value,
+                        "relation": model.relation,
+                        "datatype": model.datatype,
+                    }
+                    if model.relation_type == RelationType.ANNOTATION_PROPERTY:
+                        annotations.append(relation_mapping)
+                    if model.relation_type == RelationType.DATA_PROPERTY:
+                        datatypes.append(relation_mapping)
+                    if model.relation_type == RelationType.OBJECT_PROPERTY:
+                        objects.append(relation_mapping)
+                else:
+                    warnings.warn(
+                        f"Data for key `{key}` does not exist in row {n}.",
+                        MappingMissmatchWarning,
+                    )
             except KeyError:
-                raise MappingMissmatchWarning(
-                    f"Column with name `{key}` does not exist in provided worksheet."
+                warnings.warn(
+                    f"Data for key `{key}` does not exist in row {n}.",
+                    MappingMissmatchWarning,
                 )
 
+        if self.rdfs_type_location:
+            rdfs_type = row[self.rdfs_type_location]
+            if isinstance(rdfs_type, type(None)) or (
+                isinstance(rdfs_type, float) and np.isnan(rdfs_type)
+            ):
+                warnings.warn(
+                    f"Data for key `{self.rdfs_type_location}` does not exist in row {n}.",
+                    MappingMissmatchWarning,
+                )
+                rdfs_type = "owl:Class"
+        else:
+            rdfs_type = "owl:Class"
         subgraph = ClassTypeGraph(
-            rdfs_type=self.rdfs_type,
+            rdfs_type=rdfs_type,
             suffix=row[self.suffix_location],
             annotation_properties=annotations,
             object_properties=objects,

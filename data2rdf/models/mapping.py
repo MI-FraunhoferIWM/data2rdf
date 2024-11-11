@@ -35,6 +35,10 @@ class TBoxBaseMapping(BasicConceptMapping):
         ..., description="Type of the semantic relation used in the mappings"
     )
 
+    datatype: Optional[str] = Field(
+        None, description="XSD Datatype of the targed value"
+    )
+
 
 class CustomRelation(BaseModel):
     """Custom relation model"""

@@ -132,12 +132,14 @@ class TBoxBaseParser(AnyBoxBaseParser):
         where the suffix of the ontological class to be created.""",
     )
 
-    rdfs_type: AnyUrl = Field(
-        "owl:Class", description="rdfs:type for the concepts"
+    rdfs_type_location: Optional[str] = Field(
+        None,
+        description="""Key/column name/reference to location in the data file
+        where the rdfs:type for the concepts is defined.""",
     )
 
     version_info: Optional[str] = Field(
-        None, description="Version of the ontplpgy"
+        None, description="Version of the ontology"
     )
 
     ontology_iri: Optional[Union[str, AnyUrl]] = Field(
@@ -150,6 +152,10 @@ class TBoxBaseParser(AnyBoxBaseParser):
 
     authors: Optional[List[str]] = Field(
         None, description="Name of the authors contributing to the ontology."
+    )
+
+    fillna: Optional[Any] = Field(
+        "", description="Value to fill NaN values in the parsed dataframe."
     )
 
     _classes: Any = PrivateAttr()

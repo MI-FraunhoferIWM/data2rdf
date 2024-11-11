@@ -2,7 +2,7 @@
 
 import warnings
 from io import BytesIO
-from typing import Any, Dict, List, Optional, Union
+from typing import Any, Dict, List, Union
 from urllib.parse import quote, urljoin
 
 import pandas as pd
@@ -54,10 +54,6 @@ class ExcelTBoxParser(TBoxBaseParser):
         ...,
         description="""File path to the mapping file to be parsed or
         a list with the mapping.""",
-    )
-
-    fillna: Optional[Any] = Field(
-        "", description="Value to fill NaN values in the parsed dataframe."
     )
 
     # OVERRIDE
