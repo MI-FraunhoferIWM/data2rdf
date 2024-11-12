@@ -56,7 +56,7 @@ class ClassTypeGraph(BasicGraphModel):
     )
 
     @classmethod
-    def value_json(cls, value) -> "Dict[str, Any]":
+    def detect_datatype(cls, value) -> "Dict[str, Any]":
         """Return json with value definition"""
         if is_integer(value):
             dtype = "xsd:integer"
@@ -79,27 +79,47 @@ class ClassTypeGraph(BasicGraphModel):
 
         return {"@type": dtype, "@value": value}
 
+    def apply_datatype(self, model: ValueRelationMapping) -> "Dict[str, Any]":
+        if model.datatype == "integer":
+            value = int(model.value)
+        elif model.datatype == "float":
+            value = float(model.value)
+        elif model.datatype == "bool":
+            value = bool(model.value)
+        elif model.datatype == "anyURI":
+            value = str(model.value)
+        elif model.datatype == "string":
+            value = str(model.value)
+        else:
+            raise TypeError(
+                f"""Datatype of value `{model.value}` ({model.datatype}) currently not supported.
+                Supported datatypes: integer, float, bool, anyURI, string"""
+            )
+
+        return {"@type": f"xsd:{model.datatype}", "@value": value}
+
     # OVERRIDE
     @property
     def json_ld(self) -> "Dict[str, Any]":
         annotations = {
             model.relation: (
-                {"@type": f"xsd:{model.datatype}", "@value": model.value}
+                self.apply_datatype(model)
                 if model.datatype
-                else self.value_json(model.value)
+                else self.detect_datatype(model.value)
             )
             for model in self.annotation_properties
         }
         datatypes = {
             model.relation: (
-                {"@type": f"xsd:{model.datatype}", "@value": model.value}
+                self.apply_datatype(model)
                 if model.datatype
-                else self.value_json(model.value)
+                else self.detect_datatype(model.value)
             )
             for model in self.data_properties
         }
         objects = {
-            model.relation: model.value for model in self.object_properties
+            model.relation: {"@id": model.value}
+            for model in self.object_properties
         }
         return {
             "@context": {

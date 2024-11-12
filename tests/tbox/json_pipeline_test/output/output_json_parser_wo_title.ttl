@@ -10,7 +10,6 @@
     rdfs:label "B"^^xsd:string ;
     dcterms:contributor "John Doe"^^xsd:string ;
     dcterms:description "atio of the infinitesimal pressure increase to the resulting relative decrease of the volume"^^xsd:string ;
-    rdfs:comment ""^^xsd:string ;
     skos:altlabel "BulkModulus"^^xsd:string ;
     ns1:hasLabelSource "DIN EN ISO XXX"^^xsd:string ;
     ns1:hasTypicalUnitLabel "MPa "^^xsd:string .

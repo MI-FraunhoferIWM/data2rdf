@@ -5,37 +5,37 @@ import pytest
 DATA = [
     {
         "Ontological concept ID": "TestingMachine",
-        "Label": "Testing machine", 
+        "Label": "Testing machine",
         "Description": "Some description",
-        "Superclass": "owl:Thing", #TODO: This one is converted to a string.
+        "Superclass": "http://example.org#Object",
         "Comment": None,
-        "Source": 123, #TODO: This one is converted to a float. Why?
-        "Author's name": None, 
-        "Author's email": None
+        "Source": 123,
+        "Author's name": None,
+        "Author's email": None,
     },
     {
         "Ontological concept ID": "hasTestingMachine",
-        "Label": "has Testing machine", 
+        "Label": "has Testing machine",
         "Type": "owl:ObjectProperty",
-        "Description": "Some description", 
-        "Comment": None, 
-        "Source": None, 
-        "Author's name": None, 
-        "Author's email": None
-    }
+        "Description": "Some description",
+        "Comment": None,
+        "Source": None,
+        "Author's name": None,
+        "Author's email": None,
+    },
 ]
 
 
 MAPPING = [
     {
-        "key": "Label", 
-        "relation": "http://www.w3.org/2000/01/rdf-schema#label", 
-        "relation_type": "annotation_property", 
-     },
+        "key": "Label",
+        "relation": "http://www.w3.org/2000/01/rdf-schema#label",
+        "relation_type": "annotation_property",
+    },
     {
-        "key": "Description", 
-        "relation": "http://purl.org/dc/terms/description", 
-        "relation_type": "data_property", 
+        "key": "Description",
+        "relation": "http://purl.org/dc/terms/description",
+        "relation_type": "data_property",
     },
     {
         "key": "Superclass",
@@ -49,20 +49,20 @@ MAPPING = [
     },
     {
         "key": "Source",
-        "relation": "http://purl.org/dc/terms/source", 
-        "relation_type": "data_property", 
-        "datatype": "integer"
+        "relation": "http://purl.org/dc/terms/source",
+        "relation_type": "data_property",
+        "datatype": "integer",
     },
     {
         "key": "Author's name",
         "relation": "http://purl.org/dc/terms/contributor",
-        "relation_type": "data_property", 
+        "relation_type": "data_property",
     },
     {
         "key": "Author's email",
         "relation": "http://xmlns.com/foaf/0.1/mbox",
         "relation_type": "data_property",
-    }
+    },
 ]
 
 EXPECTED = """
@@ -82,25 +82,26 @@ EXPECTED = """
     rdfs:label "Testing machine"^^xsd:string ;
     dcterms:description "Some description"^^xsd:string ;
     dcterms:source "123"^^xsd:integer ;
-    rdfs:subClassOf owl:Thing .
+    rdfs:subClassOf <http://example.org#Object> .
 
 <https://w3id.org/dimat/hasTestingMachine> a owl:ObjectProperty ;
     rdfs:label "has Testing machine"^^xsd:string ;
     dcterms:description "Some description"^^xsd:string ."""
 
+
 def test_explicit_datatypes():
     from rdflib import Graph
+
+    from data2rdf.warnings import MappingMissmatchWarning
 
     from data2rdf import (  # isort:skip
         Data2RDF,
         Parser,
     )
-    from data2rdf.warnings import MappingMissmatchWarning    
 
     with pytest.warns(
         MappingMissmatchWarning, match="Data for key"
     ) as warnings:
-
         pipeline = Data2RDF(
             mode="tbox",
             raw_data=DATA,
@@ -125,7 +126,7 @@ def test_explicit_datatypes():
     ]
     assert len(missmatches) == 9
 
-    print(pipeline.graph.serialize(format="turtle")) #TODO: remove print
+    print(pipeline.graph.serialize(format="turtle"))  # TODO: remove print
 
     expected_graph = Graph()
     expected_graph.parse(data=EXPECTED)
