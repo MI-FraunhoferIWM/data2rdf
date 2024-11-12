@@ -126,8 +126,6 @@ def test_explicit_datatypes():
     ]
     assert len(missmatches) == 9
 
-    print(pipeline.graph.serialize(format="turtle"))  # TODO: remove print
-
     expected_graph = Graph()
     expected_graph.parse(data=EXPECTED)
 

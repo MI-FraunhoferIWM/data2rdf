@@ -64,7 +64,7 @@ fileid:SamplePreparatation a ns1:Activity ;
 fileid:Temperature a ns1:Entity,
         <https://w3id.org/steel/ProcessOntology/Temperature> ;
     qudt:hasUnit "http://qudt.org/vocab/unit/DEG_C"^^xsd:anyURI ;
-    qudt:value "22.0"^^xsd:float ;
+    qudt:value "22"^^xsd:integer ;
     ns1:wasAttributedTo fileid:TestingLab .
 
 fileid:TestTime a <https://w3id.org/steel/ProcessOntology/TestTime> ;
@@ -227,19 +227,19 @@ fileid:Material a ns1:Agent,
 fileid:OriginalGaugeLength a ns1:Entity,
         <https://w3id.org/steel/ProcessOntology/OriginalGaugeLength> ;
     qudt:hasUnit "http://qudt.org/vocab/unit/MilliM"^^xsd:anyURI ;
-    qudt:value "80.0"^^xsd:float ;
+    qudt:value "80"^^xsd:integer ;
     ns1:wasAttributedTo fileid:DisplacementTransducer .
 
 fileid:ParallelLength a ns1:Entity,
         <https://w3id.org/steel/ProcessOntology/ParallelLength> ;
     qudt:hasUnit "http://qudt.org/vocab/unit/MilliM"^^xsd:anyURI ;
-    qudt:value "120.0"^^xsd:float ;
+    qudt:value "120"^^xsd:integer ;
     ns1:wasAttributedTo fileid:TensileTestSpecimen .
 
 fileid:Preload a ns1:Entity,
         <https://w3id.org/steel/ProcessOntology/Preload> ;
     qudt:hasUnit "http://qudt.org/vocab/unit/MegaPA"^^xsd:anyURI ;
-    qudt:value "2.0"^^xsd:float ;
+    qudt:value "2"^^xsd:integer ;
     ns1:wasAttributedTo fileid:TensileTestingMachine .
 
 fileid:ProjectName a ns1:Entity,

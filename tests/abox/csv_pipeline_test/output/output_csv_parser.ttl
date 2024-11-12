@@ -159,15 +159,15 @@ fileid:Material a <https://w3id.org/steel/ProcessOntology/Material>,
 
 fileid:OriginalGaugeLength a <https://w3id.org/steel/ProcessOntology/OriginalGaugeLength> ;
     qudt:hasUnit "http://qudt.org/vocab/unit/MilliM"^^xsd:anyURI ;
-    qudt:value "80.0"^^xsd:float .
+    qudt:value "80"^^xsd:integer .
 
 fileid:ParallelLength a <https://w3id.org/steel/ProcessOntology/ParallelLength> ;
     qudt:hasUnit "http://qudt.org/vocab/unit/MilliM"^^xsd:anyURI ;
-    qudt:value "120.0"^^xsd:float .
+    qudt:value "120"^^xsd:integer .
 
 fileid:Preload a <https://w3id.org/steel/ProcessOntology/Preload> ;
     qudt:hasUnit "http://qudt.org/vocab/unit/MegaPA"^^xsd:anyURI ;
-    qudt:value "2.0"^^xsd:float .
+    qudt:value "2"^^xsd:integer .
 
 fileid:ProjectName a <https://w3id.org/steel/ProcessOntology/ProjectName> ;
     rdfs:label "proj_name_1"^^xsd:string .
@@ -197,7 +197,7 @@ fileid:StandardForce a <https://w3id.org/steel/ProcessOntology/StandardForce> ;
 
 fileid:Temperature a <https://w3id.org/steel/ProcessOntology/Temperature> ;
     qudt:hasUnit "http://qudt.org/vocab/unit/DEG_C"^^xsd:anyURI ;
-    qudt:value "22.0"^^xsd:float .
+    qudt:value "22"^^xsd:integer .
 
 fileid:TestStandard a <https://w3id.org/steel/ProcessOntology/TestStandard> ;
     rdfs:label "ISO-XX"^^xsd:string .

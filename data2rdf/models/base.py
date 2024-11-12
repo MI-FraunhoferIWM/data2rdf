@@ -2,7 +2,8 @@
 
 import json
 from abc import abstractmethod
-from typing import Any, Dict, Optional, Union
+from enum import Enum
+from typing import Any, Dict, List, Optional, Union
 
 from pydantic import (
     AnyUrl,
@@ -15,6 +16,14 @@ from pydantic import (
 from rdflib import Graph
 
 from data2rdf.config import Config
+
+
+class RelationType(str, Enum):
+    """Relation Type of TBox modellings"""
+
+    ANNOTATION_PROPERTY = "annotation_property"
+    DATA_PROPERTY = "data_property"
+    OBJECT_PROPERTY = "object_property"
 
 
 class BaseConfigModel(BaseModel):
@@ -53,7 +62,7 @@ class BasicConceptMapping(BaseConfigModel):
     """Basic mapping for a concept in a file"""
 
     key: Optional[str] = Field(
-        None, description="Key/column/ of the concept in the file"
+        None, description="Key/column of the concept in the file"
     )
 
 
@@ -76,7 +85,7 @@ class BasicGraphModel(BasicConceptMapping):
 class BasicSuffixModel(BaseConfigModel):
     """Pydantic BaseModel for suffix and type of a class instance"""
 
-    iri: Union[str, AnyUrl] = Field(
+    iri: Union[str, AnyUrl, List[Union[str, AnyUrl]]] = Field(
         ..., description="Ontological class related to this concept"
     )
     suffix: Optional[str] = Field(
@@ -89,12 +98,12 @@ class BasicSuffixModel(BaseConfigModel):
 
     @field_validator("iri")
     @classmethod
-    def validate_iri(cls, value: Union[str, AnyUrl]) -> AnyUrl:
+    def validate_iri(cls, value: Union[AnyUrl, List[AnyUrl]]) -> AnyUrl:
         """Make sure that there are not blank spaces in the IRI"""
-        if isinstance(value, str):
-            value = AnyUrl(value.strip())
-        else:
+        if not isinstance(value, list):
             value = AnyUrl(str(value).strip())
+        else:
+            value = [AnyUrl(str(iterable).strip()) for iterable in value]
         return value
 
     @field_validator("suffix")
@@ -106,4 +115,7 @@ class BasicSuffixModel(BaseConfigModel):
 
         iri = info.data["iri"]
         config = info.data["config"]
+        if isinstance(iri, list) and value is None:
+            raise TypeError("If the iri is a list, the suffix must be set ")
+
         return value or str(iri).split(config.separator)[-1]

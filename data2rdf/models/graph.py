@@ -3,7 +3,17 @@
 import warnings
 from typing import Any, Dict, List, Optional, Union
 
-from pydantic import (
+from data2rdf.models.utils import apply_datatype, detect_datatype
+from data2rdf.qudt.utils import _get_query_match
+from data2rdf.utils import make_prefix
+
+from data2rdf.models.base import (  # isort:skip
+    BasicGraphModel,
+    BasicSuffixModel,
+    RelationType,
+)
+
+from pydantic import (  # isort:skip
     AnyUrl,
     BaseModel,
     Field,
@@ -11,10 +21,6 @@ from pydantic import (
     field_validator,
     model_validator,
 )
-
-from data2rdf.models.base import BasicGraphModel, BasicSuffixModel
-from data2rdf.qudt.utils import _get_query_match
-from data2rdf.utils import is_bool, is_float, is_integer, is_uri, make_prefix
 
 
 class ValueRelationMapping(BaseModel):
@@ -55,65 +61,22 @@ class ClassTypeGraph(BasicGraphModel):
         None, description="Mappings for Data Properties"
     )
 
-    @classmethod
-    def detect_datatype(cls, value) -> "Dict[str, Any]":
-        """Return json with value definition"""
-        if is_integer(value):
-            dtype = "xsd:integer"
-            value = int(value)
-        elif is_float(value):
-            dtype = "xsd:float"
-            value = float(value)
-        elif is_bool(value):
-            dtype = "xsd:bool"
-            value = bool(value)
-        elif is_uri(value):
-            dtype = "xsd:anyURI"
-            value = str(value)
-        elif isinstance(value, str):
-            dtype = "xsd:string"
-        else:
-            raise TypeError(
-                f"Datatype of value `{value}` ({type(value)}) cannot be mapped to xsd."
-            )
-
-        return {"@type": dtype, "@value": value}
-
-    def apply_datatype(self, model: ValueRelationMapping) -> "Dict[str, Any]":
-        if model.datatype == "integer":
-            value = int(model.value)
-        elif model.datatype == "float":
-            value = float(model.value)
-        elif model.datatype == "bool":
-            value = bool(model.value)
-        elif model.datatype == "anyURI":
-            value = str(model.value)
-        elif model.datatype == "string":
-            value = str(model.value)
-        else:
-            raise TypeError(
-                f"""Datatype of value `{model.value}` ({model.datatype}) currently not supported.
-                Supported datatypes: integer, float, bool, anyURI, string"""
-            )
-
-        return {"@type": f"xsd:{model.datatype}", "@value": value}
-
     # OVERRIDE
     @property
     def json_ld(self) -> "Dict[str, Any]":
         annotations = {
             model.relation: (
-                self.apply_datatype(model)
+                apply_datatype(model)
                 if model.datatype
-                else self.detect_datatype(model.value)
+                else detect_datatype(str(model.value))
             )
             for model in self.annotation_properties
         }
         datatypes = {
             model.relation: (
-                self.apply_datatype(model)
+                apply_datatype(model.value, model.datatype)
                 if model.datatype
-                else self.detect_datatype(model.value)
+                else detect_datatype(str(model.value))
             )
             for model in self.data_properties
         }
@@ -198,7 +161,11 @@ class QuantityGraph(BasicGraphModel, BasicSuffixModel):
                 "qudt": "http://qudt.org/schema/qudt/",
             },
             "@id": f"{cls.config.prefix_name}:{cls.suffix}",
-            "@type": str(cls.iri),
+            "@type": (
+                [str(iri) for iri in cls.iri]
+                if isinstance(cls.iri, list)
+                else str(cls.iri)
+            ),
             **cls.unit_json,
             **cls.value_json,
         }
@@ -221,25 +188,7 @@ class QuantityGraph(BasicGraphModel, BasicSuffixModel):
     def value_json(self) -> "Dict[str, Any]":
         """Return json with value definition"""
         if self.value:
-            if is_float(self.value):
-                dtype = "xsd:float"
-                value = float(self.value)
-            elif is_integer(self.value):
-                dtype = "xsd:integer"
-                value = int(self.value)
-            elif is_bool(self.value):
-                dtype = "xsd:bool"
-                value = bool(self.value)
-            elif is_uri(self.value):
-                dtype = "xsd:anyURI"
-                value = str(self.value)
-            else:
-                raise ValueError(
-                    f"""Datatype not recognized for key
-                    `{self.key}` with value:
-                    `{self.value}`"""
-                )
-            value = {self.value_relation: {"@type": dtype, "@value": value}}
+            value = {self.value_relation: detect_datatype(str(self.value))}
         else:
             value = {}
         return value
@@ -262,8 +211,12 @@ class PropertyGraph(BasicGraphModel, BasicSuffixModel):
         description="""Data or annotation property
         for mapping the data value to the individual.""",
     )
-    datatype: Optional[str] = Field(
-        None, description="XSD Datatype of the value"
+    value_relation_type: Optional[RelationType] = Field(
+        None, description="Type of the semantic relation used in the mappings"
+    )
+    value_datatype: Optional[str] = Field(
+        None,
+        description="In case of an annotation or data property, this field indicates the XSD Datatype of the value",
     )
 
     @field_validator("annotation")
@@ -304,43 +257,14 @@ class PropertyGraph(BasicGraphModel, BasicSuffixModel):
     @property
     def value_json(self) -> "Optional[Dict[str, str]]":
         if not isinstance(self.value, type(None)):
-            if not self.datatype:
-                if is_integer(self.value):
-                    dtype = "xsd:integer"
-                    value = int(self.value)
-                elif is_float(self.value):
-                    dtype = "xsd:float"
-                    value = float(self.value)
-                elif is_bool(self.value):
-                    dtype = "xsd:bool"
-                    value = bool(self.value)
-                elif is_uri(self.value):
-                    dtype = "xsd:anyURI"
-                    value = str(self.value)
+            if self.value_relation_type != RelationType.OBJECT_PROPERTY:
+                if not self.value_datatype:
+                    spec = detect_datatype(str(self.value))
                 else:
-                    value = str(self.value)
-                    dtype = "xsd:string"
+                    spec = apply_datatype(self.value, self.value_datatype)
+                response = {self.value_relation: spec}
             else:
-                dtype = f"xsd:{self.datatype}"
-                if dtype == "xsd:anyURI":
-                    value = str(self.value)
-                elif dtype == "xsd:bool":
-                    value = bool(self.value)
-                elif dtype == "xsd:integer":
-                    value = int(self.value)
-                elif dtype == "xsd:float":
-                    value = float(self.value)
-                elif dtype == "xsd:string":
-                    value = str(self.value)
-                else:
-                    raise ValueError(
-                        f"""Datatype not recognized for concept with iri
-                        `{self.iri}` and value:
-                        `{self.value}`"""
-                    )
-
-            response = {self.value_relation: {"@type": dtype, "@value": value}}
-
+                response = {self.value_relation: {"@id": str(self.value)}}
         else:
             response = {}
         return response
@@ -351,10 +275,22 @@ class PropertyGraph(BasicGraphModel, BasicSuffixModel):
         if cls.annotation:
             types = {
                 "@type": [
-                    str(cls.iri),
+                    (
+                        [str(iri) for iri in cls.iri]
+                        if isinstance(cls.iri, list)
+                        else str(cls.iri)
+                    ),
                     cls.annotation,
                 ]
             }
         else:
-            types = {"@type": str(cls.iri)}
+            types = {
+                "@type": [
+                    (
+                        [str(iri) for iri in cls.iri]
+                        if isinstance(cls.iri, list)
+                        else str(cls.iri)
+                    )
+                ]
+            }
         return types

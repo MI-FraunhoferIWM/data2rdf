@@ -72,7 +72,7 @@ fileid:SamplePreparatation a ns1:Activity ;
 fileid:Temperature a ns1:Entity,
         <https://w3id.org/steel/ProcessOntology/Temperature> ;
     qudt:hasUnit "http://qudt.org/vocab/unit/DEG_C"^^xsd:anyURI ;
-    qudt:value "25.0"^^xsd:float ;
+    qudt:value "25"^^xsd:integer ;
     ns1:wasAttributedTo fileid:TestingLab .
 
 fileid:TestTime a <https://w3id.org/steel/ProcessOntology/TestTime> ;
@@ -191,7 +191,7 @@ fileid:Material a ns1:Agent,
 fileid:OriginalGaugeLength a ns1:Entity,
         <https://w3id.org/steel/ProcessOntology/OriginalGaugeLength> ;
     qudt:hasUnit "http://qudt.org/vocab/unit/MilliM"^^xsd:anyURI ;
-    qudt:value "15.0"^^xsd:float ;
+    qudt:value "15"^^xsd:integer ;
     ns1:wasAttributedTo fileid:DisplacementTransducer .
 
 fileid:ProjectNumber a ns1:Entity,

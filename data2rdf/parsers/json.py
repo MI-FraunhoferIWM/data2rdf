@@ -31,6 +31,8 @@ from data2rdf.models.mapping import (  # isort:skip
     TBoxBaseMapping,
 )
 
+NUMERICALS = (int, str, float, bool)
+
 
 def _load_data_file(
     self: "Union[JsonABoxParser, JsonTBoxParser]",
@@ -111,6 +113,12 @@ class JsonABoxParser(ABoxBaseParser):
         ...,
         description="""File path to the mapping file to be parsed or
         a list with the mapping.""",
+    )
+
+    expand_array: bool = Field(
+        False,
+        description="""When enabled, the jsonpath pointing to arrays in the data
+        will be iterated so that the mapping will be applied to each element of the array.""",
     )
 
     # OVERRIDE
@@ -274,7 +282,6 @@ class JsonABoxParser(ABoxBaseParser):
         self._general_metadata = []
         self._time_series_metadata = []
         self._time_series = {}
-        numericals = (int, str, float, bool)
         for datum in mapping:
             subdataset = self._get_optional_subdataset(datafile, datum)
 
@@ -299,7 +306,6 @@ class JsonABoxParser(ABoxBaseParser):
                     value = results
 
                 if value:
-                    # check if there is a unit somewhere in the sheet
                     if datum.unit_location:
                         unit_expression = parse(datum.unit_location)
 
@@ -347,7 +353,15 @@ class JsonABoxParser(ABoxBaseParser):
                     if datum.value_relation:
                         model_data["value_relation"] = datum.value_relation
 
-                    if not isinstance(value, numericals) and unit:
+                    # if we have a series and a unit and we are *not* expanding:
+                    # * make a QuantityGraph with the unit
+                    # * add the graph to the time series metadata
+                    # * add the values of the series to the time series array
+                    if (
+                        not isinstance(value, NUMERICALS)
+                        and unit
+                        and not self.expand_array
+                    ):
                         model_data["unit"] = unit
                         if datum.unit_relation:
                             model_data["unit_relation"] = datum.unit_relation
@@ -355,12 +369,54 @@ class JsonABoxParser(ABoxBaseParser):
 
                         self._time_series[suffix] = value
                         self._time_series_metadata.append(model)
-                    if not isinstance(value, numericals) and not unit:
-                        message = f"""Series with with key `{datum.key or datum.value_locationy}`
-                                    must be a quantity does not have a unit.
-                                    Concept will be omitted in graph."""
-                        warnings.warn(message, MappingMissmatchWarning)
-                    elif isinstance(value, numericals) and unit:
+                    # if we have a series in the form of a list and a unit and we are expanding:
+                    # * iterate over the series
+                    # * make a QuantityGraph with the unit and each iterated value
+                    # * add the graph to the general metadata
+                    elif (
+                        isinstance(value, list) and unit and self.expand_array
+                    ):
+                        model_data["unit"] = unit
+                        if datum.unit_relation:
+                            model_data["unit_relation"] = datum.unit_relation
+                        for val in value:
+                            model = QuantityGraph(**model_data, value=val)
+                            self._general_metadata.append(model)
+                    # if we have a series and *no* unit and we are *not* expanding:
+                    # * make a PropertyGraph
+                    # * add the graph to the time series metadata
+                    # * add the values of the series to the time series array
+                    elif (
+                        not isinstance(value, NUMERICALS)
+                        and not unit
+                        and not self.expand_array
+                    ):
+                        model = PropertyGraph(
+                            value_relation_type=datum.value_relation_type,
+                            **model_data,
+                        )
+                        self._time_series[suffix] = value
+                        self._time_series_metadata.append(model)
+                    # if we have a series in the form of a list and *no* unit and we are expanding:
+                    # * iterate over the series
+                    # * make a PropertyGraph with each iterated value
+                    # * add the graph to the general metadata
+                    elif (
+                        isinstance(value, list)
+                        and not unit
+                        and self.expand_array
+                    ):
+                        for val in value:
+                            model = PropertyGraph(
+                                value=val,
+                                value_relation_type=datum.value_relation_type,
+                                **model_data,
+                            )
+                            self._general_metadata.append(model)
+                    # if we do *not* have a series but have a unit:
+                    # * make a QuantityGraph with the unit and the value
+                    # * add the graph to the general metadata
+                    elif isinstance(value, NUMERICALS) and unit:
                         model_data["value"] = value
                         model_data["unit"] = unit
                         if datum.unit_relation:
@@ -368,11 +424,23 @@ class JsonABoxParser(ABoxBaseParser):
                         model = QuantityGraph(**model_data)
 
                         self._general_metadata.append(model)
-                    elif isinstance(value, numericals) and not unit:
-                        model_data["value"] = str(value)
-                        model = PropertyGraph(**model_data)
-
+                    # if we do *not* have a series and *no* unit:
+                    # * make a PropertyGraph with the value
+                    # * add the graph to the general metadata
+                    elif isinstance(value, NUMERICALS) and not unit:
+                        model = PropertyGraph(
+                            value_relation_type=datum.value_relation_type,
+                            value=value,
+                            **model_data,
+                        )
                         self._general_metadata.append(model)
+                    else:
+                        raise RuntimeError(
+                            f"""Combination of data types not supported!
+                            value: {value} ({type(value)})
+                            unit: {unit}
+                            expand array: {self.expand_array}"""
+                        )
 
             else:
                 for relation in datum.custom_relations:
@@ -440,16 +508,29 @@ class JsonABoxParser(ABoxBaseParser):
         else:
             value = results
 
-        if value:
+        if isinstance(value, NUMERICALS):
             model = PropertyGraph(
                 value_relation=relation.relation,
+                value_relation_type=relation.relation_type,
+                value_datatype=relation.object_data_type,
                 value=value,
                 iri=datum.iri,
                 suffix=suffix,
-                datatype=relation.object_data_type,
                 config=self.config,
             )
             self._general_metadata.append(model)
+        elif isinstance(value, list):
+            for val in value:
+                model = PropertyGraph(
+                    value_relation=relation.relation,
+                    value_relation_type=relation.relation_type,
+                    value_datatype=relation.object_data_type,
+                    value=val,
+                    iri=datum.iri,
+                    suffix=suffix,
+                    config=self.config,
+                )
+                self._general_metadata.append(model)
 
     def _make_suffix_from_location(
         self, datum: ABoxBaseMapping, subdataset: Any
