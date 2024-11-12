@@ -51,7 +51,7 @@ MAPPING = [
         "key": "Source",
         "relation": "http://purl.org/dc/terms/source",
         "relation_type": "data_property",
-        "datatype": "integer",
+        "datatype": "float",
     },
     {
         "key": "Author's name",
@@ -81,7 +81,7 @@ EXPECTED = """
 <https://w3id.org/dimat/TestingMachine> a owl:Class ;
     rdfs:label "Testing machine"^^xsd:string ;
     dcterms:description "Some description"^^xsd:string ;
-    dcterms:source "123"^^xsd:integer ;
+    dcterms:source "123.0"^^xsd:float ;
     rdfs:subClassOf <http://example.org#Object> .
 
 <https://w3id.org/dimat/hasTestingMachine> a owl:ObjectProperty ;
