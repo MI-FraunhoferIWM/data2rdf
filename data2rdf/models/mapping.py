@@ -1,19 +1,11 @@
 """Mapping models for data2rdf"""
 
-from enum import Enum
+
 from typing import List, Optional, Union
 
 from pydantic import AnyUrl, BaseModel, Field, field_validator, model_validator
 
-from .base import BasicConceptMapping, BasicSuffixModel
-
-
-class RelationType(str, Enum):
-    """Relation Type of TBox modellings"""
-
-    ANNOTATION_PROPERTY = "annotation_property"
-    DATA_PROPERTY = "data_property"
-    OBJECT_PROPERTY = "object_property"
+from .base import BasicConceptMapping, BasicSuffixModel, RelationType
 
 
 class TBoxBaseMapping(BasicConceptMapping):
@@ -35,6 +27,10 @@ class TBoxBaseMapping(BasicConceptMapping):
         ..., description="Type of the semantic relation used in the mappings"
     )
 
+    datatype: Optional[str] = Field(
+        None, description="XSD Datatype of the targed value"
+    )
+
 
 class CustomRelation(BaseModel):
     """Custom relation model"""
@@ -50,6 +46,9 @@ class CustomRelation(BaseModel):
     )
     object_data_type: Optional[str] = Field(
         None, description="XSD Data type of the object"
+    )
+    relation_type: Optional[RelationType] = Field(
+        None, description="Type of the semantic relation used in the mappings"
     )
 
 
@@ -89,7 +88,12 @@ class ABoxBaseMapping(BasicConceptMapping, BasicSuffixModel):
         description="""Data or annotation property
         for mapping the data value to the individual.""",
     )
-
+    value_relation_type: Optional[RelationType] = Field(
+        None, description="Type of the semantic relation used in the mappings"
+    )
+    value_datatype: Optional[str] = Field(
+        None, description="XSD Datatype of the targed value"
+    )
     unit_relation: Optional[Union[str, AnyUrl]] = Field(
         None,
         description="""Object property for mapping the IRI

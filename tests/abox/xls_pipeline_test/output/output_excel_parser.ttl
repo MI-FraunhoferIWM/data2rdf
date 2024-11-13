@@ -106,7 +106,7 @@ fileid:Material a <https://w3id.org/steel/ProcessOntology/Material>,
 
 fileid:OriginalGaugeLength a <https://w3id.org/steel/ProcessOntology/OriginalGaugeLength> ;
     qudt:hasUnit "http://qudt.org/vocab/unit/MilliM"^^xsd:anyURI ;
-    qudt:value "15.0"^^xsd:float .
+    qudt:value "15"^^xsd:integer .
 
 fileid:PercentageElongation a <https://w3id.org/steel/ProcessOntology/PercentageElongation> ;
     qudt:hasUnit "http://qudt.org/vocab/unit/FRACTION"^^xsd:anyURI .
@@ -133,7 +133,7 @@ fileid:StandardForce a <https://w3id.org/steel/ProcessOntology/StandardForce> ;
 
 fileid:Temperature a <https://w3id.org/steel/ProcessOntology/Temperature> ;
     qudt:hasUnit "http://qudt.org/vocab/unit/DEG_C"^^xsd:anyURI ;
-    qudt:value "25.0"^^xsd:float .
+    qudt:value "25"^^xsd:integer .
 
 fileid:TestTime a <https://w3id.org/steel/ProcessOntology/TestTime> ;
     qudt:hasUnit "http://qudt.org/vocab/unit/SEC"^^xsd:anyURI .

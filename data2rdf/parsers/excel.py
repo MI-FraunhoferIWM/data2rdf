@@ -2,7 +2,7 @@
 
 import warnings
 from io import BytesIO
-from typing import Any, Dict, List, Optional, Union
+from typing import Any, Dict, List, Union
 from urllib.parse import quote, urljoin
 
 import pandas as pd
@@ -54,10 +54,6 @@ class ExcelTBoxParser(TBoxBaseParser):
         ...,
         description="""File path to the mapping file to be parsed or
         a list with the mapping.""",
-    )
-
-    fillna: Optional[Any] = Field(
-        "", description="Value to fill NaN values in the parsed dataframe."
     )
 
     # OVERRIDE
@@ -408,7 +404,11 @@ class ExcelABoxParser(ABoxBaseParser):
                             model_data["unit_relation"] = datum.unit_relation
                         model = QuantityGraph(**model_data)
                     else:
-                        model = PropertyGraph(**model_data)
+                        model = PropertyGraph(
+                            **model_data,
+                            value_datatype=datum.value_datatype,
+                            value_relation_type=datum.value_relation_type,
+                        )
 
                     if model_data.get("value"):
                         self._general_metadata.append(model)
@@ -429,10 +429,11 @@ class ExcelABoxParser(ABoxBaseParser):
                     if value:
                         model = PropertyGraph(
                             value_relation=relation.relation,
+                            value_relation_type=relation.relation_type,
+                            value_datatype=relation.object_data_type,
                             value=value,
                             iri=datum.iri,
                             suffix=suffix,
-                            datatype=relation.object_data_type,
                             config=self.config,
                         )
                         self._general_metadata.append(model)
