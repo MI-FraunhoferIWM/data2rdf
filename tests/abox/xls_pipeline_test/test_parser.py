@@ -209,8 +209,6 @@ def test_parser_excel(extension) -> None:
     expected_graph = Graph()
     expected_graph.parse(expected)
 
-    print(parser.graph.serialize(format="turtle"))
-
     assert parser.graph.isomorphic(expected_graph)
 
     assert parser.plain_metadata == metadata

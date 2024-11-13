@@ -410,6 +410,7 @@ class JsonABoxParser(ABoxBaseParser):
                             model = PropertyGraph(
                                 value=val,
                                 value_relation_type=datum.value_relation_type,
+                                value_datatype=datum.value_datatype,
                                 **model_data,
                             )
                             self._general_metadata.append(model)
@@ -430,6 +431,7 @@ class JsonABoxParser(ABoxBaseParser):
                     elif isinstance(value, NUMERICALS) and not unit:
                         model = PropertyGraph(
                             value_relation_type=datum.value_relation_type,
+                            value_datatype=datum.value_datatype,
                             value=value,
                             **model_data,
                         )

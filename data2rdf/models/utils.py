@@ -6,12 +6,7 @@ if TYPE_CHECKING:
     from typing import Any, Dict
 
 
-
 import ast
-from typing import TYPE_CHECKING
-
-if TYPE_CHECKING:
-    from data2rdf.config import Config
 
 
 def is_integer(s):
@@ -45,6 +40,7 @@ def is_uri(s):
     except Exception:
         return False
 
+
 def detect_datatype(value) -> "Dict[str, Any]":
     """Return json with value definition"""
     if is_integer(value):
@@ -68,18 +64,19 @@ def detect_datatype(value) -> "Dict[str, Any]":
 
     return {"@type": dtype, "@value": value}
 
+
 def apply_datatype(value: "Any", datatype: str) -> "Dict[str, Any]":
     """
-    Converts the input value to the specified datatype and returns a dictionary 
+    Converts the input value to the specified datatype and returns a dictionary
     with the datatype and the converted value.
 
     Args:
         value (Any): The value to be converted.
-        datatype (str): The target datatype as a string. Supported datatypes 
+        datatype (str): The target datatype as a string. Supported datatypes
                         are "integer", "float", "bool", "anyURI", and "string".
 
     Returns:
-        Dict[str, Any]: A dictionary containing the datatype under the "@type" key 
+        Dict[str, Any]: A dictionary containing the datatype under the "@type" key
                         and the converted value under the "@value" key.
 
     Raises:
