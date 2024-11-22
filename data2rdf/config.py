@@ -3,24 +3,24 @@
 # adapted.
 from typing import List, Optional, Union
 
-from pydantic import AnyUrl, ConfigDict, Field
+from pydantic import AnyUrl, ConfigDict, Field, model_validator
 from pydantic_settings import BaseSettings
 
 
 class Config(BaseSettings):
     """Data2RDF configuration"""
 
-    qudt_units: AnyUrl = Field(
+    qudt_units: Union[str, AnyUrl] = Field(
         "http://qudt.org/2.1/vocab/unit",
         description="URI to QUDT Unit ontology for unit conversion",
     )
 
-    qudt_quantity_kinds: AnyUrl = Field(
+    qudt_quantity_kinds: Union[str, AnyUrl] = Field(
         "http://qudt.org/vocab/quantitykind/",
         description="URI to QUDT quantity kind ontology for unit conversion",
     )
 
-    base_iri: AnyUrl = Field(
+    base_iri: Union[str, AnyUrl] = Field(
         "https://www.example.org", description="Base IRI for individuals."
     )
 
@@ -35,7 +35,7 @@ class Config(BaseSettings):
 
     encoding: str = Field("utf-8", description="Encoding used while parsing.")
 
-    data_download_uri: AnyUrl = Field(
+    data_download_uri: Union[str, AnyUrl] = Field(
         "https://www.example.org/download",
         description="General base iri for downloading the time series after uploading",
     )
@@ -78,3 +78,11 @@ class Config(BaseSettings):
     )
 
     model_config = ConfigDict(extra="ignore")
+
+    @model_validator(mode="after")
+    @classmethod
+    def validate_config(cls, self: "Config") -> "Config":
+        for key, value in self.model_fields.items():
+            if isinstance(value, AnyUrl):
+                setattr(self, key, str(value))
+        return self
