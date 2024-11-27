@@ -3,9 +3,15 @@
 import warnings
 from typing import Any, Dict, List, Optional, Union
 
-from data2rdf.models.utils import apply_datatype, detect_datatype
 from data2rdf.qudt.utils import _get_query_match
 from data2rdf.utils import make_prefix
+
+from data2rdf.models.utils import (  # isort:skip
+    apply_datatype,
+    detect_datatype,
+    is_float,
+    is_integer,
+)
 
 from data2rdf.models.base import (  # isort:skip
     BasicGraphModel,
@@ -15,6 +21,7 @@ from data2rdf.models.base import (  # isort:skip
 
 from pydantic import (  # isort:skip
     AnyUrl,
+    AliasChoices,
     BaseModel,
     Field,
     ValidationInfo,
@@ -107,9 +114,9 @@ class QuantityGraph(BasicGraphModel, BasicSuffixModel):
     a quantity describing a column of a time series or table with a unit."""
 
     unit: Optional[Union[str, AnyUrl]] = Field(
-        ..., description="QUDT Symbol or any other IRI for the unit mapping"
+        None, description="QUDT Symbol or any other IRI for the unit mapping"
     )
-    value: Optional[Union[int, float]] = Field(
+    value: Optional[Union[int, float, str]] = Field(
         None, description="Value of the quantity"
     )
 
@@ -124,6 +131,17 @@ class QuantityGraph(BasicGraphModel, BasicSuffixModel):
         description="""Data property
         for mapping the data value to the individual.""",
     )
+
+    @field_validator("value", mode="after")
+    @classmethod
+    def validate_value(
+        cls, value: Union[int, float, str]
+    ) -> Union[int, float]:
+        if is_float(value):
+            value = float(value)
+        elif is_integer(value):
+            value = int(value)
+        return value
 
     @field_validator("unit", mode="after")
     @classmethod
@@ -200,9 +218,9 @@ class PropertyGraph(BasicGraphModel, BasicSuffixModel):
     discrete value but can also be a reference to a column in a table or
     time series."""
 
-    value: Optional[Union[str, int, float, bool, AnyUrl]] = Field(
-        None, description="Value of the property"
-    )
+    value: Optional[
+        Union[str, int, float, bool, AnyUrl, "PropertyGraph", "QuantityGraph"]
+    ] = Field(None, description="Value of the property")
     annotation: Optional[Union[str, AnyUrl]] = Field(
         None, description="Base IRI with which the value shall be concatenated"
     )
@@ -210,13 +228,24 @@ class PropertyGraph(BasicGraphModel, BasicSuffixModel):
         "rdfs:label",
         description="""Data or annotation property
         for mapping the data value to the individual.""",
+        alias=AliasChoices("relation", "value_relation", "valuerelation"),
     )
     value_relation_type: Optional[RelationType] = Field(
-        None, description="Type of the semantic relation used in the mappings"
+        None,
+        description="Type of the semantic relation used in the mappings",
+        alias=AliasChoices(
+            "value_relation_type",
+            "value_relationtype",
+            "relation_type",
+            "relationtype",
+        ),
     )
     value_datatype: Optional[str] = Field(
         None,
         description="In case of an annotation or data property, this field indicates the XSD Datatype of the value",
+        alias=AliasChoices(
+            "value_datatype", "value_data_type", "datatype", "data_type"
+        ),
     )
 
     @field_validator("annotation")
@@ -226,6 +255,19 @@ class PropertyGraph(BasicGraphModel, BasicSuffixModel):
         if value:
             value = AnyUrl(str(value).strip())
         return value
+
+    @model_validator(mode="after")
+    @classmethod
+    def validate_value(cls, self: "PropertyGraph") -> "PropertyGraph":
+        """
+        Validate value of a property graph.
+
+        In case the value is a property graph or a quantity graph, make sure that
+        the config is set correctly.
+        """
+        if isinstance(self.value, (PropertyGraph, QuantityGraph)):
+            self.value.config = self.config
+        return self
 
     @model_validator(mode="after")
     @classmethod
@@ -264,7 +306,10 @@ class PropertyGraph(BasicGraphModel, BasicSuffixModel):
                     spec = apply_datatype(self.value, self.value_datatype)
                 response = {self.value_relation: spec}
             else:
-                response = {self.value_relation: {"@id": str(self.value)}}
+                if isinstance(self.value, (PropertyGraph, QuantityGraph)):
+                    response = {self.value_relation: self.value.json_ld}
+                else:
+                    response = {self.value_relation: {"@id": str(self.value)}}
         else:
             response = {}
         return response

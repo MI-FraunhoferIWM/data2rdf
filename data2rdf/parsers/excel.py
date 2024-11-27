@@ -14,11 +14,19 @@ from data2rdf.utils import make_prefix
 from data2rdf.warnings import MappingMissmatchWarning
 
 from .base import ABoxBaseParser, BaseFileParser, TBoxBaseParser
-from .utils import _make_tbox_classes, _make_tbox_json_ld, _strip_unit
+
+from .utils import (  # isort:skip
+    _make_tbox_classes,
+    _make_tbox_json_ld,
+    _strip_unit,
+    _value_exists,
+)
 
 from data2rdf.models.mapping import (  # isort:skip
     ABoxExcelMapping,
     TBoxBaseMapping,
+    CustomRelationPropertySubgraph,
+    CustomRelationQuantitySubgraph,
 )
 
 
@@ -385,9 +393,10 @@ class ExcelABoxParser(ABoxBaseParser):
 
                 if datum.value_location and not datum.time_series_start:
                     value = worksheet[datum.value_location].value
-                    if model_data.get("unit") and value:
+
+                    if model_data.get("unit") and _value_exists(value):
                         model_data["value"] = value
-                    elif not model_data.get("unit") and value:
+                    elif not model_data.get("unit") and _value_exists(value):
                         model_data["value"] = str(value)
                     else:
                         message = f"""Concept with key `{datum.key}`
@@ -395,8 +404,12 @@ class ExcelABoxParser(ABoxBaseParser):
                                     Concept will be omitted in graph.
                                     """
                         warnings.warn(message, MappingMissmatchWarning)
+                else:
+                    value = None
 
-                if model_data.get("value") or suffix in self.time_series:
+                value_exists = _value_exists(value)
+
+                if value_exists or suffix in self.time_series:
                     if datum.value_relation:
                         model_data["value_relation"] = datum.value_relation
                     if model_data.get("unit"):
@@ -410,7 +423,7 @@ class ExcelABoxParser(ABoxBaseParser):
                             value_relation_type=datum.value_relation_type,
                         )
 
-                    if model_data.get("value"):
+                    if value_exists:
                         self._general_metadata.append(model)
                     else:
                         self._time_series_metadata.append(model)
@@ -419,14 +432,35 @@ class ExcelABoxParser(ABoxBaseParser):
                 for relation in datum.custom_relations:
                     value = worksheet[relation.object_location].value
 
-                    if not value:
-                        message = f"""Concept with for iri `{datum.iri}`
-                                        does not have a value at location `{relation.object_location}`.
-                                        Concept will be omitted in graph.
-                                        """
-                        warnings.warn(message, MappingMissmatchWarning)
-
-                    if value:
+                    if isinstance(
+                        relation.object_data_type,
+                        (
+                            CustomRelationPropertySubgraph,
+                            CustomRelationQuantitySubgraph,
+                        ),
+                    ):
+                        if isinstance(
+                            relation.object_data_type,
+                            CustomRelationPropertySubgraph,
+                        ):
+                            Model = PropertyGraph
+                        else:
+                            Model = QuantityGraph
+                        model = Model(
+                            value=value,
+                            **relation.object_data_type.model_dump(),
+                        )
+                        model.suffix += "_" + suffix
+                        model = PropertyGraph(
+                            value_relation=relation.relation,
+                            value_relation_type="object_property",
+                            value=model,
+                            iri=datum.iri,
+                            suffix=suffix,
+                            config=self.config,
+                        )
+                        self._general_metadata.append(model)
+                    elif _value_exists(value):
                         model = PropertyGraph(
                             value_relation=relation.relation,
                             value_relation_type=relation.relation_type,
@@ -437,6 +471,12 @@ class ExcelABoxParser(ABoxBaseParser):
                             config=self.config,
                         )
                         self._general_metadata.append(model)
+                    else:
+                        message = f"""Concept with for iri `{datum.iri}`
+                                        does not have a value at location `{relation.object_location}`.
+                                        Concept will be omitted in graph.
+                                        """
+                        warnings.warn(message, MappingMissmatchWarning)
 
         # set time series as pd dataframe
         self._time_series = pd.DataFrame.from_dict(

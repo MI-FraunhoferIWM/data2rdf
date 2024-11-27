@@ -3,7 +3,14 @@
 
 from typing import List, Optional, Union
 
-from pydantic import AnyUrl, BaseModel, Field, field_validator, model_validator
+from pydantic import (
+    AliasChoices,
+    AnyUrl,
+    BaseModel,
+    Field,
+    field_validator,
+    model_validator,
+)
 
 from .base import BasicConceptMapping, BasicSuffixModel, RelationType
 
@@ -28,7 +35,33 @@ class TBoxBaseMapping(BasicConceptMapping):
     )
 
     datatype: Optional[str] = Field(
-        None, description="XSD Datatype of the targed value"
+        None,
+        description="XSD Datatype of the targed value",
+        alias=AliasChoices("datatype", "data_type"),
+    )
+
+
+class CustomRelationPropertySubgraph(BasicSuffixModel):
+    value_relation: Optional[str] = Field(
+        "rdfs:label",
+        description="""Object/Data/Annotation property for the value
+        resolving from `key` of this model""",
+    )
+
+
+class CustomRelationQuantitySubgraph(BasicSuffixModel):
+    unit_relation: Optional[Union[str, AnyUrl]] = Field(
+        "qudt:hasUnit",
+        description="""Object property for mapping the IRI
+         of the unit to the individual.""",
+    )
+    value_relation: Optional[Union[str, AnyUrl]] = Field(
+        "qudt:value",
+        description="""Data property
+        for mapping the data value to the individual.""",
+    )
+    unit: Optional[Union[str, AnyUrl]] = Field(
+        None, description="Symbol or QUDT IRI for the mapping"
     )
 
 
@@ -44,8 +77,16 @@ class CustomRelation(BaseModel):
         ...,
         description="Cell number or Jsonpath to the value of the quantity or property",
     )
-    object_data_type: Optional[str] = Field(
-        None, description="XSD Data type of the object"
+    object_data_type: Optional[
+        Union[
+            str, CustomRelationPropertySubgraph, CustomRelationQuantitySubgraph
+        ]
+    ] = Field(
+        None,
+        description="XSD Data type of the object or PropertyGraph-mapping or QuantityGraph-mapping",
+        alias=AliasChoices(
+            "object_datatype", "object_data_type", "object_type"
+        ),
     )
     relation_type: Optional[RelationType] = Field(
         None, description="Type of the semantic relation used in the mappings"
