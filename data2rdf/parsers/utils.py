@@ -200,3 +200,19 @@ def _make_tbox_json_ld(model: "TBoxBaseParser") -> "Dict[str, Any]":
         },
         "@graph": classes,
     }
+
+
+def _value_exists(value: "Any") -> bool:
+    """
+    Check if a given value exists and is valid.
+
+    This method verifies if the input value is neither None, an empty string,
+    nor a NaN (Not a Number) value.
+
+    Args:
+        value (Any): The value to be checked.
+
+    Returns:
+        bool: True if the value exists and is valid, otherwise False.
+    """
+    return pd.notnull(value) and value != ""

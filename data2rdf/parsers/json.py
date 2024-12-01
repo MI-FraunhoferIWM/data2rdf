@@ -3,7 +3,7 @@
 import json
 import os
 import warnings
-from typing import Any, Dict, List, Union
+from typing import Any, Dict, List, Optional, Union
 from urllib.parse import quote, urljoin
 
 import pandas as pd
@@ -11,8 +11,14 @@ from jsonpath_ng import parse
 from pydantic import Field
 
 from data2rdf.models.graph import PropertyGraph, QuantityGraph
+from data2rdf.models.mapping import (
+    CustomRelationPropertySubgraph,
+    CustomRelationQuantitySubgraph,
+)
 from data2rdf.utils import make_prefix
 from data2rdf.warnings import MappingMissmatchWarning
+
+from .utils import _value_exists
 
 from data2rdf.parsers.base import (  # isort:skip
     ABoxBaseParser,
@@ -30,8 +36,6 @@ from data2rdf.models.mapping import (  # isort:skip
     CustomRelation,
     TBoxBaseMapping,
 )
-
-NUMERICALS = (int, str, float, bool)
 
 
 def _load_data_file(
@@ -305,7 +309,7 @@ class JsonABoxParser(ABoxBaseParser):
                 else:
                     value = results
 
-                if value:
+                if isinstance(value, list) or _value_exists(value):
                     if datum.unit_location:
                         unit_expression = parse(datum.unit_location)
 
@@ -358,7 +362,7 @@ class JsonABoxParser(ABoxBaseParser):
                     # * add the graph to the time series metadata
                     # * add the values of the series to the time series array
                     if (
-                        not isinstance(value, NUMERICALS)
+                        isinstance(value, list)
                         and unit
                         and not self.expand_array
                     ):
@@ -387,7 +391,7 @@ class JsonABoxParser(ABoxBaseParser):
                     # * add the graph to the time series metadata
                     # * add the values of the series to the time series array
                     elif (
-                        not isinstance(value, NUMERICALS)
+                        isinstance(value, list)
                         and not unit
                         and not self.expand_array
                     ):
@@ -417,7 +421,7 @@ class JsonABoxParser(ABoxBaseParser):
                     # if we do *not* have a series but have a unit:
                     # * make a QuantityGraph with the unit and the value
                     # * add the graph to the general metadata
-                    elif isinstance(value, NUMERICALS) and unit:
+                    elif _value_exists(value) and unit:
                         model_data["value"] = value
                         model_data["unit"] = unit
                         if datum.unit_relation:
@@ -428,7 +432,7 @@ class JsonABoxParser(ABoxBaseParser):
                     # if we do *not* have a series and *no* unit:
                     # * make a PropertyGraph with the value
                     # * add the graph to the general metadata
-                    elif isinstance(value, NUMERICALS) and not unit:
+                    elif _value_exists(value) and not unit:
                         model = PropertyGraph(
                             value_relation_type=datum.value_relation_type,
                             value_datatype=datum.value_datatype,
@@ -510,29 +514,68 @@ class JsonABoxParser(ABoxBaseParser):
         else:
             value = results
 
-        if isinstance(value, NUMERICALS):
-            model = PropertyGraph(
-                value_relation=relation.relation,
-                value_relation_type=relation.relation_type,
-                value_datatype=relation.object_data_type,
-                value=value,
-                iri=datum.iri,
-                suffix=suffix,
-                config=self.config,
-            )
-            self._general_metadata.append(model)
-        elif isinstance(value, list):
+        if isinstance(value, list):
             for val in value:
-                model = PropertyGraph(
-                    value_relation=relation.relation,
-                    value_relation_type=relation.relation_type,
-                    value_datatype=relation.object_data_type,
-                    value=val,
-                    iri=datum.iri,
-                    suffix=suffix,
-                    config=self.config,
+                self._make_property_graph(
+                    val,
+                    datum.iri,
+                    suffix,
+                    **relation.model_dump(exclude={"object_location"}),
                 )
-                self._general_metadata.append(model)
+        elif isinstance(
+            relation.object_data_type,
+            (CustomRelationPropertySubgraph, CustomRelationQuantitySubgraph),
+        ):
+            if isinstance(
+                relation.object_data_type, CustomRelationPropertySubgraph
+            ):
+                Model = PropertyGraph
+            else:
+                Model = QuantityGraph
+            model = Model(
+                value=value, **relation.object_data_type.model_dump()
+            )
+            model.suffix += "_" + suffix
+            self._make_property_graph(
+                model,
+                datum.iri,
+                suffix,
+                relation=relation.relation,
+                relation_type="object_property",
+            )
+        elif _value_exists(value):
+            self._make_property_graph(
+                value,
+                datum.iri,
+                suffix,
+                **relation.model_dump(exclude={"object_location"}),
+            )
+        else:
+            message = f"""Concept with for iri `{datum.iri}`
+                            does not have a value at location `{relation.object_location}`.
+                            Concept will be omitted in graph.
+                            """
+            warnings.warn(message, MappingMissmatchWarning)
+
+    def _make_property_graph(
+        self,
+        value: Any,
+        iri: str,
+        suffix: str,
+        relation: Optional[str] = None,
+        relation_type: Optional[str] = None,
+        object_data_type: Optional[str] = None,
+    ) -> None:
+        model = PropertyGraph(
+            value_relation=relation,
+            value_relation_type=relation_type,
+            value_datatype=object_data_type,
+            value=value,
+            iri=iri,
+            suffix=suffix,
+            config=self.config,
+        )
+        self._general_metadata.append(model)
 
     def _make_suffix_from_location(
         self, datum: ABoxBaseMapping, subdataset: Any
