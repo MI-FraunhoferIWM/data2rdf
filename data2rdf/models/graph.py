@@ -137,10 +137,10 @@ class QuantityGraph(BasicGraphModel, BasicSuffixModel):
     def validate_value(
         cls, value: Union[int, float, str]
     ) -> Union[int, float]:
-        if is_float(value):
-            value = float(value)
-        elif is_integer(value):
+        if isinstance(value, str) and is_integer(value):
             value = int(value)
+        elif isinstance(value, str) and is_float(value):
+            value = float(value)
         return value
 
     @field_validator("unit", mode="after")
