@@ -14,13 +14,6 @@ from data2rdf.models.utils import (  # isort:skip
     is_integer,
 )
 
-from data2rdf.models.utils import (  # isort:skip
-    apply_datatype,
-    detect_datatype,
-    is_float,
-    is_integer,
-)
-
 from data2rdf.models.base import (  # isort:skip
     BasicGraphModel,
     BasicSuffixModel,
