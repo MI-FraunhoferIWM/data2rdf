@@ -145,8 +145,8 @@ class QuantityGraph(BasicGraphModel, BasicSuffixModel):
         elif isinstance(value, str):
             warnings.warn(
                 f"Cannot type case value from str into float or int: {value}",
-                ParserWarning
-                )
+                ParserWarning,
+            )
         return value
 
     @field_validator("unit", mode="after")

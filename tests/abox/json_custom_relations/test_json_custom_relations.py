@@ -451,7 +451,6 @@ def test_pipeline_json_custom_relations_quantity_graph() -> None:
     from data2rdf.warnings import ParserWarning
 
     with pytest.warns(ParserWarning, match="Cannot") as warnings:
-
         pipeline = Data2RDF(
             raw_data=DATA_SUBGRAPHS,
             mapping=MAPPING_SUBGRAPHS,
@@ -464,9 +463,7 @@ def test_pipeline_json_custom_relations_quantity_graph() -> None:
         )
 
     warnings = [
-        warning
-        for warning in warnings
-        if warning.category == ParserWarning
+        warning for warning in warnings if warning.category == ParserWarning
     ]
     assert len(warnings) == 1
 
