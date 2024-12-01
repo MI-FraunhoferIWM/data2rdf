@@ -448,17 +448,28 @@ def test_pipeline_json_custom_relations_quantity_graph() -> None:
     from rdflib import Graph
 
     from data2rdf import Data2RDF, Parser
+    from data2rdf.warnings import ParserWarning
 
-    pipeline = Data2RDF(
-        raw_data=DATA_SUBGRAPHS,
-        mapping=MAPPING_SUBGRAPHS,
-        parser=Parser.json,
-        config={
-            "base_iri": BASE_IRI,
-            "separator": "#",
-            "suppress_file_description": True,
-        },
-    )
+    with pytest.warns(ParserWarning, match="Cannot") as warnings:
+
+        pipeline = Data2RDF(
+            raw_data=DATA_SUBGRAPHS,
+            mapping=MAPPING_SUBGRAPHS,
+            parser=Parser.json,
+            config={
+                "base_iri": BASE_IRI,
+                "separator": "#",
+                "suppress_file_description": True,
+            },
+        )
+
+    warnings = [
+        warning
+        for warning in warnings
+        if warning.category == ParserWarning
+    ]
+    assert len(warnings) == 1
+
     expected_graph = Graph()
     expected_graph.parse(data=EXPECTED_SUBGRAPHS)
 
