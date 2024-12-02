@@ -5,6 +5,7 @@ from typing import Any, Dict, List, Optional, Union
 
 from data2rdf.qudt.utils import _get_query_match
 from data2rdf.utils import make_prefix
+from data2rdf.warnings import ParserWarning
 
 from data2rdf.models.utils import (  # isort:skip
     apply_datatype,
@@ -141,6 +142,11 @@ class QuantityGraph(BasicGraphModel, BasicSuffixModel):
             value = int(value)
         elif isinstance(value, str) and is_float(value):
             value = float(value)
+        elif isinstance(value, str):
+            warnings.warn(
+                f"Cannot type case value from str into float or int: {value}",
+                ParserWarning,
+            )
         return value
 
     @field_validator("unit", mode="after")
