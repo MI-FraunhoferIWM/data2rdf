@@ -20,6 +20,8 @@ class Config(BaseSettings):
         description="URI to QUDT quantity kind ontology for unit conversion",
     )
 
+    language: str = Field("en", description="Language for the unit labels")
+
     base_iri: Union[str, AnyUrl] = Field(
         "https://www.example.org", description="Base IRI for individuals."
     )
@@ -75,6 +77,11 @@ class Config(BaseSettings):
     exclude_ontology_title: bool = Field(
         False,
         description="In TBox mode, exclude the title of the ontology in the graph.",
+    )
+
+    dsms_schema_default: bool = Field(
+        True,
+        description="""Default value for the `dsms_schema` parameter of the `to_dict` method.""",
     )
 
     model_config = ConfigDict(extra="ignore")

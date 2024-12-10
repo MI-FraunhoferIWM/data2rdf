@@ -7,6 +7,8 @@ from typing import List, Optional
 import requests
 from rdflib import Graph
 
+from data2rdf.warnings import QUDTMappingWarning
+
 
 def _qudt_sparql(symbol: str) -> str:
     return f"""PREFIX qudt: <http://qudt.org/schema/qudt/>
@@ -81,4 +83,37 @@ def _check_qudt_mapping(symbol: Optional[str]) -> Optional[str]:
             }
     else:
         unit = {}
+    return unit
+
+
+def _get_qudt_label_and_symbol(
+    iri: str, qudt_iri: str, language: str
+) -> Optional[str]:
+    graph = _get_qudt_graph(qudt_iri)
+    gen_query = f"""PREFIX qudt: <http://qudt.org/schema/qudt/>
+    PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+    SELECT DISTINCT ?label ?symbol
+    WHERE {{
+        <{iri}> rdfs:label ?label .
+        <{iri}> qudt:symbol ?symbol .
+        FILTER (LANG(?label) = "{language}")
+    }}"""
+    match = [
+        {"label": str(row["label"]), "symbol": str(row["symbol"])}
+        for row in graph.query(gen_query)
+    ]
+    if len(match) == 0:
+        warnings.warn(
+            f"No QUDT label and symbol found for unit with iri `{iri}`.",
+            QUDTMappingWarning,
+        )
+        unit = {}
+    elif len(match) > 1:
+        warnings.warn(
+            f"Multiple QUDT symbols and labels found for unit with iri `{iri}`.",
+            QUDTMappingWarning,
+        )
+        unit = match[0]
+    else:
+        unit = match.pop()
     return unit
