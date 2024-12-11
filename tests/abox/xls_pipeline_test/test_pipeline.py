@@ -3,7 +3,7 @@ import os
 
 import pytest
 
-from ..utils import remove_ids, sort_entries
+from ..utils import as_non_dsms_schema, remove_ids, sort_entries
 
 test_folder = os.path.dirname(os.path.abspath(__file__))
 working_folder = os.path.join(test_folder, "input")
@@ -160,6 +160,7 @@ def test_csv_pipeline_config(config) -> None:
     assert remove_ids(pipeline.to_dict(dsms_schema=True)) == sort_entries(
         metadata
     )
+    assert sort_entries(pipeline.to_dict()) == as_non_dsms_schema(metadata)
     assert sorted(list(pipeline.time_series.columns)) == sorted(columns)
 
 
@@ -225,6 +226,7 @@ def test_excel_pipeline(extension) -> None:
     assert remove_ids(pipeline.to_dict(dsms_schema=True)) == sort_entries(
         metadata
     )
+    assert sort_entries(pipeline.to_dict()) == as_non_dsms_schema(metadata)
 
 
 @pytest.mark.parametrize("input_kind", ["path", "content"])
@@ -285,3 +287,4 @@ def test_excel_pipeline_inputs(input_kind) -> None:
     assert remove_ids(pipeline.to_dict(dsms_schema=True)) == sort_entries(
         metadata
     )
+    assert sort_entries(pipeline.to_dict()) == as_non_dsms_schema(metadata)

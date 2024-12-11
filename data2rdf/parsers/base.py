@@ -197,7 +197,9 @@ class ABoxBaseParser(AnyBoxBaseParser):
         warnings.warn(message, DeprecationWarning)
         return self.to_dict(dsms_schema=self.config.dsms_schema_default)
 
-    def to_dict(self, dsms_schema: bool = False) -> "List[Dict[str, Any]]":
+    def to_dict(
+        self, dsms_schema: bool = False
+    ) -> "Union[Dict[str, Any], List[Dict[str, Any]]]":
         """Return list of general metadata as DSMS custom properties"""
         metadata = []
         for metadatum in self.general_metadata:
@@ -211,17 +213,22 @@ class ABoxBaseParser(AnyBoxBaseParser):
                 ] = metadatum.measurement_unit.model_dump(exclude={"config"})
             metadata.append(prop)
         if dsms_schema:
-            for metadatum in metadata:
-                metadatum["id"] = generate_id()
-            metadata = {
-                "sections": [
-                    {
-                        "id": generate_id(),
-                        "name": "General",
-                        "entries": metadata,
-                    }
-                ]
-            }
+            if metadata:
+                for metadatum in metadata:
+                    metadatum["id"] = generate_id()
+                metadata = {
+                    "sections": [
+                        {
+                            "id": generate_id(),
+                            "name": "General",
+                            "entries": metadata,
+                        }
+                    ]
+                }
+            else:
+                metadata = {}
+        else:
+            metadata = {datum.get("label"): datum for datum in metadata}
         return metadata
 
 

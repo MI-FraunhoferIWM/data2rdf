@@ -2,8 +2,6 @@
 
 import os
 
-from ..utils import remove_ids
-
 test_folder = os.path.dirname(os.path.abspath(__file__))
 working_folder = os.path.join(test_folder, "input")
 output_folder = os.path.join(test_folder, "output")
@@ -16,15 +14,6 @@ parser_args = {
     "time_series_sep": ",",
     "metadata_length": 0,
     "time_series_header_length": 1,
-}
-
-metadata = {
-    "sections": [
-        {
-            "entries": [],
-            "name": "General",
-        }
-    ],
 }
 
 columns = ["TestTime", "Sensor1", "Sensor2", "Sensor3"]
@@ -61,4 +50,5 @@ def test_csv_wo_header_parser_config() -> None:
         assert len(column) == 4
 
     assert parser.graph.isomorphic(expected_graph)
-    assert remove_ids(parser.to_dict(dsms_schema=True)) == metadata
+    assert parser.to_dict(dsms_schema=True) == {}
+    assert parser.to_dict() == {}

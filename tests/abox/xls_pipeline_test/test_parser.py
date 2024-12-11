@@ -5,7 +5,7 @@ import os
 
 import pytest
 
-from ..utils import remove_ids, sort_entries
+from ..utils import as_non_dsms_schema, remove_ids, sort_entries
 
 test_folder = os.path.dirname(os.path.abspath(__file__))
 working_folder = os.path.join(test_folder, "input")
@@ -201,6 +201,7 @@ def test_xlsx_parser_no_match_in_timeseries_from_mapping() -> None:
     assert remove_ids(parser.to_dict(dsms_schema=True)) == sort_entries(
         metadata
     )
+    assert sort_entries(parser.to_dict()) == as_non_dsms_schema(metadata)
 
 
 @pytest.mark.parametrize("config", [normal_config, bad_config])
@@ -235,6 +236,7 @@ def test_csv_parser_config(config) -> None:
     assert remove_ids(parser.to_dict(dsms_schema=True)) == sort_entries(
         metadata
     )
+    assert sort_entries(parser.to_dict()) == as_non_dsms_schema(metadata)
     assert sorted(list(parser.time_series.columns)) == sorted(columns)
 
 
@@ -293,6 +295,7 @@ def test_parser_excel(extension) -> None:
     assert remove_ids(parser.to_dict(dsms_schema=True)) == sort_entries(
         metadata
     )
+    assert sort_entries(parser.to_dict()) == as_non_dsms_schema(metadata)
 
 
 @pytest.mark.parametrize("input_kind", ["path", "content"])
@@ -345,3 +348,4 @@ def test_parser_excel_inputs(input_kind) -> None:
     assert remove_ids(parser.to_dict(dsms_schema=True)) == sort_entries(
         metadata
     )
+    assert sort_entries(parser.to_dict()) == as_non_dsms_schema(metadata)

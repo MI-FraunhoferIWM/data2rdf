@@ -5,7 +5,7 @@ import os
 
 import pytest
 
-from ..utils import remove_ids, sort_entries
+from ..utils import as_non_dsms_schema, remove_ids, sort_entries
 
 test_folder = os.path.dirname(os.path.abspath(__file__))
 working_folder = os.path.join(test_folder, "input")
@@ -308,6 +308,7 @@ def test_parser_csv(extension) -> None:
     assert remove_ids(parser.to_dict(dsms_schema=True)) == sort_entries(
         metadata
     )
+    assert sort_entries(parser.to_dict()) == as_non_dsms_schema(metadata)
 
 
 @pytest.mark.parametrize("input_kind", ["path", "content"])
@@ -350,3 +351,5 @@ def test_parser_csv_input(input_kind) -> None:
     assert remove_ids(parser.to_dict(dsms_schema=True)) == sort_entries(
         metadata
     )
+
+    assert sort_entries(parser.to_dict()) == as_non_dsms_schema(metadata)
