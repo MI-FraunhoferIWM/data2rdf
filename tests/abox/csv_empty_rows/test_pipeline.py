@@ -2,6 +2,8 @@
 
 import os
 
+from ..utils import remove_ids
+
 test_folder = os.path.dirname(os.path.abspath(__file__))
 working_folder = os.path.join(test_folder, "input")
 output_folder = os.path.join(test_folder, "output")
@@ -10,6 +12,14 @@ mapping_folder = os.path.join(working_folder, "mapping")
 raw_data = os.path.join(working_folder, "data", "data.csv")
 expected = os.path.join(output_folder, "output_csv_pipeline.ttl")
 
+metadata = {
+    "sections": [
+        {
+            "entries": [],
+            "name": "General",
+        }
+    ],
+}
 
 parser_args = {
     "time_series_sep": ";",
@@ -71,4 +81,4 @@ def test_csv_na_values_pipeline() -> None:
 
     assert pipeline.graph.isomorphic(expected_graph)
 
-    assert pipeline.plain_metadata == {}
+    assert remove_ids(pipeline.to_dict(dsms_schema=True)) == metadata

@@ -2,6 +2,8 @@
 
 import os
 
+from ..utils import remove_ids
+
 test_folder = os.path.dirname(os.path.abspath(__file__))
 working_folder = os.path.join(test_folder, "input")
 output_folder = os.path.join(test_folder, "output")
@@ -27,6 +29,14 @@ columns = [
     "MassDensity",
 ]
 
+metadata = {
+    "sections": [
+        {
+            "entries": [],
+            "name": "General",
+        }
+    ],
+}
 
 config = {"graph_identifier": "https://www.example.org"}
 
@@ -60,4 +70,4 @@ def test_csv_nan_vals() -> None:
         assert len(column) == 31
 
     assert parser.graph.isomorphic(expected_graph)
-    assert parser.plain_metadata == {}
+    assert remove_ids(parser.to_dict(dsms_schema=True)) == metadata

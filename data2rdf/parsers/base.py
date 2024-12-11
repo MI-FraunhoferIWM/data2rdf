@@ -306,6 +306,15 @@ class BaseFileParser(BaseParser):
                 "`plain_metadata` is not available in `tbox`-mode."
             )
 
+    def to_dict(self, dsms_schema: bool = False) -> "List[Dict[str, Any]]":
+        """Return list of general metadata as DSMS custom properties"""
+        if self.mode == PipelineMode.ABOX:
+            return self.abox.to_dict(dsms_schema=dsms_schema)
+        else:
+            raise NotImplementedError(
+                "`to_dict()` is not available in `tbox`-mode."
+            )
+
     @property
     def general_metadata(cls) -> "List[BasicConceptMapping]":
         """Return list object with general metadata"""

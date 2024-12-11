@@ -5,6 +5,8 @@ import os
 
 import pytest
 
+from ..utils import remove_ids, sort_entries
+
 test_folder = os.path.dirname(os.path.abspath(__file__))
 working_folder = os.path.join(test_folder, "input")
 output_folder = os.path.join(test_folder, "output")
@@ -15,8 +17,27 @@ raw_data_file = os.path.join(working_folder, "data", "sample_data.json")
 expected = os.path.join(output_folder, "output_json_parser.ttl")
 
 metadata = {
-    "Remark": "foobar",
-    "WidthChange": 1.0,
+    "sections": [
+        {
+            "entries": [
+                {
+                    "label": "Remark",
+                    "value": "foobar",
+                },
+                {
+                    "label": "WidthChange",
+                    "measurementUnit": {
+                        "iri": "http://qudt.org/vocab/unit/MilliM",
+                        "label": "Millimetre",
+                        "namespace": "http://qudt.org/vocab/unit",
+                        "symbol": "mm",
+                    },
+                    "value": 1.0,
+                },
+            ],
+            "name": "General",
+        },
+    ],
 }
 
 series = {"PercentageElongation": [1.0, 2.0, 3.0], "Force": [2.0, 3.0, 4.0]}
@@ -64,7 +85,9 @@ def test_parser_json(mapping_format, data_format) -> None:
 
     assert parser.graph.isomorphic(expected_graph)
 
-    assert parser.plain_metadata == metadata
+    assert remove_ids(parser.to_dict(dsms_schema=True)) == sort_entries(
+        metadata
+    )
 
 
 @pytest.mark.parametrize("extension", ["xlsx", "json", "csv", dict])
@@ -104,4 +127,6 @@ def test_json_parser_different_mapping_files(extension) -> None:
 
     assert parser.graph.isomorphic(expected_graph)
 
-    assert parser.plain_metadata == metadata
+    assert remove_ids(parser.to_dict(dsms_schema=True)) == sort_entries(
+        metadata
+    )

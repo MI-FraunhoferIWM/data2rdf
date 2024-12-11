@@ -2,6 +2,8 @@
 
 import os
 
+from ..utils import remove_ids
+
 test_folder = os.path.dirname(os.path.abspath(__file__))
 working_folder = os.path.join(test_folder, "input")
 output_folder = os.path.join(test_folder, "output")
@@ -17,6 +19,14 @@ parser_args = {
     "time_series_header_length": 1,
 }
 
+metadata = {
+    "sections": [
+        {
+            "entries": [],
+            "name": "General",
+        }
+    ],
+}
 
 columns = ["TestTime", "Sensor1", "Sensor2", "Sensor3"]
 config = {"graph_identifier": "https://www.example.org"}
@@ -62,4 +72,4 @@ def test_csv_wo_header_pipeline() -> None:
 
     assert pipeline.graph.isomorphic(expected_graph)
 
-    assert pipeline.plain_metadata == {}
+    assert remove_ids(pipeline.to_dict(dsms_schema=True)) == metadata
