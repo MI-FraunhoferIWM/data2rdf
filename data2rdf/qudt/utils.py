@@ -94,9 +94,16 @@ def _get_qudt_label_and_symbol(
     PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
     SELECT DISTINCT ?label ?symbol
     WHERE {{
-        <{iri}> rdfs:label ?label .
         <{iri}> qudt:symbol ?symbol .
-        FILTER (LANG(?label) = "{language}")
+        OPTIONAL {{
+            <{iri}> rdfs:label ?label .
+            FILTER (LANG(?label) = "{language}")
+        }}
+        OPTIONAL {{
+            <{iri}> rdfs:label ?label_no_lang .
+            FILTER (LANG(?label_no_lang) = "")
+        }}
+        BIND(COALESCE(?label, ?label_no_lang) AS ?label)
     }}"""
     match = [
         {"label": str(row["label"]), "symbol": str(row["symbol"])}
