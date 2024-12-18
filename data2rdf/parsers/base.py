@@ -209,7 +209,7 @@ class ABoxBaseParser(AnyBoxBaseParser):
             }
             if hasattr(metadatum, "measurement_unit"):
                 prop[
-                    "measurementUnit"
+                    "measurement_unit"
                 ] = metadatum.measurement_unit.model_dump(exclude={"config"})
             metadata.append(prop)
         if dsms_schema:

@@ -26,7 +26,7 @@ metadata = {
                 },
                 {
                     "label": "WidthChange",
-                    "measurementUnit": {
+                    "measurement_unit": {
                         "iri": "http://qudt.org/vocab/unit/MilliM",
                         "label": "Millimetre",
                         "namespace": "http://qudt.org/vocab/unit",

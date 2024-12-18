@@ -30,7 +30,7 @@ metadata = {
                 },
                 {
                     "label": "OriginalGaugeLength",
-                    "measurementUnit": {
+                    "measurement_unit": {
                         "iri": "http://qudt.org/vocab/unit/MilliM",
                         "label": "Millimetre",
                         "namespace": "http://qudt.org/vocab/unit",
@@ -40,7 +40,7 @@ metadata = {
                 },
                 {
                     "label": "SpecimenWidth",
-                    "measurementUnit": {
+                    "measurement_unit": {
                         "iri": "http://qudt.org/vocab/unit/MilliM",
                         "label": "Millimetre",
                         "namespace": "http://qudt.org/vocab/unit",
@@ -50,7 +50,7 @@ metadata = {
                 },
                 {
                     "label": "SpecimenThickness",
-                    "measurementUnit": {
+                    "measurement_unit": {
                         "iri": "http://qudt.org/vocab/unit/MilliM",
                         "label": "Millimetre",
                         "namespace": "http://qudt.org/vocab/unit",
@@ -76,7 +76,7 @@ metadata = {
                 },
                 {
                     "label": "TestingRate",
-                    "measurementUnit": {
+                    "measurement_unit": {
                         "iri": "http://qudt.org/vocab/unit/MilliM-PER-SEC",
                         "label": "Millimetre per Second",
                         "namespace": "http://qudt.org/vocab/unit",
@@ -90,7 +90,7 @@ metadata = {
                 },
                 {
                     "label": "Temperature",
-                    "measurementUnit": {
+                    "measurement_unit": {
                         "iri": "http://qudt.org/vocab/unit/DEG_C",
                         "label": "degree Celsius",
                         "namespace": "http://qudt.org/vocab/unit",
@@ -118,7 +118,7 @@ metadata_suffix = {
                 },
                 {
                     "label": "OriginalGaugeLength",
-                    "measurementUnit": {
+                    "measurement_unit": {
                         "iri": "http://qudt.org/vocab/unit/MilliM",
                         "label": "Millimetre",
                         "namespace": "http://qudt.org/vocab/unit",
@@ -128,7 +128,7 @@ metadata_suffix = {
                 },
                 {
                     "label": "SpecimenWidth",
-                    "measurementUnit": {
+                    "measurement_unit": {
                         "iri": "http://qudt.org/vocab/unit/MilliM",
                         "label": "Millimetre",
                         "namespace": "http://qudt.org/vocab/unit",
@@ -138,7 +138,7 @@ metadata_suffix = {
                 },
                 {
                     "label": "SpecimenThickness",
-                    "measurementUnit": {
+                    "measurement_unit": {
                         "iri": "http://qudt.org/vocab/unit/MilliM",
                         "label": "Millimetre",
                         "namespace": "http://qudt.org/vocab/unit",
@@ -164,7 +164,7 @@ metadata_suffix = {
                 },
                 {
                     "label": "TestingRate",
-                    "measurementUnit": {
+                    "measurement_unit": {
                         "iri": "http://qudt.org/vocab/unit/MilliM-PER-SEC",
                         "label": "Millimetre per Second",
                         "namespace": "http://qudt.org/vocab/unit",
@@ -178,7 +178,7 @@ metadata_suffix = {
                 },
                 {
                     "label": "Temperature",
-                    "measurementUnit": {
+                    "measurement_unit": {
                         "iri": "http://qudt.org/vocab/unit/DEG_C",
                         "label": "degree Celsius",
                         "namespace": "http://qudt.org/vocab/unit",
