@@ -310,7 +310,6 @@ def test_excel_pipeline_suffix() -> None:
             raw_data=raw_data,
             mapping=os.path.join(mapping_folder, "mapping_suffix.json"),
             parser=Parser.excel,
-            additional_triples=template,
             parser_args={"dropna": True, "unit_from_macro": True},
         )
 
