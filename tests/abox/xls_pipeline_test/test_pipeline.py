@@ -108,6 +108,94 @@ metadata = {
     ],
 }
 
+metadata_suffix = {
+    "sections": [
+        {
+            "entries": [
+                {
+                    "label": "Time2",
+                    "value": "2016-10-11 00:00:00",
+                },
+                {
+                    "label": "OriginalGaugeLength",
+                    "measurementUnit": {
+                        "iri": "http://qudt.org/vocab/unit/MilliM",
+                        "label": "Millimetre",
+                        "namespace": "http://qudt.org/vocab/unit",
+                        "symbol": "mm",
+                    },
+                    "value": 15,
+                },
+                {
+                    "label": "SpecimenWidth",
+                    "measurementUnit": {
+                        "iri": "http://qudt.org/vocab/unit/MilliM",
+                        "label": "Millimetre",
+                        "namespace": "http://qudt.org/vocab/unit",
+                        "symbol": "mm",
+                    },
+                    "value": 9.5,
+                },
+                {
+                    "label": "SpecimenThickness",
+                    "measurementUnit": {
+                        "iri": "http://qudt.org/vocab/unit/MilliM",
+                        "label": "Millimetre",
+                        "namespace": "http://qudt.org/vocab/unit",
+                        "symbol": "mm",
+                    },
+                    "value": 1.5,
+                },
+                {
+                    "label": "SpecimenType",
+                    "value": "Fz 10x20",
+                },
+                {
+                    "label": "SampleIdentifier-2",
+                    "value": "123456",
+                },
+                {
+                    "label": "ProjectNumber",
+                    "value": "Projekt_1",
+                },
+                {
+                    "label": "Tester",
+                    "value": "Fe",
+                },
+                {
+                    "label": "TestingRate",
+                    "measurementUnit": {
+                        "iri": "http://qudt.org/vocab/unit/MilliM-PER-SEC",
+                        "label": "Millimetre per Second",
+                        "namespace": "http://qudt.org/vocab/unit",
+                        "symbol": "mm/s",
+                    },
+                    "value": 0.02,
+                },
+                {
+                    "label": "MachineData",
+                    "value": "M_1",
+                },
+                {
+                    "label": "Temperature",
+                    "measurementUnit": {
+                        "iri": "http://qudt.org/vocab/unit/DEG_C",
+                        "label": "degree Celsius",
+                        "namespace": "http://qudt.org/vocab/unit",
+                        "symbol": "°C",
+                    },
+                    "value": 25,
+                },
+                {
+                    "label": "Material",
+                    "value": "Werkstoff_1",
+                },
+            ],
+            "name": "General",
+        },
+    ],
+}
+
 columns = [
     "TestTime",
     "StandardForce",
@@ -117,12 +205,22 @@ columns = [
     "WidthChange",
 ]
 
+columns_suffix = [
+    "Time1",
+    "StandardForce",
+    "Extension",
+    "PercentageElongation",
+    "AbsoluteCrossheadTravel",
+    "WidthChange",
+]
+
+
 normal_config = {"graph_identifier": "https://www.example.org"}
 bad_config = {"graph_identifier": "https://www.example.org", "foorbar": 123}
 
 
 @pytest.mark.parametrize("config", [normal_config, bad_config])
-def test_csv_pipeline_config(config) -> None:
+def test_xlsx_pipeline_config(config) -> None:
     from rdflib import Graph
 
     from data2rdf.warnings import MappingMissmatchWarning
@@ -324,3 +422,9 @@ def test_excel_pipeline_suffix() -> None:
     expected_graph.parse(expected)
 
     assert pipeline.graph.isomorphic(expected_graph)
+
+    assert remove_ids(pipeline.to_dict(dsms_schema=True)) == sort_entries(
+        metadata_suffix
+    )
+
+    assert sorted(list(pipeline.time_series.columns)) == sorted(columns_suffix)

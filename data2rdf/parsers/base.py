@@ -204,7 +204,7 @@ class ABoxBaseParser(AnyBoxBaseParser):
         metadata = []
         for metadatum in self.general_metadata:
             prop = {
-                "label": str(metadatum.iri).split(self.config.separator)[-1],
+                "label": metadatum.suffix,
                 "value": metadatum.value,
             }
             if hasattr(metadatum, "measurement_unit"):
