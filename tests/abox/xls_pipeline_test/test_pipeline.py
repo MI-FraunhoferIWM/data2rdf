@@ -288,3 +288,40 @@ def test_excel_pipeline_inputs(input_kind) -> None:
         metadata
     )
     assert sort_entries(pipeline.to_dict()) == as_non_dsms_schema(metadata)
+
+
+def test_excel_pipeline_suffix() -> None:
+    from rdflib import Graph
+
+    from data2rdf.warnings import MappingMissmatchWarning
+
+    from data2rdf import (  # isort:skip
+        Data2RDF,
+        Parser,
+    )
+
+    raw_data = os.path.join(working_folder, "data", "AFZ1-Fz-S1Q.xlsm")
+    expected = os.path.join(output_folder, "output_pipeline_suffix.ttl")
+
+    with pytest.warns(
+        MappingMissmatchWarning, match="Concept with key"
+    ) as warnings:
+        pipeline = Data2RDF(
+            raw_data=raw_data,
+            mapping=os.path.join(mapping_folder, "mapping_suffix.json"),
+            parser=Parser.excel,
+            additional_triples=template,
+            parser_args={"dropna": True, "unit_from_macro": True},
+        )
+
+    missmatches = [
+        warning
+        for warning in warnings
+        if warning.category == MappingMissmatchWarning
+    ]
+    assert len(missmatches) == 1
+
+    expected_graph = Graph()
+    expected_graph.parse(expected)
+
+    assert pipeline.graph.isomorphic(expected_graph)
