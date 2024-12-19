@@ -1,8 +1,9 @@
 """Data2RDF base model for parsers"""
 
 import json
+import warnings
 from abc import abstractmethod
-from typing import TYPE_CHECKING, Any, Dict, List, Optional, Union
+from typing import TYPE_CHECKING, Any, Callable, Dict, List, Optional, Union
 
 from rdflib import Graph
 
@@ -189,15 +190,53 @@ class ABoxBaseParser(AnyBoxBaseParser):
         return self._time_series
 
     @property
-    def plain_metadata(self) -> "Dict[str, Any]":
-        """Metadata as flat json - without units and iris.
-        Useful e.g. for the custom properties of the DSMS."""
-        return {
-            str(metadatum.iri).split(self.config.separator)[
-                -1
-            ]: metadatum.value
-            for metadatum in self.general_metadata
-        }
+    def plain_metadata(self) -> List[Dict[str, Any]]:
+        message = """
+        `plain_metadata` is deprecated and will be removed in a future version.
+        Use the `to_dict()` instead."""
+        warnings.warn(message, DeprecationWarning)
+        return self.to_dict()
+
+    def to_dict(
+        self, schema: Callable = None
+    ) -> "Union[Dict[str, Any], List[Dict[str, Any]]]":
+        """
+        Return general metadata as a list of dictionaries.
+
+        The list contains dictionaries, where the key is the label of the metadata,
+        and the value is a dictionary with the keys 'label' and 'value'. If the
+        metadata has a measurement unit associated with it, the dictionary will
+        also contain the key 'measurement_unit' with the value of the measurement
+        unit.
+
+        If the schema parameter is provided, it will be used to transform the
+        metadata list. The schema should be a callable which takes the list of
+        metadata dictionaries and returns the transformed metadata.
+
+        If no schema is provided, the function will return a dictionary where the
+        keys are the labels of the metadata, and the values are the dictionaries
+        from the list.
+
+        :param schema: A callable which takes a list of dictionaries and returns
+            the transformed metadata.
+        :return: A dictionary or list of dictionaries with the metadata.
+        """
+        metadata = []
+        for metadatum in self.general_metadata:
+            prop = {
+                "label": metadatum.suffix,
+                "value": metadatum.value,
+            }
+            if hasattr(metadatum, "measurement_unit"):
+                prop[
+                    "measurement_unit"
+                ] = metadatum.measurement_unit.model_dump(exclude={"config"})
+            metadata.append(prop)
+        if not isinstance(schema, type(None)):
+            metadata = schema(metadata)
+        else:
+            metadata = {datum.get("label"): datum for datum in metadata}
+        return metadata
 
 
 class BaseFileParser(BaseParser):
@@ -279,6 +318,15 @@ class BaseFileParser(BaseParser):
         else:
             raise NotImplementedError(
                 "`plain_metadata` is not available in `tbox`-mode."
+            )
+
+    def to_dict(self, schema: Callable = None) -> "List[Dict[str, Any]]":
+        """Return list of general metadata as DSMS custom properties"""
+        if self.mode == PipelineMode.ABOX:
+            return self.abox.to_dict(schema=schema)
+        else:
+            raise NotImplementedError(
+                "`to_dict()` is not available in `tbox`-mode."
             )
 
     @property

@@ -37,6 +37,11 @@ def test_quantity_model(config) -> None:
     assert model.graph.isomorphic(expected_graph)
     assert str(model.graph.identifier) == config["graph_identifier"]
 
+    assert model.measurement_unit.iri == "http://qudt.org/vocab/unit/MilliM"
+    assert model.measurement_unit.symbol == "mm"
+    assert model.measurement_unit.label == "Millimetre"
+    assert model.measurement_unit.namespace == "http://qudt.org/vocab/unit"
+
 
 @pytest.mark.parametrize("unit", [unit_string, unit_iri])
 def test_valued_quantity(unit):
@@ -61,6 +66,11 @@ def test_valued_quantity(unit):
 
     assert model.graph.isomorphic(expected_graph)
 
+    assert model.measurement_unit.iri == "http://qudt.org/vocab/unit/MilliM"
+    assert model.measurement_unit.symbol == "mm"
+    assert model.measurement_unit.label == "Millimetre"
+    assert model.measurement_unit.namespace == "http://qudt.org/vocab/unit"
+
 
 def test_bad_with_blank_space():
     from rdflib import Graph
@@ -83,3 +93,8 @@ def test_bad_with_blank_space():
     )
 
     assert model.graph.isomorphic(expected_graph)
+
+    assert model.measurement_unit.iri == "http://qudt.org/vocab/unit/MilliM"
+    assert model.measurement_unit.symbol == "mm"
+    assert model.measurement_unit.label == "Millimetre"
+    assert model.measurement_unit.namespace == "http://qudt.org/vocab/unit"

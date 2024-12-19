@@ -2,7 +2,7 @@
 
 import json
 from pathlib import Path
-from typing import TYPE_CHECKING, Any, Dict, List, Optional, Union
+from typing import TYPE_CHECKING, Any, Callable, Dict, List, Optional, Union
 
 from rdflib import Graph
 
@@ -209,6 +209,15 @@ class Data2RDF(BaseModel):
         if cls.additional_triples:
             graph += cls._validate_additional_triples(cls.additional_triples)
         return graph
+
+    def to_dict(self, schema: Callable = None) -> "List[Dict[str, Any]]":
+        """Return list of general metadata as DSMS custom properties"""
+        if self.mode == PipelineMode.ABOX:
+            return self.parser.abox.to_dict(schema=schema)
+        else:
+            raise NotImplementedError(
+                "`to_dict()` is not available in `tbox`-mode."
+            )
 
     @property
     def plain_metadata(cls) -> Dict[str, Any]:

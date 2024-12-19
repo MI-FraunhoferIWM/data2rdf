@@ -2,6 +2,8 @@
 
 import os
 
+from ..utils import dsms_schema
+
 test_folder = os.path.dirname(os.path.abspath(__file__))
 working_folder = os.path.join(test_folder, "input")
 output_folder = os.path.join(test_folder, "output")
@@ -16,7 +18,6 @@ parser_args = {
     "metadata_length": 0,
     "time_series_header_length": 1,
 }
-
 
 columns = ["TestTime", "Sensor1", "Sensor2", "Sensor3"]
 config = {"graph_identifier": "https://www.example.org"}
@@ -61,5 +62,5 @@ def test_csv_wo_header_pipeline() -> None:
     expected_graph.parse(expected)
 
     assert pipeline.graph.isomorphic(expected_graph)
-
-    assert pipeline.plain_metadata == {}
+    assert pipeline.to_dict(schema=dsms_schema) == {}
+    assert pipeline.to_dict() == {}

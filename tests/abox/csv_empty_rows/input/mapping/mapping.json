@@ -2,7 +2,7 @@
   {
     "iri": "https://w3id.org/steel/ProcessOntology/ThermalExpansionCoefficient",
     "key": "Coefficient of thermal exapansion[1/K]",
-    "unit": "https://qudt.org/vocab/unit/PERCENT-PER-K"
+    "unit": "http://qudt.org/vocab/unit/PERCENT-PER-K"
   },
   {
     "iri": "https://w3id.org/steel/ProcessOntology/MassDensity",
@@ -12,7 +12,7 @@
   {
     "iri": "https://w3id.org/steel/ProcessOntology/PoissonRatio",
     "key": "Poison's ratio[-]",
-    "unit": "https://qudt.org/vocab/unit/NUM"
+    "unit": "http://qudt.org/vocab/unit/NUM"
   },
   {
     "iri": "https://w3id.org/steel/ProcessOntology/SpecificHeatCapacity",
@@ -22,7 +22,7 @@
   {
     "iri": "https://w3id.org/steel/ProcessOntology/Temperature",
     "key": "Temperature[\u00b0C]",
-    "unit": "https://qudt.org/vocab/unit/DEG_C"
+    "unit": "http://qudt.org/vocab/unit/DEG_C"
   },
   {
     "iri": "https://w3id.org/steel/ProcessOntology/ThermalConductivity",
@@ -32,6 +32,6 @@
   {
     "iri": "https://w3id.org/steel/ProcessOntology/ModulusOfElasticity",
     "key": "Young's modulus[Pa]",
-    "unit": "https://qudt.org/vocab/unit/PA"
+    "unit": "http://qudt.org/vocab/unit/PA"
   }
 ]

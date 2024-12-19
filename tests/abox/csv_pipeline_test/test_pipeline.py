@@ -3,6 +3,8 @@ import os
 
 import pytest
 
+from ..utils import as_non_dsms_schema, dsms_schema, remove_ids, sort_entries
+
 test_folder = os.path.dirname(os.path.abspath(__file__))
 working_folder = os.path.join(test_folder, "input")
 
@@ -23,26 +25,135 @@ parser_args = {
     "metadata_length": 20,
 }
 metadata = {
-    "TestingFacility": "institute_1",
-    "ProjectNumber": "123456",
-    "ProjectName": "proj_name_1",
-    "TimeStamp": "44335.4",
-    "MachineData": "maschine_1",
-    "ForceMeasuringDevice": "Kraftaufnehmer_1",
-    "DisplacementTransducer": "Wegaufnehmer_1",
-    "TestStandard": "ISO-XX",
-    "Material": "Werkstoff_1",
-    "SpecimenType": "Probentyp_1",
-    "Tester": "abc",
-    "SampleIdentifier-2": "Probentyp_2",
-    "OriginalGaugeLength": 80,
-    "ParallelLength": 120,
-    "SpecimenThickness": 1.55,
-    "SpecimenWidth": 20.04,
-    "TestingRate": 0.1,
-    "Preload": 2,
-    "Temperature": 22,
-    "Remark": "",
+    "sections": [
+        {
+            "entries": [
+                {
+                    "label": "TestingFacility",
+                    "value": "institute_1",
+                },
+                {
+                    "label": "ProjectNumber",
+                    "value": "123456",
+                },
+                {
+                    "label": "ProjectName",
+                    "value": "proj_name_1",
+                },
+                {
+                    "label": "TimeStamp",
+                    "value": "44335.4",
+                },
+                {
+                    "label": "MachineData",
+                    "value": "maschine_1",
+                },
+                {
+                    "label": "ForceMeasuringDevice",
+                    "value": "Kraftaufnehmer_1",
+                },
+                {
+                    "label": "DisplacementTransducer",
+                    "value": "Wegaufnehmer_1",
+                },
+                {
+                    "label": "TestStandard",
+                    "value": "ISO-XX",
+                },
+                {
+                    "label": "Material",
+                    "value": "Werkstoff_1",
+                },
+                {
+                    "label": "SpecimenType",
+                    "value": "Probentyp_1",
+                },
+                {
+                    "label": "Tester",
+                    "value": "abc",
+                },
+                {
+                    "label": "SampleIdentifier-2",
+                    "value": "Probentyp_2",
+                },
+                {
+                    "label": "OriginalGaugeLength",
+                    "measurement_unit": {
+                        "iri": "http://qudt.org/vocab/unit/MilliM",
+                        "label": "Millimetre",
+                        "namespace": "http://qudt.org/vocab/unit",
+                        "symbol": "mm",
+                    },
+                    "value": 80,
+                },
+                {
+                    "label": "ParallelLength",
+                    "measurement_unit": {
+                        "iri": "http://qudt.org/vocab/unit/MilliM",
+                        "label": "Millimetre",
+                        "namespace": "http://qudt.org/vocab/unit",
+                        "symbol": "mm",
+                    },
+                    "value": 120,
+                },
+                {
+                    "label": "SpecimenThickness",
+                    "measurement_unit": {
+                        "iri": "http://qudt.org/vocab/unit/MilliM",
+                        "label": "Millimetre",
+                        "namespace": "http://qudt.org/vocab/unit",
+                        "symbol": "mm",
+                    },
+                    "value": 1.55,
+                },
+                {
+                    "label": "SpecimenWidth",
+                    "measurement_unit": {
+                        "iri": "http://qudt.org/vocab/unit/MilliM",
+                        "label": "Millimetre",
+                        "namespace": "http://qudt.org/vocab/unit",
+                        "symbol": "mm",
+                    },
+                    "value": 20.04,
+                },
+                {
+                    "label": "TestingRate",
+                    "measurement_unit": {
+                        "iri": "http://qudt.org/vocab/unit/MilliM-PER-SEC",
+                        "label": "Millimetre per Second",
+                        "namespace": "http://qudt.org/vocab/unit",
+                        "symbol": "mm/s",
+                    },
+                    "value": 0.1,
+                },
+                {
+                    "label": "Preload",
+                    "measurement_unit": {
+                        "iri": "http://qudt.org/vocab/unit/MegaPA",
+                        "label": "Megapascal",
+                        "namespace": "http://qudt.org/vocab/unit",
+                        "symbol": "MPa",
+                    },
+                    "value": 2,
+                },
+                {
+                    "label": "Temperature",
+                    "measurement_unit": {
+                        "iri": "http://qudt.org/vocab/unit/DEG_C",
+                        "label": "degree Celsius",
+                        "namespace": "http://qudt.org/vocab/unit",
+                        "symbol": "°C",
+                    },
+                    "value": 22,
+                },
+                {
+                    "label": "Remark",
+                    "value": "",
+                },
+            ],
+            "name": "General",
+        },
+    ],
 }
 
 columns = [
@@ -183,7 +294,10 @@ def test_csv_pipeline(extension) -> None:
 
     assert pipeline.graph.isomorphic(expected_graph)
 
-    assert pipeline.plain_metadata == metadata
+    assert remove_ids(pipeline.to_dict(schema=dsms_schema)) == sort_entries(
+        metadata
+    )
+    assert sort_entries(pipeline.to_dict()) == as_non_dsms_schema(metadata)
 
 
 @pytest.mark.parametrize("input_kind", ["path", "content"])
@@ -229,4 +343,7 @@ def test_csv_pipeline_inputs(input_kind) -> None:
 
     assert pipeline.graph.isomorphic(expected_graph)
 
-    assert pipeline.plain_metadata == metadata
+    assert remove_ids(pipeline.to_dict(schema=dsms_schema)) == sort_entries(
+        metadata
+    )
+    assert sort_entries(pipeline.to_dict()) == as_non_dsms_schema(metadata)

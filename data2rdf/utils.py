@@ -12,3 +12,19 @@ def make_prefix(config: "Config") -> str:
     else:
         prefix = str(config.base_iri)
     return prefix
+
+
+def split_namespace(iri: str) -> tuple[str, str]:
+    """
+    Split the given iri into a namespace and a localname.
+
+    Args:
+        iri: The iri to split.
+
+    Returns:
+        A tuple of the namespace and the localname.
+    """
+    if "#" in iri:
+        return iri.split("#")[0]
+    else:
+        return "/".join(iri.split("/")[:-1])

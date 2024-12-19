@@ -7,3 +7,7 @@ class MappingMissmatchWarning(UserWarning):
 
 class ParserWarning(UserWarning):
     """A warning raised for a specific context set for a parser"""
+
+
+class QUDTMappingWarning(UserWarning):
+    """A warning raised for a specific context set for a QUDT mapping"""
