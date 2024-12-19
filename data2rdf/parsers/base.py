@@ -3,14 +3,14 @@
 import json
 import warnings
 from abc import abstractmethod
-from typing import TYPE_CHECKING, Any, Dict, List, Optional, Union
+from typing import TYPE_CHECKING, Any, Callable, Dict, List, Optional, Union
 
 from rdflib import Graph
 
 from data2rdf.config import Config
 from data2rdf.modes import PipelineMode
 
-from .utils import generate_id, load_mapping_file
+from .utils import load_mapping_file
 
 from pydantic import (  # isort:skip
     BaseModel,
@@ -195,12 +195,32 @@ class ABoxBaseParser(AnyBoxBaseParser):
         `plain_metadata` is deprecated and will be removed in a future version.
         Use the `to_dict()` instead."""
         warnings.warn(message, DeprecationWarning)
-        return self.to_dict(dsms_schema=self.config.dsms_schema_default)
+        return self.to_dict()
 
     def to_dict(
-        self, dsms_schema: bool = False
+        self, schema: Callable = None
     ) -> "Union[Dict[str, Any], List[Dict[str, Any]]]":
-        """Return list of general metadata as DSMS custom properties"""
+        """
+        Return general metadata as a list of dictionaries.
+
+        The list contains dictionaries, where the key is the label of the metadata,
+        and the value is a dictionary with the keys 'label' and 'value'. If the
+        metadata has a measurement unit associated with it, the dictionary will
+        also contain the key 'measurement_unit' with the value of the measurement
+        unit.
+
+        If the schema parameter is provided, it will be used to transform the
+        metadata list. The schema should be a callable which takes the list of
+        metadata dictionaries and returns the transformed metadata.
+
+        If no schema is provided, the function will return a dictionary where the
+        keys are the labels of the metadata, and the values are the dictionaries
+        from the list.
+
+        :param schema: A callable which takes a list of dictionaries and returns
+            the transformed metadata.
+        :return: A dictionary or list of dictionaries with the metadata.
+        """
         metadata = []
         for metadatum in self.general_metadata:
             prop = {
@@ -212,21 +232,8 @@ class ABoxBaseParser(AnyBoxBaseParser):
                     "measurement_unit"
                 ] = metadatum.measurement_unit.model_dump(exclude={"config"})
             metadata.append(prop)
-        if dsms_schema:
-            if metadata:
-                for metadatum in metadata:
-                    metadatum["id"] = generate_id()
-                metadata = {
-                    "sections": [
-                        {
-                            "id": generate_id(),
-                            "name": "General",
-                            "entries": metadata,
-                        }
-                    ]
-                }
-            else:
-                metadata = {}
+        if not isinstance(schema, type(None)):
+            metadata = schema(metadata)
         else:
             metadata = {datum.get("label"): datum for datum in metadata}
         return metadata
@@ -313,10 +320,10 @@ class BaseFileParser(BaseParser):
                 "`plain_metadata` is not available in `tbox`-mode."
             )
 
-    def to_dict(self, dsms_schema: bool = False) -> "List[Dict[str, Any]]":
+    def to_dict(self, schema: Callable = None) -> "List[Dict[str, Any]]":
         """Return list of general metadata as DSMS custom properties"""
         if self.mode == PipelineMode.ABOX:
-            return self.abox.to_dict(dsms_schema=dsms_schema)
+            return self.abox.to_dict(schema=schema)
         else:
             raise NotImplementedError(
                 "`to_dict()` is not available in `tbox`-mode."

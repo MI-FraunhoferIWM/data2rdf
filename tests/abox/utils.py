@@ -1,4 +1,7 @@
 """data2rdf pytest utilty"""
+import random
+import string
+import time
 
 
 def remove_ids(metadata: dict) -> dict:
@@ -47,3 +50,52 @@ def as_non_dsms_schema(metadata: dict) -> dict:
         for entry in section.get("entries", []):
             response[entry["label"]] = entry
     return response
+
+
+def dsms_schema(metadata: dict) -> dict:
+    """
+    Convert a flat dictionary to a DSMS schema.
+
+    The input should be a dictionary with each key-value pair representing
+    a metadata entry. The output is a dictionary in the DSMS schema, with
+    a single section named "General", containing the given metadata entries.
+
+    :param metadata: The metadata dictionary to convert.
+    :return: A dictionary in the DSMS schema.
+    """
+    if metadata:
+        for metadatum in metadata:
+            metadatum["id"] = generate_id()
+        metadata = {
+            "sections": [
+                {
+                    "id": generate_id(),
+                    "name": "General",
+                    "entries": metadata,
+                }
+            ]
+        }
+    else:
+        metadata = {}
+
+    return metadata
+
+
+def generate_id(prefix: str = "id") -> str:
+    # Generate a unique part using time and random characters
+    """
+    Generates a unique id using a combination of the current time and 6 random characters.
+
+    Args:
+    prefix (str): The prefix to use for the generated id. Defaults to "id".
+
+    Returns:
+    str: The generated id.
+    """
+    unique_part = f"{int(time.time() * 1000)}"  # Milliseconds since epoch
+    random_part = "".join(
+        random.choices(string.ascii_lowercase + string.digits, k=6)  # nosec
+    )
+    # Combine prefix, unique part, and random part
+    generated_id = f"{prefix}{unique_part}{random_part}"
+    return generated_id

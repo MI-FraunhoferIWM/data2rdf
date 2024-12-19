@@ -79,11 +79,6 @@ class Config(BaseSettings):
         description="In TBox mode, exclude the title of the ontology in the graph.",
     )
 
-    dsms_schema_default: bool = Field(
-        True,
-        description="""Default value for the `dsms_schema` parameter of the `to_dict` method.""",
-    )
-
     model_config = ConfigDict(extra="ignore")
 
     @model_validator(mode="after")

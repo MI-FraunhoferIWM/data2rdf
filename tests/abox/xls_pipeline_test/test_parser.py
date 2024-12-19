@@ -5,7 +5,7 @@ import os
 
 import pytest
 
-from ..utils import as_non_dsms_schema, remove_ids, sort_entries
+from ..utils import as_non_dsms_schema, dsms_schema, remove_ids, sort_entries
 
 test_folder = os.path.dirname(os.path.abspath(__file__))
 working_folder = os.path.join(test_folder, "input")
@@ -198,7 +198,7 @@ def test_xlsx_parser_no_match_in_timeseries_from_mapping() -> None:
     for name, column in parser.time_series.items():
         assert len(column) == 460
 
-    assert remove_ids(parser.to_dict(dsms_schema=True)) == sort_entries(
+    assert remove_ids(parser.to_dict(schema=dsms_schema)) == sort_entries(
         metadata
     )
     assert sort_entries(parser.to_dict()) == as_non_dsms_schema(metadata)
@@ -233,7 +233,7 @@ def test_csv_parser_config(config) -> None:
 
     assert parser.graph.isomorphic(expected_graph)
     assert str(parser.graph.identifier) == config["graph_identifier"]
-    assert remove_ids(parser.to_dict(dsms_schema=True)) == sort_entries(
+    assert remove_ids(parser.to_dict(schema=dsms_schema)) == sort_entries(
         metadata
     )
     assert sort_entries(parser.to_dict()) == as_non_dsms_schema(metadata)
@@ -292,7 +292,7 @@ def test_parser_excel(extension) -> None:
 
     assert parser.graph.isomorphic(expected_graph)
 
-    assert remove_ids(parser.to_dict(dsms_schema=True)) == sort_entries(
+    assert remove_ids(parser.to_dict(schema=dsms_schema)) == sort_entries(
         metadata
     )
     assert sort_entries(parser.to_dict()) == as_non_dsms_schema(metadata)
@@ -345,7 +345,7 @@ def test_parser_excel_inputs(input_kind) -> None:
 
     assert parser.graph.isomorphic(expected_graph)
 
-    assert remove_ids(parser.to_dict(dsms_schema=True)) == sort_entries(
+    assert remove_ids(parser.to_dict(schema=dsms_schema)) == sort_entries(
         metadata
     )
     assert sort_entries(parser.to_dict()) == as_non_dsms_schema(metadata)

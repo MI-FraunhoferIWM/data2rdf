@@ -1,9 +1,6 @@
 """Data2RDF parser utilities"""
 
 import json
-import random
-import string
-import time
 import warnings
 from typing import TYPE_CHECKING
 
@@ -219,23 +216,3 @@ def _value_exists(value: "Any") -> bool:
         bool: True if the value exists and is valid, otherwise False.
     """
     return pd.notnull(value) and value != ""
-
-
-def generate_id(prefix: str = "id") -> str:
-    # Generate a unique part using time and random characters
-    """
-    Generates a unique id using a combination of the current time and 6 random characters.
-
-    Args:
-    prefix (str): The prefix to use for the generated id. Defaults to "id".
-
-    Returns:
-    str: The generated id.
-    """
-    unique_part = f"{int(time.time() * 1000)}"  # Milliseconds since epoch
-    random_part = "".join(
-        random.choices(string.ascii_lowercase + string.digits, k=6)  # nosec
-    )
-    # Combine prefix, unique part, and random part
-    generated_id = f"{prefix}{unique_part}{random_part}"
-    return generated_id

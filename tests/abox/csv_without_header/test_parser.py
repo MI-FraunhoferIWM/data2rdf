@@ -2,6 +2,8 @@
 
 import os
 
+from ..utils import dsms_schema
+
 test_folder = os.path.dirname(os.path.abspath(__file__))
 working_folder = os.path.join(test_folder, "input")
 output_folder = os.path.join(test_folder, "output")
@@ -50,5 +52,5 @@ def test_csv_wo_header_parser_config() -> None:
         assert len(column) == 4
 
     assert parser.graph.isomorphic(expected_graph)
-    assert parser.to_dict(dsms_schema=True) == {}
+    assert parser.to_dict(schema=dsms_schema) == {}
     assert parser.to_dict() == {}

@@ -2,6 +2,8 @@
 
 import os
 
+from ..utils import dsms_schema
+
 test_folder = os.path.dirname(os.path.abspath(__file__))
 working_folder = os.path.join(test_folder, "input")
 output_folder = os.path.join(test_folder, "output")
@@ -70,5 +72,5 @@ def test_csv_na_values_pipeline() -> None:
 
     assert pipeline.graph.isomorphic(expected_graph)
 
-    assert pipeline.to_dict(dsms_schema=True) == {}
+    assert pipeline.to_dict(schema=dsms_schema) == {}
     assert pipeline.to_dict() == {}

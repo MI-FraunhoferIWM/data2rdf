@@ -5,7 +5,7 @@ import os
 
 import pytest
 
-from ..utils import remove_ids, sort_entries
+from ..utils import dsms_schema, remove_ids, sort_entries
 
 test_folder = os.path.dirname(os.path.abspath(__file__))
 working_folder = os.path.join(test_folder, "input")
@@ -85,7 +85,7 @@ def test_parser_json(mapping_format, data_format) -> None:
 
     assert parser.graph.isomorphic(expected_graph)
 
-    assert remove_ids(parser.to_dict(dsms_schema=True)) == sort_entries(
+    assert remove_ids(parser.to_dict(schema=dsms_schema)) == sort_entries(
         metadata
     )
 
@@ -127,6 +127,6 @@ def test_json_parser_different_mapping_files(extension) -> None:
 
     assert parser.graph.isomorphic(expected_graph)
 
-    assert remove_ids(parser.to_dict(dsms_schema=True)) == sort_entries(
+    assert remove_ids(parser.to_dict(schema=dsms_schema)) == sort_entries(
         metadata
     )

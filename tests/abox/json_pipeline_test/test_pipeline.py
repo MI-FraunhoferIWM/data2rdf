@@ -5,7 +5,7 @@ import os
 
 import pytest
 
-from ..utils import remove_ids, sort_entries
+from ..utils import dsms_schema, remove_ids, sort_entries
 
 test_folder = os.path.dirname(os.path.abspath(__file__))
 working_folder = os.path.join(test_folder, "input")
@@ -90,7 +90,7 @@ def test_pipeline_json(mapping_format, data_format) -> None:
 
     assert pipeline.graph.isomorphic(expected_graph)
 
-    assert remove_ids(pipeline.to_dict(dsms_schema=True)) == sort_entries(
+    assert remove_ids(pipeline.to_dict(schema=dsms_schema)) == sort_entries(
         metadata
     )
 
@@ -140,6 +140,6 @@ def test_json_pipeline_different_mapping_types(extension) -> None:
 
     assert pipeline.graph.isomorphic(expected_graph)
 
-    assert remove_ids(pipeline.to_dict(dsms_schema=True)) == sort_entries(
+    assert remove_ids(pipeline.to_dict(schema=dsms_schema)) == sort_entries(
         metadata
     )
