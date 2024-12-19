@@ -210,6 +210,15 @@ class Data2RDF(BaseModel):
             graph += cls._validate_additional_triples(cls.additional_triples)
         return graph
 
+    def to_dict(self, dsms_schema: bool = False) -> "List[Dict[str, Any]]":
+        """Return list of general metadata as DSMS custom properties"""
+        if self.mode == PipelineMode.ABOX:
+            return self.parser.abox.to_dict(dsms_schema=dsms_schema)
+        else:
+            raise NotImplementedError(
+                "`to_dict()` is not available in `tbox`-mode."
+            )
+
     @property
     def plain_metadata(cls) -> Dict[str, Any]:
         """Metadata as flat json - without units and iris.

@@ -10,7 +10,6 @@ mapping_folder = os.path.join(working_folder, "mapping")
 raw_data = os.path.join(working_folder, "data", "data.csv")
 expected = os.path.join(output_folder, "output_csv_pipeline.ttl")
 
-
 parser_args = {
     "time_series_sep": ";",
     "metadata_length": 0,
@@ -71,4 +70,5 @@ def test_csv_na_values_pipeline() -> None:
 
     assert pipeline.graph.isomorphic(expected_graph)
 
-    assert pipeline.plain_metadata == {}
+    assert pipeline.to_dict(dsms_schema=True) == {}
+    assert pipeline.to_dict() == {}

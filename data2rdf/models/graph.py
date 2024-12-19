@@ -3,8 +3,8 @@
 import warnings
 from typing import Any, Dict, List, Optional, Union
 
-from data2rdf.qudt.utils import _get_query_match
-from data2rdf.utils import make_prefix
+from data2rdf.qudt.utils import _get_qudt_label_and_symbol, _get_query_match
+from data2rdf.utils import make_prefix, split_namespace
 from data2rdf.warnings import ParserWarning
 
 from data2rdf.models.utils import (  # isort:skip
@@ -18,6 +18,7 @@ from data2rdf.models.base import (  # isort:skip
     BasicGraphModel,
     BasicSuffixModel,
     RelationType,
+    BaseConfigModel,
 )
 
 from pydantic import (  # isort:skip
@@ -109,6 +110,39 @@ class ClassTypeGraph(BasicGraphModel):
         }
 
 
+class MeasurementUnit(BaseConfigModel):
+    iri: Union[str, AnyUrl] = Field(
+        ...,
+        description="Ontological IRI related to the measurement unit",
+    )
+    label: Optional[str] = Field(
+        None,
+        description="Label of the measurement unit",
+    )
+    symbol: Optional[str] = Field(
+        None,
+        description="Symbol of the measurement unit",
+    )
+    namespace: Optional[str] = Field(
+        None,
+        description="Namespace of the measurement unit",
+    )
+
+    @model_validator(mode="after")
+    @classmethod
+    def validate_measurement_unit(cls, self) -> "MeasurementUnit":
+        unit = _get_qudt_label_and_symbol(
+            self.iri, self.config.qudt_units, self.config.language
+        )
+        if not self.label and "label" in unit:
+            self.label = unit["label"]
+        if not self.symbol and "symbol" in unit:
+            self.symbol = unit["symbol"]
+        if not self.namespace:
+            self.namespace = split_namespace(self.iri)
+        return self
+
+
 class QuantityGraph(BasicGraphModel, BasicSuffixModel):
     """Quantity with or without a discrete value and a unit
     E.g. a quantity with a single value and unit _or_
@@ -131,6 +165,14 @@ class QuantityGraph(BasicGraphModel, BasicSuffixModel):
         "qudt:value",
         description="""Data property
         for mapping the data value to the individual.""",
+    )
+
+    measurement_unit: Optional[MeasurementUnit] = Field(
+        None,
+        description="Detailed QUDT Measurement Unit specification",
+        alias=AliasChoices(
+            "measurement_unit", "measurementunit", "measurementUnit"
+        ),
     )
 
     @field_validator("value", mode="after")
@@ -173,6 +215,15 @@ class QuantityGraph(BasicGraphModel, BasicSuffixModel):
         elif isinstance(value, AnyUrl):
             value = str(value)
         return value
+
+    @model_validator(mode="after")
+    @classmethod
+    def validate_quantity_graph(cls, self) -> "QuantityGraph":
+        if not self.measurement_unit and self.unit:
+            self.measurement_unit = MeasurementUnit(iri=self.unit)
+        if self.measurement_unit and not self.unit:
+            self.unit = self.measurement_unit.iri
+        return self
 
     @property
     def json_ld(cls) -> Dict[str, Any]:

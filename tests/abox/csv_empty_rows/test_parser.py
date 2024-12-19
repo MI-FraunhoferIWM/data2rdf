@@ -27,7 +27,6 @@ columns = [
     "MassDensity",
 ]
 
-
 config = {"graph_identifier": "https://www.example.org"}
 
 
@@ -60,4 +59,5 @@ def test_csv_nan_vals() -> None:
         assert len(column) == 31
 
     assert parser.graph.isomorphic(expected_graph)
-    assert parser.plain_metadata == {}
+    assert parser.to_dict(dsms_schema=True) == {}
+    assert parser.to_dict() == {}

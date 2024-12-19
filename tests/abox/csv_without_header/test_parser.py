@@ -16,7 +16,6 @@ parser_args = {
     "time_series_header_length": 1,
 }
 
-
 columns = ["TestTime", "Sensor1", "Sensor2", "Sensor3"]
 
 config = {"graph_identifier": "https://www.example.org"}
@@ -51,4 +50,5 @@ def test_csv_wo_header_parser_config() -> None:
         assert len(column) == 4
 
     assert parser.graph.isomorphic(expected_graph)
-    assert parser.plain_metadata == {}
+    assert parser.to_dict(dsms_schema=True) == {}
+    assert parser.to_dict() == {}

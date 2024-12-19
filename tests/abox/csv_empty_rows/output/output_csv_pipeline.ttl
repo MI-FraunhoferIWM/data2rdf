@@ -17,22 +17,22 @@ fileid:MassDensity a <https://w3id.org/steel/ProcessOntology/MassDensity> ;
     qudt:hasUnit "http://qudt.org/vocab/unit/KiloGM-PER-M3"^^xsd:anyURI .
 
 fileid:ModulusOfElasticity a <https://w3id.org/steel/ProcessOntology/ModulusOfElasticity> ;
-    qudt:hasUnit "https://qudt.org/vocab/unit/PA"^^xsd:anyURI .
+    qudt:hasUnit "http://qudt.org/vocab/unit/PA"^^xsd:anyURI .
 
 fileid:PoissonRatio a <https://w3id.org/steel/ProcessOntology/PoissonRatio> ;
-    qudt:hasUnit "https://qudt.org/vocab/unit/NUM"^^xsd:anyURI .
+    qudt:hasUnit "http://qudt.org/vocab/unit/NUM"^^xsd:anyURI .
 
 fileid:SpecificHeatCapacity a <https://w3id.org/steel/ProcessOntology/SpecificHeatCapacity> ;
     qudt:hasUnit "http://qudt.org/vocab/unit/J-PER-KiloGM-K"^^xsd:anyURI .
 
 fileid:Temperature a <https://w3id.org/steel/ProcessOntology/Temperature> ;
-    qudt:hasUnit "https://qudt.org/vocab/unit/DEG_C"^^xsd:anyURI .
+    qudt:hasUnit "http://qudt.org/vocab/unit/DEG_C"^^xsd:anyURI .
 
 fileid:ThermalConductivity a <https://w3id.org/steel/ProcessOntology/ThermalConductivity> ;
     qudt:hasUnit "http://qudt.org/vocab/unit/KiloW-PER-M-K"^^xsd:anyURI .
 
 fileid:ThermalExpansionCoefficient a <https://w3id.org/steel/ProcessOntology/ThermalExpansionCoefficient> ;
-    qudt:hasUnit "https://qudt.org/vocab/unit/PERCENT-PER-K"^^xsd:anyURI .
+    qudt:hasUnit "http://qudt.org/vocab/unit/PERCENT-PER-K"^^xsd:anyURI .
 
 fileid:tableGroup a csvw:TableGroup ;
     csvw:table [ a csvw:Table ;
