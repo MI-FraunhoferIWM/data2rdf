@@ -226,6 +226,9 @@ class ABoxBaseParser(AnyBoxBaseParser):
             prop = {
                 "label": metadatum.suffix,
                 "value": metadatum.value,
+                "relation_mapping": {
+                    "class_iri": str(metadatum.iri),
+                },
             }
             if hasattr(metadatum, "measurement_unit"):
                 prop[

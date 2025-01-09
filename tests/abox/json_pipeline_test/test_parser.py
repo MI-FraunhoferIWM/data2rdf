@@ -23,6 +23,9 @@ metadata = {
                 {
                     "label": "Remark",
                     "value": "foobar",
+                    "relation_mapping": {
+                        "class_iri": "https://w3id.org/steel/ProcessOntology/Remark"
+                    },
                 },
                 {
                     "label": "WidthChange",
@@ -33,6 +36,9 @@ metadata = {
                         "symbol": "mm",
                     },
                     "value": 1.0,
+                    "relation_mapping": {
+                        "class_iri": "https://w3id.org/steel/ProcessOntology/WidthChange"
+                    },
                 },
             ],
             "name": "General",

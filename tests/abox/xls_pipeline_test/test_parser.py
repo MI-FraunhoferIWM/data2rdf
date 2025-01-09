@@ -22,6 +22,9 @@ metadata = {
                 {
                     "label": "TimeStamp",
                     "value": "2016-10-11 00:00:00",
+                    "relation_mapping": {
+                        "class_iri": "https://w3id.org/steel/ProcessOntology/TimeStamp"
+                    },
                 },
                 {
                     "label": "OriginalGaugeLength",
@@ -32,6 +35,9 @@ metadata = {
                         "symbol": "mm",
                     },
                     "value": 15,
+                    "relation_mapping": {
+                        "class_iri": "https://w3id.org/steel/ProcessOntology/OriginalGaugeLength"
+                    },
                 },
                 {
                     "label": "SpecimenWidth",
@@ -42,6 +48,9 @@ metadata = {
                         "symbol": "mm",
                     },
                     "value": 9.5,
+                    "relation_mapping": {
+                        "class_iri": "https://w3id.org/steel/ProcessOntology/SpecimenWidth"
+                    },
                 },
                 {
                     "label": "SpecimenThickness",
@@ -52,22 +61,37 @@ metadata = {
                         "symbol": "mm",
                     },
                     "value": 1.5,
+                    "relation_mapping": {
+                        "class_iri": "https://w3id.org/steel/ProcessOntology/SpecimenThickness"
+                    },
                 },
                 {
                     "label": "SpecimenType",
                     "value": "Fz 10x20",
+                    "relation_mapping": {
+                        "class_iri": "https://w3id.org/steel/ProcessOntology/SpecimenType"
+                    },
                 },
                 {
                     "label": "SampleIdentifier-2",
                     "value": "123456",
+                    "relation_mapping": {
+                        "class_iri": "https://w3id.org/steel/ProcessOntology/SampleIdentifier-2"
+                    },
                 },
                 {
                     "label": "ProjectNumber",
                     "value": "Projekt_1",
+                    "relation_mapping": {
+                        "class_iri": "https://w3id.org/steel/ProcessOntology/ProjectNumber"
+                    },
                 },
                 {
                     "label": "Tester",
                     "value": "Fe",
+                    "relation_mapping": {
+                        "class_iri": "https://w3id.org/steel/ProcessOntology/Tester"
+                    },
                 },
                 {
                     "label": "TestingRate",
@@ -78,10 +102,16 @@ metadata = {
                         "symbol": "mm/s",
                     },
                     "value": 0.02,
+                    "relation_mapping": {
+                        "class_iri": "https://w3id.org/steel/ProcessOntology/TestingRate"
+                    },
                 },
                 {
                     "label": "MachineData",
                     "value": "M_1",
+                    "relation_mapping": {
+                        "class_iri": "https://w3id.org/steel/ProcessOntology/MachineData"
+                    },
                 },
                 {
                     "label": "Temperature",
@@ -92,10 +122,16 @@ metadata = {
                         "symbol": "°C",
                     },
                     "value": 25,
+                    "relation_mapping": {
+                        "class_iri": "https://w3id.org/steel/ProcessOntology/Temperature"
+                    },
                 },
                 {
                     "label": "Material",
                     "value": "Werkstoff_1",
+                    "relation_mapping": {
+                        "class_iri": "https://w3id.org/steel/ProcessOntology/Material"
+                    },
                 },
             ],
             "name": "General",
