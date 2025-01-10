@@ -46,6 +46,12 @@ DATA_SUBGRAPHS = {
             "material": "material_2",
             "kitem": ["kitem_2", "kitem_3"],
         },
+        {
+            "name": "specimen_3",
+            "youngs_modulus": [300, 400],
+            "material": "material_3",
+            "kitem": "kitem_4",
+        },
     ]
 }
 
@@ -105,11 +111,21 @@ EXPECTED_SUBGRAPHS = """
     ns1:hasYoungsModulus <https://w3id.org/emmo/domain/domain-nanoindentation/nanoindentation#YoungsModulus_specimen_2> ;
     ns1:hasKitem <https://w3id.org/steel/ProcessOntology/Kitem/kitem_2>, <https://w3id.org/steel/ProcessOntology/Kitem/kitem_3> .
 
+<https://w3id.org/emmo/domain/domain-nanoindentation/nanoindentation#specimen_3> a ns1:Specimen ;
+    ns1:hasIdentifier "specimen_3"^^xsd:string ;
+    ns1:hasMaterial <https://w3id.org/emmo/domain/domain-nanoindentation/nanoindentation#Material_specimen_3> ;
+    ns1:hasYoungsModulus <https://w3id.org/emmo/domain/domain-nanoindentation/nanoindentation#YoungsModulus_specimen_3> ;
+    ns1:hasKitem <https://w3id.org/steel/ProcessOntology/Kitem/kitem_4> .
+
+
 <https://w3id.org/emmo/domain/domain-nanoindentation/nanoindentation#Material_specimen_1> a ns1:Material ;
     ns1:hasIdentifier "material_1"^^xsd:string .
 
 <https://w3id.org/emmo/domain/domain-nanoindentation/nanoindentation#Material_specimen_2> a ns1:Material ;
     ns1:hasIdentifier "material_2"^^xsd:string .
+
+<https://w3id.org/emmo/domain/domain-nanoindentation/nanoindentation#Material_specimen_3> a ns1:Material ;
+    ns1:hasIdentifier "material_3"^^xsd:string .
 
 <https://w3id.org/emmo/domain/domain-nanoindentation/nanoindentation#YoungsModulus_specimen_1> a ns1:YoungsModulus ;
     ns2:hasUnit "http://qudt.org/vocab/unit/GigaPA"^^xsd:anyURI ;
@@ -119,7 +135,9 @@ EXPECTED_SUBGRAPHS = """
     ns2:hasUnit "http://qudt.org/vocab/unit/GigaPA"^^xsd:anyURI ;
     ns2:value "200-300"^^xsd:string .
 
-
+<https://w3id.org/emmo/domain/domain-nanoindentation/nanoindentation#YoungsModulus_specimen_3> a ns1:YoungsModulus ;
+    ns2:hasUnit "http://qudt.org/vocab/unit/GigaPA"^^xsd:anyURI ;
+    ns2:value 300, 400 .
 """
 
 EXPECTED = """
