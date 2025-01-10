@@ -514,18 +514,64 @@ class JsonABoxParser(ABoxBaseParser):
         else:
             value = results
 
-        if isinstance(value, list):
-            for val in value:
+        if isinstance(
+            relation.object_data_type,
+            (CustomRelationPropertySubgraph, CustomRelationQuantitySubgraph),
+        ):
+            if isinstance(value, list):
+                for val in value:
+                    self._make_subgraph(relation, datum, val, suffix)
+            elif _value_exists(value):
+                self._make_subgraph(relation, datum, value, suffix)
+            else:
+                message = f"""Concept with for iri `{datum.iri}`
+                                does not have a value at location `{relation.object_location}`.
+                                Concept will be omitted in graph.
+                                """
+                warnings.warn(message, MappingMissmatchWarning)
+
+        else:
+            if isinstance(value, list):
+                for val in value:
+                    self._make_property_graph(
+                        val,
+                        datum.iri,
+                        suffix,
+                        **relation.model_dump(exclude={"object_location"}),
+                    )
+            elif _value_exists(value):
                 self._make_property_graph(
-                    val,
+                    value,
                     datum.iri,
                     suffix,
                     **relation.model_dump(exclude={"object_location"}),
                 )
-        elif isinstance(
-            relation.object_data_type,
-            (CustomRelationPropertySubgraph, CustomRelationQuantitySubgraph),
-        ):
+            else:
+                message = f"""Concept with for iri `{datum.iri}`
+                                does not have a value at location `{relation.object_location}`.
+                                Concept will be omitted in graph.
+                                """
+                warnings.warn(message, MappingMissmatchWarning)
+
+    def _make_subgraph(
+        self,
+        relation: CustomRelation,
+        datum: ABoxBaseMapping,
+        value: Any,
+        suffix: str,
+    ) -> None:
+        if relation.object_data_type.concatenate:
+            iri = str(relation.object_data_type.iri)
+            iri = iri if iri.endswith("/") else iri + "/"
+            value = urljoin(iri, str(value))
+            self._make_property_graph(
+                value,
+                datum.iri,
+                suffix,
+                relation=relation.relation,
+                relation_type="object_property",
+            )
+        else:
             if isinstance(
                 relation.object_data_type, CustomRelationPropertySubgraph
             ):
@@ -543,19 +589,6 @@ class JsonABoxParser(ABoxBaseParser):
                 relation=relation.relation,
                 relation_type="object_property",
             )
-        elif _value_exists(value):
-            self._make_property_graph(
-                value,
-                datum.iri,
-                suffix,
-                **relation.model_dump(exclude={"object_location"}),
-            )
-        else:
-            message = f"""Concept with for iri `{datum.iri}`
-                            does not have a value at location `{relation.object_location}`.
-                            Concept will be omitted in graph.
-                            """
-            warnings.warn(message, MappingMissmatchWarning)
 
     def _make_property_graph(
         self,

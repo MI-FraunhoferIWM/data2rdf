@@ -38,11 +38,13 @@ DATA_SUBGRAPHS = {
             "name": "specimen_1",
             "youngs_modulus": 100,
             "material": "material_1",
+            "kitem": "kitem_1",
         },
         {
             "name": "specimen_2",
             "youngs_modulus": "200-300",
             "material": "material_2",
+            "kitem": ["kitem_2", "kitem_3"],
         },
     ]
 }
@@ -74,6 +76,14 @@ MAPPING_SUBGRAPHS = [
                 "object_location": "name",
                 "relation": "https://w3id.org/steel/ProcessOntology/hasIdentifier",
             },
+            {
+                "object_location": "kitem",
+                "relation": "https://w3id.org/steel/ProcessOntology/hasKitem",
+                "object_type": {
+                    "iri": "https://w3id.org/steel/ProcessOntology/Kitem/",
+                    "concatenate": True,
+                },
+            },
         ],
     }
 ]
@@ -86,12 +96,14 @@ EXPECTED_SUBGRAPHS = """
 <https://w3id.org/emmo/domain/domain-nanoindentation/nanoindentation#specimen_1> a ns1:Specimen ;
     ns1:hasIdentifier "specimen_1"^^xsd:string ;
     ns1:hasMaterial <https://w3id.org/emmo/domain/domain-nanoindentation/nanoindentation#Material_specimen_1> ;
-    ns1:hasYoungsModulus <https://w3id.org/emmo/domain/domain-nanoindentation/nanoindentation#YoungsModulus_specimen_1> .
+    ns1:hasYoungsModulus <https://w3id.org/emmo/domain/domain-nanoindentation/nanoindentation#YoungsModulus_specimen_1> ;
+    ns1:hasKitem <https://w3id.org/steel/ProcessOntology/Kitem/kitem_1> .
 
 <https://w3id.org/emmo/domain/domain-nanoindentation/nanoindentation#specimen_2> a ns1:Specimen ;
     ns1:hasIdentifier "specimen_2"^^xsd:string ;
     ns1:hasMaterial <https://w3id.org/emmo/domain/domain-nanoindentation/nanoindentation#Material_specimen_2> ;
-    ns1:hasYoungsModulus <https://w3id.org/emmo/domain/domain-nanoindentation/nanoindentation#YoungsModulus_specimen_2> .
+    ns1:hasYoungsModulus <https://w3id.org/emmo/domain/domain-nanoindentation/nanoindentation#YoungsModulus_specimen_2> ;
+    ns1:hasKitem <https://w3id.org/steel/ProcessOntology/Kitem/kitem_2>, <https://w3id.org/steel/ProcessOntology/Kitem/kitem_3> .
 
 <https://w3id.org/emmo/domain/domain-nanoindentation/nanoindentation#Material_specimen_1> a ns1:Material ;
     ns1:hasIdentifier "material_1"^^xsd:string .
@@ -106,6 +118,7 @@ EXPECTED_SUBGRAPHS = """
 <https://w3id.org/emmo/domain/domain-nanoindentation/nanoindentation#YoungsModulus_specimen_2> a ns1:YoungsModulus ;
     ns2:hasUnit "http://qudt.org/vocab/unit/GigaPA"^^xsd:anyURI ;
     ns2:value "200-300"^^xsd:string .
+
 
 """
 

@@ -41,7 +41,15 @@ class TBoxBaseMapping(BasicConceptMapping):
     )
 
 
-class CustomRelationPropertySubgraph(BasicSuffixModel):
+class PropertySubgraphBaseModel(BasicSuffixModel):
+    concatenate: Optional[bool] = Field(
+        False,
+        description="Concatenate the value and the iri",
+        alias=AliasChoices("concatenate", "concat"),
+    )
+
+
+class CustomRelationPropertySubgraph(PropertySubgraphBaseModel):
     value_relation: Optional[str] = Field(
         "rdfs:label",
         description="""Object/Data/Annotation property for the value
@@ -49,7 +57,7 @@ class CustomRelationPropertySubgraph(BasicSuffixModel):
     )
 
 
-class CustomRelationQuantitySubgraph(BasicSuffixModel):
+class CustomRelationQuantitySubgraph(PropertySubgraphBaseModel):
     unit_relation: Optional[Union[str, AnyUrl]] = Field(
         "qudt:hasUnit",
         description="""Object property for mapping the IRI
