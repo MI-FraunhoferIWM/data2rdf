@@ -72,7 +72,7 @@ class AnyBoxBaseParser(BaseParser):
 
     @property
     @abstractmethod
-    def mapping_model(cls) -> "BaseParser":
+    def mapping_model(self) -> "BaseParser":
         """Pydantic model for validating mapping.
         Must be a subclass of `ABoxBaseParser` or `TBoxBaseParser`.
         """
@@ -93,10 +93,10 @@ class AnyBoxBaseParser(BaseParser):
         """Class method for loading data file"""
 
     @property
-    def graph(cls) -> "Graph":
+    def graph(self) -> "Graph":
         """Return RDF Graph from the parsed data."""
-        graph = Graph(identifier=cls.config.graph_identifier)
-        graph.parse(data=json.dumps(cls.json_ld), format="json-ld")
+        graph = Graph(identifier=self.config.graph_identifier)
+        graph.parse(data=json.dumps(self.json_ld), format="json-ld")
         return graph
 
     @model_validator(mode="after")
@@ -313,11 +313,11 @@ class BaseFileParser(BaseParser):
         return self
 
     @property
-    def plain_metadata(cls) -> Dict[str, Any]:
+    def plain_metadata(self) -> Dict[str, Any]:
         """Metadata as flat json - without units and iris.
         Useful e.g. for the custom properties of the DSMS."""
-        if cls.mode == PipelineMode.ABOX:
-            return cls.abox.plain_metadata
+        if self.mode == PipelineMode.ABOX:
+            return self.abox.plain_metadata
         else:
             raise NotImplementedError(
                 "`plain_metadata` is not available in `tbox`-mode."
@@ -333,30 +333,30 @@ class BaseFileParser(BaseParser):
             )
 
     @property
-    def general_metadata(cls) -> "List[BasicConceptMapping]":
+    def general_metadata(self) -> "List[BasicConceptMapping]":
         """Return list object with general metadata"""
-        if cls.mode == PipelineMode.ABOX:
-            return cls.abox.general_metadata
+        if self.mode == PipelineMode.ABOX:
+            return self.abox.general_metadata
         else:
             raise NotImplementedError(
                 "`general_metadata` is not available in `tbox`-mode."
             )
 
     @property
-    def dataframe_metadata(cls) -> "List[BasicConceptMapping]":
+    def dataframe_metadata(self) -> "List[BasicConceptMapping]":
         """Return time series metadata"""
-        if cls.mode == PipelineMode.ABOX:
-            return cls.abox.dataframe_metadata
+        if self.mode == PipelineMode.ABOX:
+            return self.abox.dataframe_metadata
         else:
             raise NotImplementedError(
                 "`dataframe_metadata` is not available in `tbox`-mode."
             )
 
     @property
-    def dataframe(cls) -> "Dict[str, Any]":
+    def dataframe(self) -> "Dict[str, Any]":
         """Return time series"""
-        if cls.mode == PipelineMode.ABOX:
-            return cls.abox.dataframe
+        if self.mode == PipelineMode.ABOX:
+            return self.abox.dataframe
         else:
             raise NotImplementedError(
                 "`dataframe` is not available in `tbox`-mode."

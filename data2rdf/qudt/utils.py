@@ -2,7 +2,7 @@
 import tempfile
 import warnings
 from functools import lru_cache
-from typing import List, Optional
+from typing import Any, Dict, List, Optional
 
 import requests
 from rdflib import Graph
@@ -88,7 +88,7 @@ def _check_qudt_mapping(symbol: Optional[str]) -> Optional[str]:
 
 def _get_qudt_label_and_symbol(
     iri: str, qudt_iri: str, language: str
-) -> Optional[str]:
+) -> Dict[str, Any]:
     graph = _get_qudt_graph(qudt_iri)
     gen_query = f"""PREFIX qudt: <http://qudt.org/schema/qudt/>
     PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>

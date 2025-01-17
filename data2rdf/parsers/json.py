@@ -70,13 +70,13 @@ class JsonTBoxParser(TBoxBaseParser):
 
     # OVERRIDE
     @property
-    def json_ld(cls) -> "Dict[str, Any]":
+    def json_ld(self) -> "Dict[str, Any]":
         """Return JSON-LD in TBox mode"""
-        return _make_tbox_json_ld(cls)
+        return _make_tbox_json_ld(self)
 
     # OVERRIDE
     @property
-    def mapping_model(cls) -> TBoxBaseMapping:
+    def mapping_model(self) -> TBoxBaseMapping:
         "TBox mapping model"
         return TBoxBaseMapping
 
@@ -127,13 +127,13 @@ class JsonABoxParser(ABoxBaseParser):
 
     # OVERRIDE
     @property
-    def mapping_model(cls) -> ABoxBaseMapping:
+    def mapping_model(self) -> ABoxBaseMapping:
         "ABox mapping model"
         return ABoxBaseMapping
 
     # OVERRIDE
     @property
-    def json_ld(cls) -> Dict[str, Any]:
+    def json_ld(self) -> Dict[str, Any]:
         """
         Returns the JSON-LD representation of the parser's data.
 
@@ -146,12 +146,12 @@ class JsonABoxParser(ABoxBaseParser):
         :return: A dictionary containing the JSON-LD representation.
         :rtype: Dict[str, Any]
         """
-        if not cls.config.suppress_file_description:
+        if not self.config.suppress_file_description:
             members = []
 
             triples = {
                 "@context": {
-                    f"{cls.config.prefix_name}": make_prefix(cls.config),
+                    f"{self.config.prefix_name}": make_prefix(self.config),
                     "rdfs": "http://www.w3.org/2000/01/rdf-schema#",
                     "xsd": "http://www.w3.org/2001/XMLSchema#",
                     "dcterms": "http://purl.org/dc/terms/",
@@ -159,12 +159,12 @@ class JsonABoxParser(ABoxBaseParser):
                     "foaf": "http://xmlns.com/foaf/spec/",
                     "prov": "<http://www.w3.org/ns/prov#>",
                 },
-                "@id": f"{cls.config.prefix_name}:Dictionary",
+                "@id": f"{self.config.prefix_name}:Dictionary",
                 "@type": "prov:Dictionary",
                 "prov:hadDictionaryMember": members,
             }
 
-            for mapping in cls.general_metadata:
+            for mapping in self.general_metadata:
                 if isinstance(mapping, QuantityGraph):
                     entity = {
                         "@type": "prov:KeyEntityPair",
@@ -196,18 +196,18 @@ class JsonABoxParser(ABoxBaseParser):
                         f"Mapping must be of type {QuantityGraph} or {PropertyGraph}, not {type(mapping)}"
                     )
 
-            for idx, mapping in enumerate(cls.dataframe_metadata):
+            for idx, mapping in enumerate(self.dataframe_metadata):
                 if not isinstance(mapping, QuantityGraph):
                     raise TypeError(
                         f"Mapping must be of type {QuantityGraph}, not {type(mapping)}"
                     )
 
-                if cls.config.data_download_uri:
+                if self.config.data_download_uri:
                     download_url = {
                         "dcterms:identifier": {
                             "@type": "xsd:anyURI",
                             "@value": urljoin(
-                                str(cls.config.data_download_uri),
+                                str(self.config.data_download_uri),
                                 f"column-{idx}",
                             ),
                         }
@@ -241,8 +241,8 @@ class JsonABoxParser(ABoxBaseParser):
                 members.append(entity)
         else:
             triples = {
-                "@graph": [model.json_ld for model in cls.general_metadata]
-                + [model.json_ld for model in cls.dataframe_metadata]
+                "@graph": [model.json_ld for model in self.general_metadata]
+                + [model.json_ld for model in self.dataframe_metadata]
             }
 
         return triples
@@ -642,18 +642,18 @@ class JsonParser(BaseFileParser):
 
     # OVERRIDE
     @property
-    def media_type(cls) -> str:
+    def media_type(self) -> str:
         """IANA Media type definition of the resource to be parsed."""
         return "https://www.iana.org/assignments/media-types/application/json"
 
     # OVERRIDE
     @property
-    def _abox_parser(cls) -> JsonABoxParser:
+    def _abox_parser(self) -> JsonABoxParser:
         """Pydantic Model for Joson ABox parser"""
         return JsonABoxParser
 
     # OVERRIDE
     @property
-    def _tbox_parser(cls) -> JsonTBoxParser:
+    def _tbox_parser(self) -> JsonTBoxParser:
         """Pydantic Model for Excel TBox parser"""
         return JsonTBoxParser

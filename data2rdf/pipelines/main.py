@@ -137,7 +137,7 @@ class Data2RDF(BaseModel):
         return self
 
     @property
-    def json_ld(cls) -> Dict[str, Any]:
+    def json_ld(self) -> Dict[str, Any]:
         """
         Returns a dictionary of JSON-LD for the graph based on the pipeline mode.
 
@@ -155,11 +155,11 @@ class Data2RDF(BaseModel):
             Dict[str, Any]: A dictionary of JSON-LD for the graph.
         """
 
-        if cls.mode == PipelineMode.ABOX:
-            if not cls.config.suppress_file_description:
+        if self.mode == PipelineMode.ABOX:
+            if not self.config.suppress_file_description:
                 model = {
                     "@context": {
-                        f"{cls.config.prefix_name}": make_prefix(cls.config),
+                        f"{self.config.prefix_name}": make_prefix(self.config),
                         "csvw": "http://www.w3.org/ns/csvw#",
                         "rdfs": "http://www.w3.org/2000/01/rdf-schema#",
                         "dcat": "http://www.w3.org/ns/dcat#",
@@ -169,31 +169,31 @@ class Data2RDF(BaseModel):
                         "csvw": "http://www.w3.org/ns/csvw#",
                         "foaf": "http://xmlns.com/foaf/spec/",
                     },
-                    "@id": f"{cls.config.prefix_name}:dataset",
+                    "@id": f"{self.config.prefix_name}:dataset",
                     "@type": "dcat:Dataset",
                     "dcat:distribution": {
                         "@type": "dcat:Distribution",
                         "dcat:mediaType": {
                             "@type": "xsd:anyURI",
-                            "@value": cls.parser.media_type,
+                            "@value": self.parser.media_type,
                         },
                         "dcat:accessURL": {
                             "@type": "xsd:anyURI",
-                            "@value": str(cls.config.data_download_uri),
+                            "@value": str(self.config.data_download_uri),
                         },
                     },
-                    "dcterms:hasPart": cls.parser.abox.json_ld,
+                    "dcterms:hasPart": self.parser.abox.json_ld,
                 }
             else:
-                model = cls.parser.abox.json_ld
-        elif cls.mode == PipelineMode.TBOX:
-            model = cls.parser.tbox.json_ld
+                model = self.parser.abox.json_ld
+        elif self.mode == PipelineMode.TBOX:
+            model = self.parser.tbox.json_ld
         else:
             raise TypeError("Pipeline mode not understood")
         return model
 
     @property
-    def graph(cls) -> Graph:
+    def graph(self) -> Graph:
         """
         Returns a graph object based on the pipeline's JSON-LD data.
 
@@ -205,10 +205,10 @@ class Data2RDF(BaseModel):
             Graph: A graph object containing the pipeline's data.
         """
 
-        graph = Graph(identifier=cls.config.graph_identifier)
-        graph.parse(data=json.dumps(cls.json_ld), format="json-ld")
-        if cls.additional_triples:
-            graph += cls._validate_additional_triples(cls.additional_triples)
+        graph = Graph(identifier=self.config.graph_identifier)
+        graph.parse(data=json.dumps(self.json_ld), format="json-ld")
+        if self.additional_triples:
+            graph += self._validate_additional_triples(self.additional_triples)
         return graph
 
     def to_dict(self, schema: Callable = None) -> "List[Dict[str, Any]]":
@@ -221,41 +221,41 @@ class Data2RDF(BaseModel):
             )
 
     @property
-    def plain_metadata(cls) -> Dict[str, Any]:
+    def plain_metadata(self) -> Dict[str, Any]:
         """Metadata as flat json - without units and iris.
         Useful e.g. for the custom properties of the DSMS."""
-        if cls.mode == PipelineMode.ABOX:
-            return cls.parser.abox.plain_metadata
+        if self.mode == PipelineMode.ABOX:
+            return self.parser.abox.plain_metadata
         else:
             raise NotImplementedError(
                 "`plain_metadata` is not available in `tbox`-mode."
             )
 
     @property
-    def general_metadata(cls) -> "List[BasicConceptMapping]":
+    def general_metadata(self) -> "List[BasicConceptMapping]":
         """Return list object with general metadata"""
-        if cls.mode == PipelineMode.ABOX:
-            return cls.parser.abox.general_metadata
+        if self.mode == PipelineMode.ABOX:
+            return self.parser.abox.general_metadata
         else:
             raise NotImplementedError(
                 "`general_metadata` is not available in `tbox`-mode."
             )
 
     @property
-    def dataframe_metadata(cls) -> "List[BasicConceptMapping]":
+    def dataframe_metadata(self) -> "List[BasicConceptMapping]":
         """Return list object with time series metadata"""
-        if cls.mode == PipelineMode.ABOX:
-            return cls.parser.abox.dataframe_metadata
+        if self.mode == PipelineMode.ABOX:
+            return self.parser.abox.dataframe_metadata
         else:
             raise NotImplementedError(
                 "`dataframe_metadata` is not available in `tbox`-mode."
             )
 
     @property
-    def dataframe(cls) -> "Dict[str, Any]":
+    def dataframe(self) -> "Dict[str, Any]":
         """Return time series"""
-        if cls.mode == PipelineMode.ABOX:
-            return cls.parser.abox.dataframe
+        if self.mode == PipelineMode.ABOX:
+            return self.parser.abox.dataframe
         else:
             raise NotImplementedError(
                 "`dataframe` is not available in `tbox`-mode."

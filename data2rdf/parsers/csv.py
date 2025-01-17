@@ -68,15 +68,15 @@ class CSVTBoxParser(TBoxBaseParser):
 
     # OVERRIDE
     @property
-    def mapping_model(cls) -> TBoxBaseMapping:
+    def mapping_model(self) -> TBoxBaseMapping:
         """TBox Mapping Model for CSV Parser"""
         return TBoxBaseMapping
 
     # OVERRIDE
     @property
-    def json_ld(cls) -> "Dict[str, Any]":
+    def json_ld(self) -> "Dict[str, Any]":
         """Make the json-ld if pipeline is in abox-mode"""
-        return _make_tbox_json_ld(cls)
+        return _make_tbox_json_ld(self)
 
     # OVERRIDE
     @classmethod
@@ -137,13 +137,13 @@ class CSVABoxParser(ABoxBaseParser):
 
     # OVERRIDE
     @property
-    def mapping_model(cls) -> ABoxBaseMapping:
+    def mapping_model(self) -> ABoxBaseMapping:
         """ABox Mapping Model for CSV Parser"""
         return ABoxBaseMapping
 
     # OVERRIDE
     @property
-    def json_ld(cls) -> "Dict[str, Any]":
+    def json_ld(self) -> "Dict[str, Any]":
         """
         Returns a JSON-LD representation of the CSV data in ABox mode.
 
@@ -162,17 +162,17 @@ class CSVABoxParser(ABoxBaseParser):
         Dict[str, Any]: A JSON-LD object representing the CSV data in ABox mode.
         """
 
-        if not cls.config.suppress_file_description:
+        if not self.config.suppress_file_description:
             tables = []
 
-            if cls.general_metadata:
+            if self.general_metadata:
                 meta_table = {
                     "@type": "csvw:Table",
                     "rdfs:label": "Metadata",
                     "csvw:row": [],
                 }
 
-                for n, mapping in enumerate(cls.general_metadata):
+                for n, mapping in enumerate(self.general_metadata):
                     if isinstance(mapping, QuantityGraph):
                         row = {
                             "@type": "csvw:Row",
@@ -207,7 +207,7 @@ class CSVABoxParser(ABoxBaseParser):
                         )
                 tables += [meta_table]
 
-            if cls.dataframe_metadata:
+            if self.dataframe_metadata:
                 column_schema = {"@type": "csvw:Schema", "csvw:column": []}
                 tables += [
                     {
@@ -216,7 +216,7 @@ class CSVABoxParser(ABoxBaseParser):
                         "csvw:tableSchema": column_schema,
                     }
                 ]
-                for idx, mapping in enumerate(cls.dataframe_metadata):
+                for idx, mapping in enumerate(self.dataframe_metadata):
                     if isinstance(mapping, QuantityGraph):
                         entity = {"qudt:quantity": mapping.json_ld}
                     elif isinstance(mapping, PropertyGraph):
@@ -226,12 +226,12 @@ class CSVABoxParser(ABoxBaseParser):
                             f"Mapping must be of type {QuantityGraph} or {PropertyGraph}, not {type(mapping)}"
                         )
 
-                    if cls.config.data_download_uri:
+                    if self.config.data_download_uri:
                         download_url = {
                             "dcterms:identifier": {
                                 "@type": "xsd:anyURI",
                                 "@value": urljoin(
-                                    str(cls.config.data_download_uri),
+                                    str(self.config.data_download_uri),
                                     f"column-{idx}",
                                 ),
                             }
@@ -272,7 +272,7 @@ class CSVABoxParser(ABoxBaseParser):
 
             json_ld = {
                 "@context": {
-                    f"{cls.config.prefix_name}": make_prefix(cls.config),
+                    f"{self.config.prefix_name}": make_prefix(self.config),
                     "csvw": "http://www.w3.org/ns/csvw#",
                     "rdfs": "http://www.w3.org/2000/01/rdf-schema#",
                     "dcat": "http://www.w3.org/ns/dcat#",
@@ -282,14 +282,14 @@ class CSVABoxParser(ABoxBaseParser):
                     "csvw": "http://www.w3.org/ns/csvw#",
                     "foaf": "http://xmlns.com/foaf/spec/",
                 },
-                "@id": f"{cls.config.prefix_name}:tableGroup",
+                "@id": f"{self.config.prefix_name}:tableGroup",
                 "@type": "csvw:TableGroup",
                 **csvw_tables,
             }
         else:
             json_ld = {
-                "@graph": [model.json_ld for model in cls.general_metadata]
-                + [model.json_ld for model in cls.dataframe_metadata]
+                "@graph": [model.json_ld for model in self.general_metadata]
+                + [model.json_ld for model in self.dataframe_metadata]
             }
         return json_ld
 

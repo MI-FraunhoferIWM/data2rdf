@@ -66,15 +66,15 @@ class ExcelTBoxParser(TBoxBaseParser):
 
     # OVERRIDE
     @property
-    def mapping_model(cls) -> TBoxBaseMapping:
+    def mapping_model(self) -> TBoxBaseMapping:
         "TBox Mapping Model"
         return TBoxBaseMapping
 
     # OVERRIDE
     @property
-    def json_ld(cls) -> "Dict[str, Any]":
+    def json_ld(self) -> "Dict[str, Any]":
         """Make the json-ld if pipeline is in abox-mode"""
-        return _make_tbox_json_ld(cls)
+        return _make_tbox_json_ld(self)
 
     # OVERRIDE
     @classmethod
@@ -135,13 +135,13 @@ class ExcelABoxParser(ABoxBaseParser):
 
     # OVERRIDE
     @property
-    def mapping_model(cls) -> ABoxExcelMapping:
+    def mapping_model(self) -> ABoxExcelMapping:
         "Mapping Model"
         return ABoxExcelMapping
 
     # OVERRIDE
     @property
-    def json_ld(cls) -> Dict[str, Any]:
+    def json_ld(self) -> Dict[str, Any]:
         """
         Returns the JSON-LD representation of the data in ABox mode.
 
@@ -152,17 +152,17 @@ class ExcelABoxParser(ABoxBaseParser):
         :return: A dictionary representing the JSON-LD data.
         """
 
-        if not cls.config.suppress_file_description:
+        if not self.config.suppress_file_description:
             tables = []
 
-            if cls.general_metadata:
+            if self.general_metadata:
                 meta_table = {
                     "@type": "csvw:Table",
                     "rdfs:label": "Metadata",
                     "csvw:row": [],
                 }
 
-                for mapping in cls.general_metadata:
+                for mapping in self.general_metadata:
                     if isinstance(mapping, QuantityGraph):
                         row = {
                             "@type": "csvw:Row",
@@ -189,7 +189,7 @@ class ExcelABoxParser(ABoxBaseParser):
                         )
                 tables += [meta_table]
 
-            if cls.dataframe_metadata:
+            if self.dataframe_metadata:
                 column_schema = {"@type": "csvw:Schema", "csvw:column": []}
                 tables += [
                     {
@@ -198,7 +198,7 @@ class ExcelABoxParser(ABoxBaseParser):
                         "csvw:tableSchema": column_schema,
                     }
                 ]
-                for idx, mapping in enumerate(cls.dataframe_metadata):
+                for idx, mapping in enumerate(self.dataframe_metadata):
                     if isinstance(mapping, QuantityGraph):
                         entity = {"qudt:quantity": mapping.json_ld}
                     elif isinstance(mapping, PropertyGraph):
@@ -208,12 +208,12 @@ class ExcelABoxParser(ABoxBaseParser):
                             f"Mapping must be of type {QuantityGraph} or {PropertyGraph}, not {type(mapping)}"
                         )
 
-                    if cls.config.data_download_uri:
+                    if self.config.data_download_uri:
                         download_url = {
                             "dcterms:identifier": {
                                 "@type": "xsd:anyURI",
                                 "@value": urljoin(
-                                    str(cls.config.data_download_uri),
+                                    str(self.config.data_download_uri),
                                     f"column-{idx}",
                                 ),
                             }
@@ -254,7 +254,7 @@ class ExcelABoxParser(ABoxBaseParser):
 
             json_ld = {
                 "@context": {
-                    f"{cls.config.prefix_name}": make_prefix(cls.config),
+                    f"{self.config.prefix_name}": make_prefix(self.config),
                     "csvw": "http://www.w3.org/ns/csvw#",
                     "rdfs": "http://www.w3.org/2000/01/rdf-schema#",
                     "dcat": "http://www.w3.org/ns/dcat#",
@@ -264,14 +264,14 @@ class ExcelABoxParser(ABoxBaseParser):
                     "csvw": "http://www.w3.org/ns/csvw#",
                     "foaf": "http://xmlns.com/foaf/spec/",
                 },
-                "@id": f"{cls.config.prefix_name}:tableGroup",
+                "@id": f"{self.config.prefix_name}:tableGroup",
                 "@type": "csvw:TableGroup",
                 **csvw_tables,
             }
         else:
             json_ld = {
-                "@graph": [model.json_ld for model in cls.general_metadata]
-                + [model.json_ld for model in cls.dataframe_metadata]
+                "@graph": [model.json_ld for model in self.general_metadata]
+                + [model.json_ld for model in self.dataframe_metadata]
             }
         return json_ld
 
@@ -496,18 +496,18 @@ class ExcelParser(BaseFileParser):
 
     # OVERRIDE
     @property
-    def _abox_parser(cls) -> ExcelABoxParser:
+    def _abox_parser(self) -> ExcelABoxParser:
         """Pydantic Model for Excel ABox parser"""
         return ExcelABoxParser
 
     # OVERRIDE
     @property
-    def _tbox_parser(cls) -> ExcelTBoxParser:
+    def _tbox_parser(self) -> ExcelTBoxParser:
         """Pydantic Model for Excel TBox parser"""
         return ExcelTBoxParser
 
     # OVERRIDE
     @property
-    def media_type(cls) -> str:
+    def media_type(self) -> str:
         """IANA Media type definition of the resource to be parsed."""
         return "https://www.iana.org/assignments/media-types/application/vnd.ms-excel"

@@ -226,23 +226,23 @@ class QuantityGraph(BasicGraphModel, BasicSuffixModel):
         return self
 
     @property
-    def json_ld(cls) -> Dict[str, Any]:
+    def json_ld(self) -> Dict[str, Any]:
         """Return dict of json-ld for graph"""
         return {
             "@context": {
-                f"{cls.config.prefix_name}": make_prefix(cls.config),
+                f"{self.config.prefix_name}": make_prefix(self.config),
                 "rdfs": "http://www.w3.org/2000/01/rdf-schema#",
                 "xsd": "http://www.w3.org/2001/XMLSchema#",
                 "qudt": "http://qudt.org/schema/qudt/",
             },
-            "@id": f"{cls.config.prefix_name}:{cls.suffix}",
+            "@id": f"{self.config.prefix_name}:{self.suffix}",
             "@type": (
-                [str(iri) for iri in cls.iri]
-                if isinstance(cls.iri, list)
-                else str(cls.iri)
+                [str(iri) for iri in self.iri]
+                if isinstance(self.iri, list)
+                else str(self.iri)
             ),
-            **cls.unit_json,
-            **cls.value_json,
+            **self.unit_json,
+            **self.value_json,
         }
 
     @property
@@ -340,17 +340,17 @@ class PropertyGraph(BasicGraphModel, BasicSuffixModel):
         return self
 
     @property
-    def json_ld(cls) -> Dict[str, Any]:
+    def json_ld(self) -> Dict[str, Any]:
         """Return dict of json-ld for graph"""
         return {
             "@context": {
-                f"{cls.config.prefix_name}": make_prefix(cls.config),
+                f"{self.config.prefix_name}": make_prefix(self.config),
                 "rdfs": "http://www.w3.org/2000/01/rdf-schema#",
                 "xsd": "http://www.w3.org/2001/XMLSchema#",
             },
-            "@id": f"{cls.config.prefix_name}:{cls.suffix}",
-            **cls.value_json,
-            **cls.types_json,
+            "@id": f"{self.config.prefix_name}:{self.suffix}",
+            **self.value_json,
+            **self.types_json,
         }
 
     @property
@@ -372,26 +372,26 @@ class PropertyGraph(BasicGraphModel, BasicSuffixModel):
         return response
 
     @property
-    def types_json(cls) -> "Dict[str, Any]":
+    def types_json(self) -> "Dict[str, Any]":
         """Dict of json-ld for class types of the individual"""
-        if cls.annotation:
+        if self.annotation:
             types = {
                 "@type": [
                     (
-                        [str(iri) for iri in cls.iri]
-                        if isinstance(cls.iri, list)
-                        else str(cls.iri)
+                        [str(iri) for iri in self.iri]
+                        if isinstance(self.iri, list)
+                        else str(self.iri)
                     ),
-                    cls.annotation,
+                    self.annotation,
                 ]
             }
         else:
             types = {
                 "@type": [
                     (
-                        [str(iri) for iri in cls.iri]
-                        if isinstance(cls.iri, list)
-                        else str(cls.iri)
+                        [str(iri) for iri in self.iri]
+                        if isinstance(self.iri, list)
+                        else str(self.iri)
                     )
                 ]
             }

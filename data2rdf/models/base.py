@@ -71,14 +71,14 @@ class BasicGraphModel(BasicConceptMapping):
 
     @property
     @abstractmethod
-    def json_ld(cls) -> Dict[str, Any]:
+    def json_ld(self) -> Dict[str, Any]:
         """Return dict for json-ld of graph"""
 
     @property
-    def graph(cls) -> Graph:
+    def graph(self) -> Graph:
         """Return graph object based on json-ld"""
-        graph = Graph(identifier=cls.config.graph_identifier)
-        graph.parse(data=json.dumps(cls.json_ld), format="json-ld")
+        graph = Graph(identifier=self.config.graph_identifier)
+        graph.parse(data=json.dumps(self.json_ld), format="json-ld")
         return graph
 
 
