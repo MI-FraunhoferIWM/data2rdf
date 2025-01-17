@@ -171,8 +171,8 @@ class ABoxBaseParser(AnyBoxBaseParser):
     """Basic Parser for ABox mode"""
 
     _general_metadata: Any = PrivateAttr()
-    _time_series_metadata: Any = PrivateAttr()
-    _time_series: Any = PrivateAttr()
+    _dataframe_metadata: Any = PrivateAttr()
+    _dataframe: Any = PrivateAttr()
 
     @property
     def general_metadata(self) -> "List[BasicConceptMapping]":
@@ -180,14 +180,14 @@ class ABoxBaseParser(AnyBoxBaseParser):
         return self._general_metadata
 
     @property
-    def time_series_metadata(self) -> "List[BasicConceptMapping]":
+    def dataframe_metadata(self) -> "List[BasicConceptMapping]":
         """Return list object with general metadata"""
-        return self._time_series_metadata
+        return self._dataframe_metadata
 
     @property
-    def time_series(self) -> "pd.DataFrame":
+    def dataframe(self) -> "pd.DataFrame":
         """Return times series found in the data as pd.DataFrame"""
-        return self._time_series
+        return self._dataframe
 
     @property
     def plain_metadata(self) -> List[Dict[str, Any]]:
@@ -343,23 +343,23 @@ class BaseFileParser(BaseParser):
             )
 
     @property
-    def time_series_metadata(cls) -> "List[BasicConceptMapping]":
+    def dataframe_metadata(cls) -> "List[BasicConceptMapping]":
         """Return time series metadata"""
         if cls.mode == PipelineMode.ABOX:
-            return cls.abox.time_series_metadata
+            return cls.abox.dataframe_metadata
         else:
             raise NotImplementedError(
-                "`time_series_metadata` is not available in `tbox`-mode."
+                "`dataframe_metadata` is not available in `tbox`-mode."
             )
 
     @property
-    def time_series(cls) -> "Dict[str, Any]":
+    def dataframe(cls) -> "Dict[str, Any]":
         """Return time series"""
         if cls.mode == PipelineMode.ABOX:
-            return cls.abox.time_series
+            return cls.abox.dataframe
         else:
             raise NotImplementedError(
-                "`time_series` is not available in `tbox`-mode."
+                "`dataframe` is not available in `tbox`-mode."
             )
 
     @property

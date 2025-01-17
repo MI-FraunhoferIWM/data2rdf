@@ -1,6 +1,7 @@
 """Data2RDF ABox pipeline"""
 
 import json
+import warnings
 from pathlib import Path
 from typing import TYPE_CHECKING, Any, Callable, Dict, List, Optional, Union
 
@@ -241,21 +242,39 @@ class Data2RDF(BaseModel):
             )
 
     @property
-    def time_series_metadata(cls) -> "List[BasicConceptMapping]":
+    def dataframe_metadata(cls) -> "List[BasicConceptMapping]":
         """Return list object with time series metadata"""
         if cls.mode == PipelineMode.ABOX:
-            return cls.parser.abox.time_series_metadata
+            return cls.parser.abox.dataframe_metadata
         else:
             raise NotImplementedError(
-                "`time_series_metadata` is not available in `tbox`-mode."
+                "`dataframe_metadata` is not available in `tbox`-mode."
             )
 
     @property
-    def time_series(cls) -> "Dict[str, Any]":
+    def dataframe(cls) -> "Dict[str, Any]":
         """Return time series"""
         if cls.mode == PipelineMode.ABOX:
-            return cls.parser.abox.time_series
+            return cls.parser.abox.dataframe
         else:
             raise NotImplementedError(
-                "`time_series` is not available in `tbox`-mode."
+                "`dataframe` is not available in `tbox`-mode."
             )
+
+    @property
+    def time_series(self) -> "Dict[str, Any]":
+        warnings.warn(
+            "`time_series` is deprecated and will be removed in a future version. "
+            "Use `dataframe` instead.",
+            DeprecationWarning,
+        )
+        return self.dataframe
+
+    @property
+    def time_series_metadata(self) -> "List[BasicConceptMapping]":
+        warnings.warn(
+            "`time_series_metadata` is deprecated and will be removed in a future version. "
+            "Use `dataframe_metadata` instead.",
+            DeprecationWarning,
+        )
+        return self.dataframe_metadata

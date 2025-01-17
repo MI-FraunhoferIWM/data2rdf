@@ -13,9 +13,9 @@ raw_data = os.path.join(working_folder, "data", "test.csv")
 expected = os.path.join(output_folder, "output_csv_parser.ttl")
 
 parser_args = {
-    "time_series_sep": ",",
+    "dataframe_sep": ",",
     "metadata_length": 0,
-    "time_series_header_length": 1,
+    "dataframe_header_length": 1,
 }
 
 columns = ["TestTime", "Sensor1", "Sensor2", "Sensor3"]
@@ -41,14 +41,14 @@ def test_csv_wo_header_parser_config() -> None:
 
     assert len(parser.general_metadata) == 0
 
-    assert len(parser.time_series_metadata) == 4
-    for row in parser.time_series_metadata:
+    assert len(parser.dataframe_metadata) == 4
+    for row in parser.dataframe_metadata:
         assert isinstance(row, QuantityGraph)
 
-    assert len(parser.time_series.columns) == 4
-    assert sorted(list(parser.time_series.columns)) == sorted(columns)
+    assert len(parser.dataframe.columns) == 4
+    assert sorted(list(parser.dataframe.columns)) == sorted(columns)
 
-    for name, column in parser.time_series.items():
+    for name, column in parser.dataframe.items():
         assert len(column) == 4
 
     assert parser.graph.isomorphic(expected_graph)

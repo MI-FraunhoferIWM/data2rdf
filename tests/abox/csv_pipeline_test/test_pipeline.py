@@ -21,7 +21,7 @@ expected = os.path.join(output_folder, "output_pipeline.ttl")
 
 parser_args = {
     "metadata_sep": "\t",
-    "time_series_sep": "\t",
+    "dataframe_sep": "\t",
     "metadata_length": 20,
 }
 metadata = {
@@ -263,7 +263,7 @@ def test_csv_pipeline_no_match_in_mapping() -> None:
             mapping=os.path.join(mapping_folder, "tensile_test_mapping.json"),
             parser_args={
                 "metadata_sep": "\t",
-                "time_series_sep": "\t",
+                "dataframe_sep": "\t",
                 "metadata_length": 21,
             },
         )
@@ -279,7 +279,7 @@ def test_csv_pipeline_no_match_in_mapping() -> None:
     expected_graph.parse(expected)
 
     assert pipeline.graph.isomorphic(expected_graph)
-    assert sorted(list(pipeline.time_series.columns)) == sorted(columns)
+    assert sorted(list(pipeline.dataframe.columns)) == sorted(columns)
 
 
 @pytest.mark.parametrize("config", [normal_config, bad_config])
@@ -304,7 +304,7 @@ def test_csv_pipeline_config(config) -> None:
 
     assert pipeline.graph.isomorphic(expected_graph)
     assert str(pipeline.graph.identifier) == config["graph_identifier"]
-    assert sorted(list(pipeline.time_series.columns)) == sorted(columns)
+    assert sorted(list(pipeline.dataframe.columns)) == sorted(columns)
 
 
 @pytest.mark.parametrize("extension", ["xlsx", "json", "csv", dict])
@@ -340,13 +340,13 @@ def test_csv_pipeline(extension) -> None:
     for row in pipeline.general_metadata:
         assert isinstance(row, QuantityGraph) or isinstance(row, PropertyGraph)
 
-    assert len(pipeline.time_series_metadata) == 6
-    for row in pipeline.time_series_metadata:
+    assert len(pipeline.dataframe_metadata) == 6
+    for row in pipeline.dataframe_metadata:
         assert isinstance(row, QuantityGraph)
 
-    assert len(pipeline.time_series.columns) == 6
-    assert sorted(list(pipeline.time_series.columns)) == sorted(columns)
-    for name, column in pipeline.time_series.items():
+    assert len(pipeline.dataframe.columns) == 6
+    assert sorted(list(pipeline.dataframe.columns)) == sorted(columns)
+    for name, column in pipeline.dataframe.items():
         assert len(column) == 5734
 
     expected_graph = Graph()
@@ -389,13 +389,13 @@ def test_csv_pipeline_inputs(input_kind) -> None:
     for row in pipeline.general_metadata:
         assert isinstance(row, QuantityGraph) or isinstance(row, PropertyGraph)
 
-    assert len(pipeline.time_series_metadata) == 6
-    for row in pipeline.time_series_metadata:
+    assert len(pipeline.dataframe_metadata) == 6
+    for row in pipeline.dataframe_metadata:
         assert isinstance(row, QuantityGraph)
 
-    assert len(pipeline.time_series.columns) == 6
-    assert sorted(list(pipeline.time_series.columns)) == sorted(columns)
-    for name, column in pipeline.time_series.items():
+    assert len(pipeline.dataframe.columns) == 6
+    assert sorted(list(pipeline.dataframe.columns)) == sorted(columns)
+    for name, column in pipeline.dataframe.items():
         assert len(column) == 5734
 
     expected_graph = Graph()

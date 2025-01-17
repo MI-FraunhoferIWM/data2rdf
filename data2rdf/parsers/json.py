@@ -196,7 +196,7 @@ class JsonABoxParser(ABoxBaseParser):
                         f"Mapping must be of type {QuantityGraph} or {PropertyGraph}, not {type(mapping)}"
                     )
 
-            for idx, mapping in enumerate(cls.time_series_metadata):
+            for idx, mapping in enumerate(cls.dataframe_metadata):
                 if not isinstance(mapping, QuantityGraph):
                     raise TypeError(
                         f"Mapping must be of type {QuantityGraph}, not {type(mapping)}"
@@ -242,7 +242,7 @@ class JsonABoxParser(ABoxBaseParser):
         else:
             triples = {
                 "@graph": [model.json_ld for model in cls.general_metadata]
-                + [model.json_ld for model in cls.time_series_metadata]
+                + [model.json_ld for model in cls.dataframe_metadata]
             }
 
         return triples
@@ -284,8 +284,8 @@ class JsonABoxParser(ABoxBaseParser):
             None
         """
         self._general_metadata = []
-        self._time_series_metadata = []
-        self._time_series = {}
+        self._dataframe_metadata = []
+        self._dataframe = {}
         for datum in mapping:
             subdataset = self._get_optional_subdataset(datafile, datum)
 
@@ -371,8 +371,8 @@ class JsonABoxParser(ABoxBaseParser):
                             model_data["unit_relation"] = datum.unit_relation
                         model = QuantityGraph(**model_data)
 
-                        self._time_series[suffix] = value
-                        self._time_series_metadata.append(model)
+                        self._dataframe[suffix] = value
+                        self._dataframe_metadata.append(model)
                     # if we have a series in the form of a list and a unit and we are expanding:
                     # * iterate over the series
                     # * make a QuantityGraph with the unit and each iterated value
@@ -399,8 +399,8 @@ class JsonABoxParser(ABoxBaseParser):
                             value_relation_type=datum.value_relation_type,
                             **model_data,
                         )
-                        self._time_series[suffix] = value
-                        self._time_series_metadata.append(model)
+                        self._dataframe[suffix] = value
+                        self._dataframe_metadata.append(model)
                     # if we have a series in the form of a list and *no* unit and we are expanding:
                     # * iterate over the series
                     # * make a PropertyGraph with each iterated value
@@ -467,12 +467,12 @@ class JsonABoxParser(ABoxBaseParser):
                         )
 
         # set time series as pd dataframe
-        self._time_series = pd.DataFrame.from_dict(
-            self._time_series, orient="index"
+        self._dataframe = pd.DataFrame.from_dict(
+            self._dataframe, orient="index"
         ).transpose()
         # check if drop na:
         if self.dropna:
-            self._time_series.dropna(how="all", inplace=True)
+            self._dataframe.dropna(how="all", inplace=True)
 
     def _get_optional_subdataset(
         self, datafile: Any, datum: ABoxBaseMapping

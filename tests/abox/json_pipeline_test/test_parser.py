@@ -77,13 +77,13 @@ def test_parser_json(mapping_format, data_format) -> None:
     for row in parser.general_metadata:
         assert isinstance(row, QuantityGraph) or isinstance(row, PropertyGraph)
 
-    assert len(parser.time_series_metadata) == 2
-    for row in parser.time_series_metadata:
+    assert len(parser.dataframe_metadata) == 2
+    for row in parser.dataframe_metadata:
         assert isinstance(row, QuantityGraph)
 
-    assert len(parser.time_series.columns) == 2
-    assert sorted(series) == sorted(parser.time_series)
-    for name, column in parser.time_series.items():
+    assert len(parser.dataframe.columns) == 2
+    assert sorted(series) == sorted(parser.dataframe)
+    for name, column in parser.dataframe.items():
         assert len(column) == 3
 
     expected_graph = Graph()
@@ -119,13 +119,13 @@ def test_json_parser_different_mapping_files(extension) -> None:
     for row in parser.general_metadata:
         assert isinstance(row, QuantityGraph) or isinstance(row, PropertyGraph)
 
-    assert len(parser.time_series_metadata) == 2
-    for row in parser.time_series_metadata:
+    assert len(parser.dataframe_metadata) == 2
+    for row in parser.dataframe_metadata:
         assert isinstance(row, QuantityGraph)
 
-    assert len(parser.time_series.columns) == 2
-    assert sorted(series) == sorted(parser.time_series)
-    for name, column in parser.time_series.items():
+    assert len(parser.dataframe.columns) == 2
+    assert sorted(series) == sorted(parser.dataframe)
+    for name, column in parser.dataframe.items():
         assert len(column) == 3
 
     expected_graph = Graph()

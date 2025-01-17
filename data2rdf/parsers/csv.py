@@ -119,10 +119,10 @@ class CSVABoxParser(ABoxBaseParser):
         None, description="Metadata column separator"
     )
     metadata_length: int = Field(..., description="Length of the metadata")
-    time_series_sep: Optional[str] = Field(
+    dataframe_sep: Optional[str] = Field(
         None, description="Column separator of the time series header"
     )
-    time_series_header_length: int = Field(
+    dataframe_header_length: int = Field(
         2, description="Length of header of the time series"
     )
     fillna: Optional[Any] = Field(
@@ -207,7 +207,7 @@ class CSVABoxParser(ABoxBaseParser):
                         )
                 tables += [meta_table]
 
-            if cls.time_series_metadata:
+            if cls.dataframe_metadata:
                 column_schema = {"@type": "csvw:Schema", "csvw:column": []}
                 tables += [
                     {
@@ -216,7 +216,7 @@ class CSVABoxParser(ABoxBaseParser):
                         "csvw:tableSchema": column_schema,
                     }
                 ]
-                for idx, mapping in enumerate(cls.time_series_metadata):
+                for idx, mapping in enumerate(cls.dataframe_metadata):
                     if isinstance(mapping, QuantityGraph):
                         entity = {"qudt:quantity": mapping.json_ld}
                     elif isinstance(mapping, PropertyGraph):
@@ -289,7 +289,7 @@ class CSVABoxParser(ABoxBaseParser):
         else:
             json_ld = {
                 "@graph": [model.json_ld for model in cls.general_metadata]
-                + [model.json_ld for model in cls.time_series_metadata]
+                + [model.json_ld for model in cls.dataframe_metadata]
             }
         return json_ld
 
@@ -311,8 +311,8 @@ class CSVABoxParser(ABoxBaseParser):
 
         The function returns None, but it populates the following instance variables:
         - `self._general_metadata`: A list of PropertyGraph or QuantityGraph instances representing the general metadata.
-        - `self._time_series_metadata`: A list of QuantityGraph instances representing the time series metadata.
-        - `self._time_series`: A pandas DataFrame containing the time series data.
+        - `self._dataframe_metadata`: A list of QuantityGraph instances representing the time series metadata.
+        - `self._dataframe`: A pandas DataFrame containing the time series data.
 
         The function also raises ValueError if the `metadata_length` is greater than 0 but `metadata_sep` is not set.
         It raises TypeError if the unit for a key is not a string.
@@ -327,11 +327,11 @@ class CSVABoxParser(ABoxBaseParser):
 
         mapping = {model.key: model for model in mapping}
 
-        time_series: Union[pd.DataFrame, List[None]] = cls._parse_time_series(
+        dataframe: Union[pd.DataFrame, List[None]] = cls._parse_dataframe(
             self, datafile
         )
         if self.dropna:
-            time_series.dropna(inplace=True)
+            dataframe.dropna(inplace=True)
         datafile.seek(0)
 
         # iterate over general metadata
@@ -399,10 +399,10 @@ class CSVABoxParser(ABoxBaseParser):
                     )
 
         # parse time series data and meta data
-        self._time_series_metadata = []
-        self._time_series = {}
+        self._dataframe_metadata = []
+        self._dataframe = {}
 
-        for key in time_series:
+        for key in dataframe:
             # get matching mapping
             mapping_match = mapping.get(key)
 
@@ -411,8 +411,8 @@ class CSVABoxParser(ABoxBaseParser):
                 unit = (
                     mapping_match.unit
                     or (
-                        time_series[key].iloc[0]
-                        if self.time_series_header_length == 2
+                        dataframe[key].iloc[0]
+                        if self.dataframe_header_length == 2
                         else None
                     )
                     or None
@@ -439,11 +439,11 @@ class CSVABoxParser(ABoxBaseParser):
                     model.unit_relation = mapping_match.unit_relation
 
                 # append model
-                self.time_series_metadata.append(model)
+                self.dataframe_metadata.append(model)
 
                 # assign time series data
-                self._time_series[model.suffix] = time_series[key][
-                    self.time_series_header_length - 1 :
+                self._dataframe[model.suffix] = dataframe[key][
+                    self.dataframe_header_length - 1 :
                 ].to_list()
 
             else:
@@ -452,12 +452,12 @@ class CSVABoxParser(ABoxBaseParser):
                     MappingMissmatchWarning,
                 )
         # set time series as pd dataframe
-        self._time_series = pd.DataFrame.from_dict(
-            self._time_series, orient="index"
+        self._dataframe = pd.DataFrame.from_dict(
+            self._dataframe, orient="index"
         ).transpose()
         # check if drop na:
         if self.dropna:
-            self._time_series.dropna(how="all", inplace=True)
+            self._dataframe.dropna(how="all", inplace=True)
 
     # OVERRIDE
     @classmethod
@@ -466,14 +466,14 @@ class CSVABoxParser(ABoxBaseParser):
         return _load_data_file(self)
 
     @classmethod
-    def _parse_time_series(
+    def _parse_dataframe(
         cls, self: "CSVParser", datafile: "StringIO"
     ) -> Union[pd.DataFrame, List[None]]:
-        if self.time_series_sep:
+        if self.dataframe_sep:
             response = pd.read_csv(
                 datafile,
                 encoding=self.config.encoding,
-                sep=self.time_series_sep,
+                sep=self.dataframe_sep,
                 skiprows=self.metadata_length,
             )
             response = response.map(
@@ -485,7 +485,7 @@ class CSVABoxParser(ABoxBaseParser):
             ]
         else:
             warnings.warn(
-                "`time_series_sep` is not set. Any potential time series in the data file will be skipped.",
+                "`dataframe_sep` is not set. Any potential time series in the data file will be skipped.",
                 ParserWarning,
             )
             response = []

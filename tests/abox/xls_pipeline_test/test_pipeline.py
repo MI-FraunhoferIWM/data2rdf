@@ -331,7 +331,7 @@ def test_xlsx_pipeline_config(config) -> None:
         metadata
     )
     assert sort_entries(pipeline.to_dict()) == as_non_dsms_schema(metadata)
-    assert sorted(list(pipeline.time_series.columns)) == sorted(columns)
+    assert sorted(list(pipeline.dataframe.columns)) == sorted(columns)
 
 
 @pytest.mark.parametrize("extension", ["xlsx", "json", "csv", dict])
@@ -379,13 +379,13 @@ def test_excel_pipeline(extension) -> None:
     for row in pipeline.general_metadata:
         assert isinstance(row, QuantityGraph) or isinstance(row, PropertyGraph)
 
-    assert len(pipeline.time_series_metadata) == 6
-    for row in pipeline.time_series_metadata:
+    assert len(pipeline.dataframe_metadata) == 6
+    for row in pipeline.dataframe_metadata:
         assert isinstance(row, QuantityGraph)
 
-    assert len(pipeline.time_series.columns) == 6
-    assert sorted(list(pipeline.time_series.columns)) == sorted(columns)
-    for name, column in pipeline.time_series.items():
+    assert len(pipeline.dataframe.columns) == 6
+    assert sorted(list(pipeline.dataframe.columns)) == sorted(columns)
+    for name, column in pipeline.dataframe.items():
         assert len(column) == 460
 
     expected_graph = Graph()
@@ -440,13 +440,13 @@ def test_excel_pipeline_inputs(input_kind) -> None:
     for row in pipeline.general_metadata:
         assert isinstance(row, QuantityGraph) or isinstance(row, PropertyGraph)
 
-    assert len(pipeline.time_series_metadata) == 6
-    for row in pipeline.time_series_metadata:
+    assert len(pipeline.dataframe_metadata) == 6
+    for row in pipeline.dataframe_metadata:
         assert isinstance(row, QuantityGraph)
 
-    assert len(pipeline.time_series.columns) == 6
-    assert sorted(list(pipeline.time_series.columns)) == sorted(columns)
-    for name, column in pipeline.time_series.items():
+    assert len(pipeline.dataframe.columns) == 6
+    assert sorted(list(pipeline.dataframe.columns)) == sorted(columns)
+    for name, column in pipeline.dataframe.items():
         assert len(column) == 460
 
     expected_graph = Graph()
@@ -499,4 +499,4 @@ def test_excel_pipeline_suffix() -> None:
         metadata_suffix
     )
 
-    assert sorted(list(pipeline.time_series.columns)) == sorted(columns_suffix)
+    assert sorted(list(pipeline.dataframe.columns)) == sorted(columns_suffix)

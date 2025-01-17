@@ -36,17 +36,17 @@ You may note that the first column is the time and the rest of the columns are o
 
 Since we are considering the csv parser again, we need to take the following parser arguments into account:
 
-* `time_series_sep`: the separator for the time series. In this case, it is a  `,`.
+* `dataframe_sep`: the separator for the time series. In this case, it is a  `,`.
 * `metadata_length`: the length of the metadata in the csv file. In this case, it is 0, since we do not have any metadata.
-* `time_series_header_length`: the length of the header of the time series in the csv file. In this case, it is 1, since the time series start at the second row.
+* `dataframe_header_length`: the length of the header of the time series in the csv file. In this case, it is 1, since the time series start at the second row.
 
 The resulting Python dictionary for the parser arguments would look like this:
 
 ```
 parser_args = {
-    "time_series_sep": ",",
+    "dataframe_sep": ",",
     "metadata_length": 0,
-    "time_series_header_length": 1
+    "dataframe_header_length": 1
 }
 ```
 
@@ -121,9 +121,9 @@ mapping = [
 ]
 
 parser_args = {
-    "time_series_sep": ",",
+    "dataframe_sep": ",",
     "metadata_length": 0,
-    "time_series_header_length": 1
+    "dataframe_header_length": 1
 }
 
 data2rdf = Data2RDF(
@@ -204,4 +204,4 @@ fileid:tableGroup a csvw:TableGroup ;
 </blockQuote>
 
 
-Again, you will be able to investigate the `general_metadata`, `plain_metadata`, `time_series_metadata` and `time_series` attributes in the same way as stated in the [first example](1_csv).
+Again, you will be able to investigate the `general_metadata`, `plain_metadata`, `dataframe_metadata` and `dataframe` attributes in the same way as stated in the [first example](1_csv).

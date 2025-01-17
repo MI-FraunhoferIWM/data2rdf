@@ -13,9 +13,9 @@ raw_data = os.path.join(working_folder, "data", "data.csv")
 expected = os.path.join(output_folder, "output_csv_pipeline.ttl")
 
 parser_args = {
-    "time_series_sep": ";",
+    "dataframe_sep": ";",
     "metadata_length": 0,
-    "time_series_header_length": 1,
+    "dataframe_header_length": 1,
     "drop_na": False,
 }
 
@@ -54,17 +54,17 @@ def test_csv_na_values_pipeline() -> None:
 
     assert pipeline.graph.isomorphic(expected_graph)
     assert str(pipeline.graph.identifier) == config["graph_identifier"]
-    assert sorted(list(pipeline.time_series.columns)) == sorted(columns)
+    assert sorted(list(pipeline.dataframe.columns)) == sorted(columns)
 
     assert len(pipeline.general_metadata) == 0
 
-    assert len(pipeline.time_series_metadata) == 7
-    for row in pipeline.time_series_metadata:
+    assert len(pipeline.dataframe_metadata) == 7
+    for row in pipeline.dataframe_metadata:
         assert isinstance(row, QuantityGraph)
 
-    assert len(pipeline.time_series.columns) == 7
-    assert sorted(list(pipeline.time_series.columns)) == sorted(columns)
-    for name, column in pipeline.time_series.items():
+    assert len(pipeline.dataframe.columns) == 7
+    assert sorted(list(pipeline.dataframe.columns)) == sorted(columns)
+    for name, column in pipeline.dataframe.items():
         assert len(column) == 31
 
     expected_graph = Graph()

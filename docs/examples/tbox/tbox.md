@@ -244,4 +244,4 @@ When the pipeline run is succeded, you see the following output by running `prin
     ns1:hasTypicalUnitLabel "GPa"^^xsd:string .
 ```
 
-In this case, there will be **no** `general_metadata`, `plain_metadata`, `time_series` or `time_series_metadata` attributes, since those outputs do not apply in the for the tbox mode of the pipeline.
+In this case, there will be **no** `general_metadata`, `plain_metadata`, `dataframe` or `dataframe_metadata` attributes, since those outputs do not apply in the for the tbox mode of the pipeline.

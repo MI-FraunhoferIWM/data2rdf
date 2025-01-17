@@ -291,4 +291,4 @@ fileid:WidthChange a <https://w3id.org/steel/ProcessOntology/WidthChange> ;
 </Details>
 </blockQuote>
 
-Again, you will be able to investigate the `general_metadata`, `plain_metadata`, `time_series_metadata` and `time_series` attributes in the same way as stated in the [first example](1_csv).
+Again, you will be able to investigate the `general_metadata`, `plain_metadata`, `dataframe_metadata` and `dataframe` attributes in the same way as stated in the [first example](1_csv).

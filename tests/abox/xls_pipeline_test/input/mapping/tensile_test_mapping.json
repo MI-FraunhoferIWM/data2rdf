@@ -6,9 +6,9 @@
     "worksheet": "Protokoll"
   },
   {
+    "dataframe_start": "E15",
     "iri": "https://w3id.org/steel/ProcessOntology/WidthChange",
     "key": "Breiten\u00e4nderung",
-    "time_series_start": "E15",
     "unit_location": "E14",
     "worksheet": "Messdaten"
   },
@@ -19,9 +19,9 @@
     "worksheet": "Protokoll"
   },
   {
+    "dataframe_start": "Q15",
     "iri": "https://w3id.org/steel/ProcessOntology/PercentageElongation",
     "key": "Dehnung",
-    "time_series_start": "Q15",
     "unit": "\u00f7",
     "worksheet": "Messdaten"
   },
@@ -89,23 +89,23 @@
     "worksheet": "Protokoll"
   },
   {
+    "dataframe_start": "C15",
     "iri": "https://w3id.org/steel/ProcessOntology/StandardForce",
     "key": "Standardkraft",
-    "time_series_start": "C15",
     "unit_location": "C14",
     "worksheet": "Messdaten"
   },
   {
+    "dataframe_start": "D15",
     "iri": "https://w3id.org/steel/ProcessOntology/Extension",
     "key": "Standardweg",
-    "time_series_start": "D15",
     "unit_location": "D14",
     "worksheet": "Messdaten"
   },
   {
+    "dataframe_start": "B15",
     "iri": "https://w3id.org/steel/ProcessOntology/AbsoluteCrossheadTravel",
     "key": "Traversenweg absolut",
-    "time_series_start": "B15",
     "unit_location": "B14",
     "worksheet": "Messdaten"
   },
@@ -117,9 +117,9 @@
     "worksheet": "Protokoll"
   },
   {
+    "dataframe_start": "A15",
     "iri": "https://w3id.org/steel/ProcessOntology/TestTime",
     "key": "Zeit",
-    "time_series_start": "A15",
     "unit_location": "A14",
     "worksheet": "Messdaten"
   }

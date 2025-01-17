@@ -183,7 +183,7 @@ class ABoxBaseMapping(BasicConceptMapping, BasicSuffixModel):
 class ABoxExcelMapping(ABoxBaseMapping):
     """A special model for mapping from excel files to semantic concepts in the ABox"""
 
-    time_series_start: Optional[str] = Field(
+    dataframe_start: Optional[str] = Field(
         None,
         description="Cell location for the start of the time series quantity",
     )

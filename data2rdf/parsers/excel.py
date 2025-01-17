@@ -189,7 +189,7 @@ class ExcelABoxParser(ABoxBaseParser):
                         )
                 tables += [meta_table]
 
-            if cls.time_series_metadata:
+            if cls.dataframe_metadata:
                 column_schema = {"@type": "csvw:Schema", "csvw:column": []}
                 tables += [
                     {
@@ -198,7 +198,7 @@ class ExcelABoxParser(ABoxBaseParser):
                         "csvw:tableSchema": column_schema,
                     }
                 ]
-                for idx, mapping in enumerate(cls.time_series_metadata):
+                for idx, mapping in enumerate(cls.dataframe_metadata):
                     if isinstance(mapping, QuantityGraph):
                         entity = {"qudt:quantity": mapping.json_ld}
                     elif isinstance(mapping, PropertyGraph):
@@ -271,7 +271,7 @@ class ExcelABoxParser(ABoxBaseParser):
         else:
             json_ld = {
                 "@graph": [model.json_ld for model in cls.general_metadata]
-                + [model.json_ld for model in cls.time_series_metadata]
+                + [model.json_ld for model in cls.dataframe_metadata]
             }
         return json_ld
 
@@ -301,8 +301,8 @@ class ExcelABoxParser(ABoxBaseParser):
         datafile.seek(0)
 
         self._general_metadata = []
-        self._time_series_metadata = []
-        self._time_series = {}
+        self._dataframe_metadata = []
+        self._dataframe = {}
 
         for datum in mapping:
             worksheet = workbook[datum.worksheet]
@@ -320,28 +320,26 @@ class ExcelABoxParser(ABoxBaseParser):
             suffix = quote(suffix)
 
             if not datum.custom_relations:
-                if datum.value_location and datum.time_series_start:
+                if datum.value_location and datum.dataframe_start:
                     raise RuntimeError(
-                        """Both, `value_location` and `time_series_start
+                        """Both, `value_location` and `dataframe_start
                         are set. Only one of them must be set."""
                     )
 
                 # find data for time series
-                if datum.time_series_start:
-                    column_name = datum.time_series_start.rstrip("0123456789")
-                    time_series_end = f"{column_name}{worksheet.max_row}"
+                if datum.dataframe_start:
+                    column_name = datum.dataframe_start.rstrip("0123456789")
+                    dataframe_end = f"{column_name}{worksheet.max_row}"
 
-                    column = worksheet[
-                        datum.time_series_start : time_series_end
-                    ]
+                    column = worksheet[datum.dataframe_start : dataframe_end]
                     if column:
-                        self._time_series[suffix] = [
+                        self._dataframe[suffix] = [
                             cell[0].value for cell in column
                         ]
                     else:
                         message = f"""Concept with key `{datum.key}`
-                                    does not have a time series from `{datum.time_series_start}`
-                                    until `{time_series_end}` .
+                                    does not have a time series from `{datum.dataframe_start}`
+                                    until `{dataframe_end}` .
                                     Concept will be omitted in graph.
                                     """
                         warnings.warn(message, MappingMissmatchWarning)
@@ -391,7 +389,7 @@ class ExcelABoxParser(ABoxBaseParser):
                     "config": self.config,
                 }
 
-                if datum.value_location and not datum.time_series_start:
+                if datum.value_location and not datum.dataframe_start:
                     value = worksheet[datum.value_location].value
 
                     if model_data.get("unit") and _value_exists(value):
@@ -409,7 +407,7 @@ class ExcelABoxParser(ABoxBaseParser):
 
                 value_exists = _value_exists(value)
 
-                if value_exists or suffix in self.time_series:
+                if value_exists or suffix in self.dataframe:
                     if datum.value_relation:
                         model_data["value_relation"] = datum.value_relation
                     if model_data.get("unit"):
@@ -426,7 +424,7 @@ class ExcelABoxParser(ABoxBaseParser):
                     if value_exists:
                         self._general_metadata.append(model)
                     else:
-                        self._time_series_metadata.append(model)
+                        self._dataframe_metadata.append(model)
 
             else:
                 for relation in datum.custom_relations:
@@ -479,12 +477,12 @@ class ExcelABoxParser(ABoxBaseParser):
                         warnings.warn(message, MappingMissmatchWarning)
 
         # set time series as pd dataframe
-        self._time_series = pd.DataFrame.from_dict(
-            self._time_series, orient="index"
+        self._dataframe = pd.DataFrame.from_dict(
+            self._dataframe, orient="index"
         ).transpose()
         # check if drop na:
         if self.dropna:
-            self._time_series.dropna(how="all", inplace=True)
+            self._dataframe.dropna(how="all", inplace=True)
 
     # OVERRIDE
     @classmethod

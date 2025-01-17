@@ -82,13 +82,13 @@ def test_pipeline_json(mapping_format, data_format) -> None:
     for row in pipeline.general_metadata:
         assert isinstance(row, QuantityGraph) or isinstance(row, PropertyGraph)
 
-    assert len(pipeline.time_series_metadata) == 2
-    for row in pipeline.time_series_metadata:
+    assert len(pipeline.dataframe_metadata) == 2
+    for row in pipeline.dataframe_metadata:
         assert isinstance(row, QuantityGraph)
 
-    assert len(pipeline.time_series.columns) == 2
-    assert sorted(series) == sorted(pipeline.time_series)
-    for name, column in pipeline.time_series.items():
+    assert len(pipeline.dataframe.columns) == 2
+    assert sorted(series) == sorted(pipeline.dataframe)
+    for name, column in pipeline.dataframe.items():
         assert len(column) == 3
 
     expected_graph = Graph()
@@ -132,13 +132,13 @@ def test_json_pipeline_different_mapping_types(extension) -> None:
     for row in pipeline.general_metadata:
         assert isinstance(row, QuantityGraph) or isinstance(row, PropertyGraph)
 
-    assert len(pipeline.time_series_metadata) == 2
-    for row in pipeline.time_series_metadata:
+    assert len(pipeline.dataframe_metadata) == 2
+    for row in pipeline.dataframe_metadata:
         assert isinstance(row, QuantityGraph)
 
-    assert len(pipeline.time_series.columns) == 2
-    assert sorted(series) == sorted(pipeline.time_series)
-    for name, column in pipeline.time_series.items():
+    assert len(pipeline.dataframe.columns) == 2
+    assert sorted(series) == sorted(pipeline.dataframe)
+    for name, column in pipeline.dataframe.items():
         assert len(column) == 3
 
     expected_graph = Graph()

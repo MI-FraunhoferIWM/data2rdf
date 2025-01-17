@@ -49,7 +49,7 @@ Since we are assuming to have a csv file, we can assume the following parser arg
 
 * `"metadata_sep"`: The separator of the metadata
     In this example, we assume that the metadata is tab-separated. Hence the argument is `"\t"`.
-* `"time_series_sep"`: The separator of the time series
+* `"dataframe_sep"`: The separator of the time series
     In this example, we assume that the time series is tab-separated. Hence the argument is `"\t"`.
 * `"metadata_length"`: The length of the metadata
     In this example, we assume that the metadata has 22 rows.
@@ -65,7 +65,7 @@ Since we are assuming to have a csv file, we can assume the following parser arg
     "Temperatur"	22	"°C"
     "Bemerkung"	""
     ```
-* `time_series_header_length`: The length of the header of the time series.
+* `dataframe_header_length`: The length of the header of the time series.
     In this example, we assume that the time series has 2 rows, which is the name of the concept in the first row and the corresponding unit in the second row:
     ```
     "Standardweg"	"Breitenänderung"	"Dehnung"
@@ -80,7 +80,7 @@ The according parser args hence will look like this:
 ```
 parser_args = {
       "metadata_sep":"\t",
-      "time_series_sep":"\t",
+      "dataframe_sep":"\t",
       "metadata_length":20
    }
 ```
@@ -429,7 +429,7 @@ from data2rdf import Data2RDF, Parser
 
 parser_args = {
       "metadata_sep":"\t",
-      "time_series_sep":"\t",
+      "dataframe_sep":"\t",
       "metadata_length":20
    }
 
@@ -527,8 +527,8 @@ The pipeline will deliver you the following outputs:
 
 * `graph`: the generated RDF graph
 * `plain_metadata`: the plain values of the metadata of the experiment
-* `time_series`: the plain time series of the experiment
-* `time_series_metadata`: the metadata of the time series
+* `dataframe`: the plain time series of the experiment
+* `dataframe_metadata`: the metadata of the time series
 
 ### The RDF graph
 
@@ -1450,10 +1450,10 @@ print({obj.suffix: obj.value for obj in pipeline.general_metadata})
 
 ### The time series metadata
 
-In case of the need of further processing the time series metadata (header of the time series) resulting from the pipeline after parsing, the `time_series_metadata` property can be accessed as follows:
+In case of the need of further processing the time series metadata (header of the time series) resulting from the pipeline after parsing, the `dataframe_metadata` property can be accessed as follows:
 
 ```
-print(pipeline.time_series_metadata)
+print(pipeline.dataframe_metadata)
 ```
 
 The result should look like this:
@@ -1514,10 +1514,10 @@ The result is a list of `QuantityGraph` which (or `PropertyGraph` in case of non
 
 ### The time series data
 
-In case of the need of further processing the time series data (tabular data) resulting from the pipeline after parsing, the `time_series` property can be accessed as follows:
+In case of the need of further processing the time series data (tabular data) resulting from the pipeline after parsing, the `dataframe` property can be accessed as follows:
 
 ```
-print(pipeline.time_series)
+print(pipeline.dataframe)
 ```
 
 The result is a pandas dataframe and should look like this:

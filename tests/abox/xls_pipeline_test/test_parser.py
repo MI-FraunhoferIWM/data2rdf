@@ -184,13 +184,13 @@ def test_xlsx_parser_no_match_in_metadata_from_mapping() -> None:
     for row in parser.general_metadata:
         assert isinstance(row, QuantityGraph) or isinstance(row, PropertyGraph)
 
-    assert len(parser.time_series_metadata) == 6
-    for row in parser.time_series_metadata:
+    assert len(parser.dataframe_metadata) == 6
+    for row in parser.dataframe_metadata:
         assert isinstance(row, QuantityGraph)
 
-    assert len(parser.time_series.columns) == 6
-    assert sorted(list(parser.time_series.columns)) == sorted(columns)
-    for name, column in parser.time_series.items():
+    assert len(parser.dataframe.columns) == 6
+    assert sorted(list(parser.dataframe.columns)) == sorted(columns)
+    for name, column in parser.dataframe.items():
         assert len(column) == 460
 
 
@@ -226,12 +226,12 @@ def test_xlsx_parser_no_match_in_timeseries_from_mapping() -> None:
     for row in parser.general_metadata:
         assert isinstance(row, QuantityGraph) or isinstance(row, PropertyGraph)
 
-    assert len(parser.time_series_metadata) == 5
-    for row in parser.time_series_metadata:
+    assert len(parser.dataframe_metadata) == 5
+    for row in parser.dataframe_metadata:
         assert isinstance(row, QuantityGraph)
 
-    assert len(parser.time_series.columns) == 5
-    for name, column in parser.time_series.items():
+    assert len(parser.dataframe.columns) == 5
+    for name, column in parser.dataframe.items():
         assert len(column) == 460
 
     assert remove_ids(parser.to_dict(schema=dsms_schema)) == sort_entries(
@@ -273,7 +273,7 @@ def test_csv_parser_config(config) -> None:
         metadata
     )
     assert sort_entries(parser.to_dict()) == as_non_dsms_schema(metadata)
-    assert sorted(list(parser.time_series.columns)) == sorted(columns)
+    assert sorted(list(parser.dataframe.columns)) == sorted(columns)
 
 
 @pytest.mark.parametrize("extension", ["xlsx", "json", "csv", dict])
@@ -314,13 +314,13 @@ def test_parser_excel(extension) -> None:
     for row in parser.general_metadata:
         assert isinstance(row, QuantityGraph) or isinstance(row, PropertyGraph)
 
-    assert len(parser.time_series_metadata) == 6
-    for row in parser.time_series_metadata:
+    assert len(parser.dataframe_metadata) == 6
+    for row in parser.dataframe_metadata:
         assert isinstance(row, QuantityGraph)
 
-    assert len(parser.time_series.columns) == 6
-    assert sorted(list(parser.time_series.columns)) == sorted(columns)
-    for name, column in parser.time_series.items():
+    assert len(parser.dataframe.columns) == 6
+    assert sorted(list(parser.dataframe.columns)) == sorted(columns)
+    for name, column in parser.dataframe.items():
         assert len(column) == 460
 
     expected_graph = Graph()
@@ -367,13 +367,13 @@ def test_parser_excel_inputs(input_kind) -> None:
     for row in parser.general_metadata:
         assert isinstance(row, QuantityGraph) or isinstance(row, PropertyGraph)
 
-    assert len(parser.time_series_metadata) == 6
-    for row in parser.time_series_metadata:
+    assert len(parser.dataframe_metadata) == 6
+    for row in parser.dataframe_metadata:
         assert isinstance(row, QuantityGraph)
 
-    assert len(parser.time_series.columns) == 6
-    assert sorted(list(parser.time_series.columns)) == sorted(columns)
-    for name, column in parser.time_series.items():
+    assert len(parser.dataframe.columns) == 6
+    assert sorted(list(parser.dataframe.columns)) == sorted(columns)
+    for name, column in parser.dataframe.items():
         assert len(column) == 460
 
     expected_graph = Graph()
