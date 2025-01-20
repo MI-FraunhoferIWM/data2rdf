@@ -41,7 +41,15 @@ class TBoxBaseMapping(BasicConceptMapping):
     )
 
 
-class CustomRelationPropertySubgraph(BasicSuffixModel):
+class PropertySubgraphBaseModel(BasicSuffixModel):
+    concatenate: Optional[bool] = Field(
+        False,
+        description="Concatenate the value and the iri",
+        alias=AliasChoices("concatenate", "concat"),
+    )
+
+
+class CustomRelationPropertySubgraph(PropertySubgraphBaseModel):
     value_relation: Optional[str] = Field(
         "rdfs:label",
         description="""Object/Data/Annotation property for the value
@@ -49,7 +57,7 @@ class CustomRelationPropertySubgraph(BasicSuffixModel):
     )
 
 
-class CustomRelationQuantitySubgraph(BasicSuffixModel):
+class CustomRelationQuantitySubgraph(PropertySubgraphBaseModel):
     unit_relation: Optional[Union[str, AnyUrl]] = Field(
         "qudt:hasUnit",
         description="""Object property for mapping the IRI
@@ -175,7 +183,7 @@ class ABoxBaseMapping(BasicConceptMapping, BasicSuffixModel):
 class ABoxExcelMapping(ABoxBaseMapping):
     """A special model for mapping from excel files to semantic concepts in the ABox"""
 
-    time_series_start: Optional[str] = Field(
+    dataframe_start: Optional[str] = Field(
         None,
         description="Cell location for the start of the time series quantity",
     )

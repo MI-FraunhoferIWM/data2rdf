@@ -15,6 +15,7 @@
   {
     "iri": "https://w3id.org/steel/ProcessOntology/TimeStamp",
     "key": "Datum",
+    "suffix": "Time2",
     "value_location": "AD6",
     "worksheet": "Protokoll"
   },
@@ -120,6 +121,7 @@
     "dataframe_start": "A15",
     "iri": "https://w3id.org/steel/ProcessOntology/TestTime",
     "key": "Zeit",
+    "suffix": "Time1",
     "unit_location": "A14",
     "worksheet": "Messdaten"
   }

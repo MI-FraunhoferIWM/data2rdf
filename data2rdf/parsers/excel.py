@@ -66,15 +66,15 @@ class ExcelTBoxParser(TBoxBaseParser):
 
     # OVERRIDE
     @property
-    def mapping_model(cls) -> TBoxBaseMapping:
+    def mapping_model(self) -> TBoxBaseMapping:
         "TBox Mapping Model"
         return TBoxBaseMapping
 
     # OVERRIDE
     @property
-    def json_ld(cls) -> "Dict[str, Any]":
+    def json_ld(self) -> "Dict[str, Any]":
         """Make the json-ld if pipeline is in abox-mode"""
-        return _make_tbox_json_ld(cls)
+        return _make_tbox_json_ld(self)
 
     # OVERRIDE
     @classmethod
@@ -135,13 +135,13 @@ class ExcelABoxParser(ABoxBaseParser):
 
     # OVERRIDE
     @property
-    def mapping_model(cls) -> ABoxExcelMapping:
+    def mapping_model(self) -> ABoxExcelMapping:
         "Mapping Model"
         return ABoxExcelMapping
 
     # OVERRIDE
     @property
-    def json_ld(cls) -> Dict[str, Any]:
+    def json_ld(self) -> Dict[str, Any]:
         """
         Returns the JSON-LD representation of the data in ABox mode.
 
@@ -152,17 +152,17 @@ class ExcelABoxParser(ABoxBaseParser):
         :return: A dictionary representing the JSON-LD data.
         """
 
-        if not cls.config.suppress_file_description:
+        if not self.config.suppress_file_description:
             tables = []
 
-            if cls.general_metadata:
+            if self.general_metadata:
                 meta_table = {
                     "@type": "csvw:Table",
                     "rdfs:label": "Metadata",
                     "csvw:row": [],
                 }
 
-                for mapping in cls.general_metadata:
+                for mapping in self.general_metadata:
                     if isinstance(mapping, QuantityGraph):
                         row = {
                             "@type": "csvw:Row",
@@ -189,7 +189,7 @@ class ExcelABoxParser(ABoxBaseParser):
                         )
                 tables += [meta_table]
 
-            if cls.time_series_metadata:
+            if self.dataframe_metadata:
                 column_schema = {"@type": "csvw:Schema", "csvw:column": []}
                 tables += [
                     {
@@ -198,7 +198,7 @@ class ExcelABoxParser(ABoxBaseParser):
                         "csvw:tableSchema": column_schema,
                     }
                 ]
-                for idx, mapping in enumerate(cls.time_series_metadata):
+                for idx, mapping in enumerate(self.dataframe_metadata):
                     if isinstance(mapping, QuantityGraph):
                         entity = {"qudt:quantity": mapping.json_ld}
                     elif isinstance(mapping, PropertyGraph):
@@ -208,12 +208,12 @@ class ExcelABoxParser(ABoxBaseParser):
                             f"Mapping must be of type {QuantityGraph} or {PropertyGraph}, not {type(mapping)}"
                         )
 
-                    if cls.config.data_download_uri:
+                    if self.config.data_download_uri:
                         download_url = {
                             "dcterms:identifier": {
                                 "@type": "xsd:anyURI",
                                 "@value": urljoin(
-                                    str(cls.config.data_download_uri),
+                                    str(self.config.data_download_uri),
                                     f"column-{idx}",
                                 ),
                             }
@@ -254,7 +254,7 @@ class ExcelABoxParser(ABoxBaseParser):
 
             json_ld = {
                 "@context": {
-                    f"{cls.config.prefix_name}": make_prefix(cls.config),
+                    f"{self.config.prefix_name}": make_prefix(self.config),
                     "csvw": "http://www.w3.org/ns/csvw#",
                     "rdfs": "http://www.w3.org/2000/01/rdf-schema#",
                     "dcat": "http://www.w3.org/ns/dcat#",
@@ -264,14 +264,14 @@ class ExcelABoxParser(ABoxBaseParser):
                     "csvw": "http://www.w3.org/ns/csvw#",
                     "foaf": "http://xmlns.com/foaf/spec/",
                 },
-                "@id": f"{cls.config.prefix_name}:tableGroup",
+                "@id": f"{self.config.prefix_name}:tableGroup",
                 "@type": "csvw:TableGroup",
                 **csvw_tables,
             }
         else:
             json_ld = {
-                "@graph": [model.json_ld for model in cls.general_metadata]
-                + [model.json_ld for model in cls.time_series_metadata]
+                "@graph": [model.json_ld for model in self.general_metadata]
+                + [model.json_ld for model in self.dataframe_metadata]
             }
         return json_ld
 
@@ -301,8 +301,8 @@ class ExcelABoxParser(ABoxBaseParser):
         datafile.seek(0)
 
         self._general_metadata = []
-        self._time_series_metadata = []
-        self._time_series = {}
+        self._dataframe_metadata = []
+        self._dataframe = {}
 
         for datum in mapping:
             worksheet = workbook[datum.worksheet]
@@ -320,28 +320,26 @@ class ExcelABoxParser(ABoxBaseParser):
             suffix = quote(suffix)
 
             if not datum.custom_relations:
-                if datum.value_location and datum.time_series_start:
+                if datum.value_location and datum.dataframe_start:
                     raise RuntimeError(
-                        """Both, `value_location` and `time_series_start
+                        """Both, `value_location` and `dataframe_start
                         are set. Only one of them must be set."""
                     )
 
                 # find data for time series
-                if datum.time_series_start:
-                    column_name = datum.time_series_start.rstrip("0123456789")
-                    time_series_end = f"{column_name}{worksheet.max_row}"
+                if datum.dataframe_start:
+                    column_name = datum.dataframe_start.rstrip("0123456789")
+                    dataframe_end = f"{column_name}{worksheet.max_row}"
 
-                    column = worksheet[
-                        datum.time_series_start : time_series_end
-                    ]
+                    column = worksheet[datum.dataframe_start : dataframe_end]
                     if column:
-                        self._time_series[suffix] = [
+                        self._dataframe[suffix] = [
                             cell[0].value for cell in column
                         ]
                     else:
                         message = f"""Concept with key `{datum.key}`
-                                    does not have a time series from `{datum.time_series_start}`
-                                    until `{time_series_end}` .
+                                    does not have a time series from `{datum.dataframe_start}`
+                                    until `{dataframe_end}` .
                                     Concept will be omitted in graph.
                                     """
                         warnings.warn(message, MappingMissmatchWarning)
@@ -391,7 +389,7 @@ class ExcelABoxParser(ABoxBaseParser):
                     "config": self.config,
                 }
 
-                if datum.value_location and not datum.time_series_start:
+                if datum.value_location and not datum.dataframe_start:
                     value = worksheet[datum.value_location].value
 
                     if model_data.get("unit") and _value_exists(value):
@@ -409,7 +407,7 @@ class ExcelABoxParser(ABoxBaseParser):
 
                 value_exists = _value_exists(value)
 
-                if value_exists or suffix in self.time_series:
+                if value_exists or suffix in self.dataframe:
                     if datum.value_relation:
                         model_data["value_relation"] = datum.value_relation
                     if model_data.get("unit"):
@@ -426,7 +424,7 @@ class ExcelABoxParser(ABoxBaseParser):
                     if value_exists:
                         self._general_metadata.append(model)
                     else:
-                        self._time_series_metadata.append(model)
+                        self._dataframe_metadata.append(model)
 
             else:
                 for relation in datum.custom_relations:
@@ -479,12 +477,12 @@ class ExcelABoxParser(ABoxBaseParser):
                         warnings.warn(message, MappingMissmatchWarning)
 
         # set time series as pd dataframe
-        self._time_series = pd.DataFrame.from_dict(
-            self._time_series, orient="index"
+        self._dataframe = pd.DataFrame.from_dict(
+            self._dataframe, orient="index"
         ).transpose()
         # check if drop na:
         if self.dropna:
-            self._time_series.dropna(how="all", inplace=True)
+            self._dataframe.dropna(how="all", inplace=True)
 
     # OVERRIDE
     @classmethod
@@ -498,18 +496,18 @@ class ExcelParser(BaseFileParser):
 
     # OVERRIDE
     @property
-    def _abox_parser(cls) -> ExcelABoxParser:
+    def _abox_parser(self) -> ExcelABoxParser:
         """Pydantic Model for Excel ABox parser"""
         return ExcelABoxParser
 
     # OVERRIDE
     @property
-    def _tbox_parser(cls) -> ExcelTBoxParser:
+    def _tbox_parser(self) -> ExcelTBoxParser:
         """Pydantic Model for Excel TBox parser"""
         return ExcelTBoxParser
 
     # OVERRIDE
     @property
-    def media_type(cls) -> str:
+    def media_type(self) -> str:
         """IANA Media type definition of the resource to be parsed."""
         return "https://www.iana.org/assignments/media-types/application/vnd.ms-excel"

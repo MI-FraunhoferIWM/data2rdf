@@ -83,7 +83,7 @@ Once the `source` field is set with the according wildcard, we are assuming that
 
 
 ```{warning}
-Once you use the `custom_relations` field, the `value_location`, `time_series_start`, and `unit_location` fields will be ignored.
+Once you use the `custom_relations` field, the `value_location`, `dataframe_start`, and `unit_location` fields will be ignored.
 ```
 
 ### Additional triples
@@ -209,4 +209,4 @@ nanoindentation:Jane a chameo:Operator ;
 
 ```
 
-Again, you will be able to investigate the `general_metadata` and `plain_metadata` in the same way as stated in the [first example](1_csv). But this does take place for the `time_series_metadata` and `time_series` attributes, since we do not include any time series in this example here.
+Again, you will be able to investigate the `general_metadata` and `plain_metadata` in the same way as stated in the [first example](1_csv). But this does take place for the `dataframe_metadata` and `dataframe` attributes, since we do not include any time series in this example here.

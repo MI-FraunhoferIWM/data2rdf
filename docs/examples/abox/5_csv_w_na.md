@@ -65,17 +65,17 @@ Additionally, there are some missing values, which are marked with `;;` in the c
 
 According to the condition of the csv parser, we need to take the following parser arguments into account:
 
-* `time_series_sep`: the separator for the time series. In this case, it is a  `;`.
+* `dataframe_sep`: the separator for the time series. In this case, it is a  `;`.
 * `metadata_length`: the length of the metadata in the csv file. In this case, it is 0, since we do not have any metadata.
-* `time_series_header_length`: the length of the header of the time series in the csv file. In this case, it is 1, since the time series start at the second row.
+* `dataframe_header_length`: the length of the header of the time series in the csv file. In this case, it is 1, since the time series start at the second row.
 * `drop_na`: whether to drop the rows with missing values. In this case, it is `False`.
 
 The according Python dict for the parser arguments would look like this:
 ```
 parser_args = {
-    "time_series_sep": ";",
+    "dataframe_sep": ";",
     "metadata_length": 0,
-    "time_series_header_length": 1,
+    "dataframe_header_length": 1,
     "drop_na": False
 }
 ```
@@ -206,9 +206,9 @@ mapping = [
 ]
 
 parser_args = {
-    "time_series_sep": ";",
+    "dataframe_sep": ";",
     "metadata_length": 0,
-    "time_series_header_length": 1,
+    "dataframe_header_length": 1,
     "drop_na": False
 }
 
@@ -327,4 +327,4 @@ fileid:tableGroup a csvw:TableGroup ;
 
 
 
-Again, you will be able to investigate the `general_metadata`, `plain_metadata`, `time_series_metadata` and `time_series` attributes in the same way as stated in the [first example](1_csv).
+Again, you will be able to investigate the `general_metadata`, `plain_metadata`, `dataframe_metadata` and `dataframe` attributes in the same way as stated in the [first example](1_csv).

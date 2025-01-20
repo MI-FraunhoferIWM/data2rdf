@@ -70,13 +70,13 @@ class JsonTBoxParser(TBoxBaseParser):
 
     # OVERRIDE
     @property
-    def json_ld(cls) -> "Dict[str, Any]":
+    def json_ld(self) -> "Dict[str, Any]":
         """Return JSON-LD in TBox mode"""
-        return _make_tbox_json_ld(cls)
+        return _make_tbox_json_ld(self)
 
     # OVERRIDE
     @property
-    def mapping_model(cls) -> TBoxBaseMapping:
+    def mapping_model(self) -> TBoxBaseMapping:
         "TBox mapping model"
         return TBoxBaseMapping
 
@@ -127,13 +127,13 @@ class JsonABoxParser(ABoxBaseParser):
 
     # OVERRIDE
     @property
-    def mapping_model(cls) -> ABoxBaseMapping:
+    def mapping_model(self) -> ABoxBaseMapping:
         "ABox mapping model"
         return ABoxBaseMapping
 
     # OVERRIDE
     @property
-    def json_ld(cls) -> Dict[str, Any]:
+    def json_ld(self) -> Dict[str, Any]:
         """
         Returns the JSON-LD representation of the parser's data.
 
@@ -146,12 +146,12 @@ class JsonABoxParser(ABoxBaseParser):
         :return: A dictionary containing the JSON-LD representation.
         :rtype: Dict[str, Any]
         """
-        if not cls.config.suppress_file_description:
+        if not self.config.suppress_file_description:
             members = []
 
             triples = {
                 "@context": {
-                    f"{cls.config.prefix_name}": make_prefix(cls.config),
+                    f"{self.config.prefix_name}": make_prefix(self.config),
                     "rdfs": "http://www.w3.org/2000/01/rdf-schema#",
                     "xsd": "http://www.w3.org/2001/XMLSchema#",
                     "dcterms": "http://purl.org/dc/terms/",
@@ -159,12 +159,12 @@ class JsonABoxParser(ABoxBaseParser):
                     "foaf": "http://xmlns.com/foaf/spec/",
                     "prov": "<http://www.w3.org/ns/prov#>",
                 },
-                "@id": f"{cls.config.prefix_name}:Dictionary",
+                "@id": f"{self.config.prefix_name}:Dictionary",
                 "@type": "prov:Dictionary",
                 "prov:hadDictionaryMember": members,
             }
 
-            for mapping in cls.general_metadata:
+            for mapping in self.general_metadata:
                 if isinstance(mapping, QuantityGraph):
                     entity = {
                         "@type": "prov:KeyEntityPair",
@@ -196,18 +196,18 @@ class JsonABoxParser(ABoxBaseParser):
                         f"Mapping must be of type {QuantityGraph} or {PropertyGraph}, not {type(mapping)}"
                     )
 
-            for idx, mapping in enumerate(cls.time_series_metadata):
+            for idx, mapping in enumerate(self.dataframe_metadata):
                 if not isinstance(mapping, QuantityGraph):
                     raise TypeError(
                         f"Mapping must be of type {QuantityGraph}, not {type(mapping)}"
                     )
 
-                if cls.config.data_download_uri:
+                if self.config.data_download_uri:
                     download_url = {
                         "dcterms:identifier": {
                             "@type": "xsd:anyURI",
                             "@value": urljoin(
-                                str(cls.config.data_download_uri),
+                                str(self.config.data_download_uri),
                                 f"column-{idx}",
                             ),
                         }
@@ -241,8 +241,8 @@ class JsonABoxParser(ABoxBaseParser):
                 members.append(entity)
         else:
             triples = {
-                "@graph": [model.json_ld for model in cls.general_metadata]
-                + [model.json_ld for model in cls.time_series_metadata]
+                "@graph": [model.json_ld for model in self.general_metadata]
+                + [model.json_ld for model in self.dataframe_metadata]
             }
 
         return triples
@@ -284,8 +284,8 @@ class JsonABoxParser(ABoxBaseParser):
             None
         """
         self._general_metadata = []
-        self._time_series_metadata = []
-        self._time_series = {}
+        self._dataframe_metadata = []
+        self._dataframe = {}
         for datum in mapping:
             subdataset = self._get_optional_subdataset(datafile, datum)
 
@@ -371,8 +371,8 @@ class JsonABoxParser(ABoxBaseParser):
                             model_data["unit_relation"] = datum.unit_relation
                         model = QuantityGraph(**model_data)
 
-                        self._time_series[suffix] = value
-                        self._time_series_metadata.append(model)
+                        self._dataframe[suffix] = value
+                        self._dataframe_metadata.append(model)
                     # if we have a series in the form of a list and a unit and we are expanding:
                     # * iterate over the series
                     # * make a QuantityGraph with the unit and each iterated value
@@ -399,8 +399,8 @@ class JsonABoxParser(ABoxBaseParser):
                             value_relation_type=datum.value_relation_type,
                             **model_data,
                         )
-                        self._time_series[suffix] = value
-                        self._time_series_metadata.append(model)
+                        self._dataframe[suffix] = value
+                        self._dataframe_metadata.append(model)
                     # if we have a series in the form of a list and *no* unit and we are expanding:
                     # * iterate over the series
                     # * make a PropertyGraph with each iterated value
@@ -467,12 +467,12 @@ class JsonABoxParser(ABoxBaseParser):
                         )
 
         # set time series as pd dataframe
-        self._time_series = pd.DataFrame.from_dict(
-            self._time_series, orient="index"
+        self._dataframe = pd.DataFrame.from_dict(
+            self._dataframe, orient="index"
         ).transpose()
         # check if drop na:
         if self.dropna:
-            self._time_series.dropna(how="all", inplace=True)
+            self._dataframe.dropna(how="all", inplace=True)
 
     def _get_optional_subdataset(
         self, datafile: Any, datum: ABoxBaseMapping
@@ -514,18 +514,64 @@ class JsonABoxParser(ABoxBaseParser):
         else:
             value = results
 
-        if isinstance(value, list):
-            for val in value:
+        if isinstance(
+            relation.object_data_type,
+            (CustomRelationPropertySubgraph, CustomRelationQuantitySubgraph),
+        ):
+            if isinstance(value, list):
+                for val in value:
+                    self._make_subgraph(relation, datum, val, suffix)
+            elif _value_exists(value):
+                self._make_subgraph(relation, datum, value, suffix)
+            else:
+                message = f"""Concept with for iri `{datum.iri}`
+                                does not have a value at location `{relation.object_location}`.
+                                Concept will be omitted in graph.
+                                """
+                warnings.warn(message, MappingMissmatchWarning)
+
+        else:
+            if isinstance(value, list):
+                for val in value:
+                    self._make_property_graph(
+                        val,
+                        datum.iri,
+                        suffix,
+                        **relation.model_dump(exclude={"object_location"}),
+                    )
+            elif _value_exists(value):
                 self._make_property_graph(
-                    val,
+                    value,
                     datum.iri,
                     suffix,
                     **relation.model_dump(exclude={"object_location"}),
                 )
-        elif isinstance(
-            relation.object_data_type,
-            (CustomRelationPropertySubgraph, CustomRelationQuantitySubgraph),
-        ):
+            else:
+                message = f"""Concept with for iri `{datum.iri}`
+                                does not have a value at location `{relation.object_location}`.
+                                Concept will be omitted in graph.
+                                """
+                warnings.warn(message, MappingMissmatchWarning)
+
+    def _make_subgraph(
+        self,
+        relation: CustomRelation,
+        datum: ABoxBaseMapping,
+        value: Any,
+        suffix: str,
+    ) -> None:
+        if relation.object_data_type.concatenate:
+            iri = str(relation.object_data_type.iri)
+            iri = iri if iri.endswith("/") else iri + "/"
+            value = urljoin(iri, str(value))
+            self._make_property_graph(
+                value,
+                datum.iri,
+                suffix,
+                relation=relation.relation,
+                relation_type="object_property",
+            )
+        else:
             if isinstance(
                 relation.object_data_type, CustomRelationPropertySubgraph
             ):
@@ -543,19 +589,6 @@ class JsonABoxParser(ABoxBaseParser):
                 relation=relation.relation,
                 relation_type="object_property",
             )
-        elif _value_exists(value):
-            self._make_property_graph(
-                value,
-                datum.iri,
-                suffix,
-                **relation.model_dump(exclude={"object_location"}),
-            )
-        else:
-            message = f"""Concept with for iri `{datum.iri}`
-                            does not have a value at location `{relation.object_location}`.
-                            Concept will be omitted in graph.
-                            """
-            warnings.warn(message, MappingMissmatchWarning)
 
     def _make_property_graph(
         self,
@@ -609,18 +642,18 @@ class JsonParser(BaseFileParser):
 
     # OVERRIDE
     @property
-    def media_type(cls) -> str:
+    def media_type(self) -> str:
         """IANA Media type definition of the resource to be parsed."""
         return "https://www.iana.org/assignments/media-types/application/json"
 
     # OVERRIDE
     @property
-    def _abox_parser(cls) -> JsonABoxParser:
+    def _abox_parser(self) -> JsonABoxParser:
         """Pydantic Model for Joson ABox parser"""
         return JsonABoxParser
 
     # OVERRIDE
     @property
-    def _tbox_parser(cls) -> JsonTBoxParser:
+    def _tbox_parser(self) -> JsonTBoxParser:
         """Pydantic Model for Excel TBox parser"""
         return JsonTBoxParser

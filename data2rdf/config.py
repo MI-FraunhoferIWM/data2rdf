@@ -20,6 +20,8 @@ class Config(BaseSettings):
         description="URI to QUDT quantity kind ontology for unit conversion",
     )
 
+    language: str = Field("en", description="Language for the unit labels")
+
     base_iri: Union[str, AnyUrl] = Field(
         "https://www.example.org", description="Base IRI for individuals."
     )

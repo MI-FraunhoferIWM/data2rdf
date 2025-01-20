@@ -43,7 +43,7 @@ The original file can be accessed [here](https://github.com/MI-FraunhoferIWM/dat
 
 ### The mapping
 
-In contrast to the previous CSV example, we have to provide more information about the location of the data in the excel file. Previously, we simply had to provide the `key` of the concept in the data file. But since we are using `openpyxl`, we need to provide the `worksheet`, `value_location` (in case of metadata), `time_series_start` (in case of time series) and `unit_location` (in case of quantitative data) for each concept in the excel file.
+In contrast to the previous CSV example, we have to provide more information about the location of the data in the excel file. Previously, we simply had to provide the `key` of the concept in the data file. But since we are using `openpyxl`, we need to provide the `worksheet`, `value_location` (in case of metadata), `dataframe_start` (in case of time series) and `unit_location` (in case of quantitative data) for each concept in the excel file.
 
 A valid mapping for the example file show above may look like this:
 
@@ -62,7 +62,7 @@ A valid mapping for the example file show above may look like this:
   {
     "iri": "https://w3id.org/steel/ProcessOntology/WidthChange",
     "key": "Breiten\u00e4nderung",
-    "time_series_start": "E15",
+    "dataframe_start": "E15",
     "unit_location": "E14",
     "worksheet": "Messdaten"
   },
@@ -75,7 +75,7 @@ A valid mapping for the example file show above may look like this:
   {
     "iri": "https://w3id.org/steel/ProcessOntology/Elongation",
     "key": "Dehnung",
-    "time_series_start": "Q15",
+    "dataframe_start": "Q15",
     "unit": "\u00f7",
     "worksheet": "Messdaten"
   },
@@ -145,21 +145,21 @@ A valid mapping for the example file show above may look like this:
   {
     "iri": "https://w3id.org/steel/ProcessOntology/StandardForce",
     "key": "Standardkraft",
-    "time_series_start": "C15",
+    "dataframe_start": "C15",
     "unit_location": "C14",
     "worksheet": "Messdaten"
   },
   {
     "iri": "https://w3id.org/steel/ProcessOntology/Extension",
     "key": "Standardweg",
-    "time_series_start": "D15",
+    "dataframe_start": "D15",
     "unit_location": "D14",
     "worksheet": "Messdaten"
   },
   {
     "iri": "https://w3id.org/steel/ProcessOntology/AbsoluteCrossheadTravel",
     "key": "Traversenweg absolut",
-    "time_series_start": "B15",
+    "dataframe_start": "B15",
     "unit_location": "B14",
     "worksheet": "Messdaten"
   },
@@ -173,7 +173,7 @@ A valid mapping for the example file show above may look like this:
   {
     "iri": "https://w3id.org/steel/ProcessOntology/TestTime",
     "key": "Zeit",
-    "time_series_start": "A15",
+    "dataframe_start": "A15",
     "unit_location": "A14",
     "worksheet": "Messdaten"
   }
@@ -199,7 +199,7 @@ Whereas the mapping of a time series looks like this:
 {
 "iri": "https://w3id.org/steel/ProcessOntology/TestTime",
 "key": "Zeit",
-"time_series_start": "A15",
+"dataframe_start": "A15",
 "unit_location": "A14",
 "worksheet": "Messdaten"
 }
@@ -214,7 +214,7 @@ In case if the unit cannot be parsed from the excel sheet, we again have the opp
 {
     "iri": "https://w3id.org/steel/ProcessOntology/Elongation",
     "key": "Dehnung",
-    "time_series_start": "Q15",
+    "dataframe_start": "Q15",
     "unit": "\u00f7",
     "worksheet": "Messdaten"
   }
@@ -380,7 +380,7 @@ mapping = [
   {
     "iri": "https://w3id.org/steel/ProcessOntology/WidthChange",
     "key": "Breiten\u00e4nderung",
-    "time_series_start": "E15",
+    "dataframe_start": "E15",
     "unit_location": "E14",
     "worksheet": "Messdaten"
   },
@@ -690,4 +690,4 @@ fileid:TensileTestSpecimen a prov:Agent,
 </Details>
 </blockQuote>
 
-Again, you will be able to investigate the `general_metadata`, `plain_metadata`, `time_series_metadata` and `time_series` attributes in the same way as stated in the [first example](1_csv).
+Again, you will be able to investigate the `general_metadata`, `plain_metadata`, `dataframe_metadata` and `dataframe` attributes in the same way as stated in the [first example](1_csv).

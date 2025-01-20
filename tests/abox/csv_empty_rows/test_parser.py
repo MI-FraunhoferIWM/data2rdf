@@ -2,6 +2,8 @@
 
 import os
 
+from ..utils import dsms_schema
+
 test_folder = os.path.dirname(os.path.abspath(__file__))
 working_folder = os.path.join(test_folder, "input")
 output_folder = os.path.join(test_folder, "output")
@@ -11,9 +13,9 @@ raw_data = os.path.join(working_folder, "data", "data.csv")
 expected = os.path.join(output_folder, "output_csv_parser.ttl")
 
 parser_args = {
-    "time_series_sep": ";",
+    "dataframe_sep": ";",
     "metadata_length": 0,
-    "time_series_header_length": 1,
+    "dataframe_header_length": 1,
     "drop_na": False,
 }
 
@@ -26,7 +28,6 @@ columns = [
     "ThermalConductivity",
     "MassDensity",
 ]
-
 
 config = {"graph_identifier": "https://www.example.org"}
 
@@ -49,15 +50,16 @@ def test_csv_nan_vals() -> None:
 
     assert len(parser.general_metadata) == 0
 
-    assert len(parser.time_series_metadata) == 7
-    for row in parser.time_series_metadata:
+    assert len(parser.dataframe_metadata) == 7
+    for row in parser.dataframe_metadata:
         assert isinstance(row, QuantityGraph)
 
-    assert len(parser.time_series.columns) == 7
-    assert sorted(list(parser.time_series.columns)) == sorted(columns)
+    assert len(parser.dataframe.columns) == 7
+    assert sorted(list(parser.dataframe.columns)) == sorted(columns)
 
-    for name, column in parser.time_series.items():
+    for name, column in parser.dataframe.items():
         assert len(column) == 31
 
     assert parser.graph.isomorphic(expected_graph)
-    assert parser.plain_metadata == {}
+    assert parser.to_dict(schema=dsms_schema) == {}
+    assert parser.to_dict() == {}

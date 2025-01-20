@@ -1,8 +1,9 @@
 """Data2RDF base model for parsers"""
 
 import json
+import warnings
 from abc import abstractmethod
-from typing import TYPE_CHECKING, Any, Dict, List, Optional, Union
+from typing import TYPE_CHECKING, Any, Callable, Dict, List, Optional, Union
 
 from rdflib import Graph
 
@@ -71,7 +72,7 @@ class AnyBoxBaseParser(BaseParser):
 
     @property
     @abstractmethod
-    def mapping_model(cls) -> "BaseParser":
+    def mapping_model(self) -> "BaseParser":
         """Pydantic model for validating mapping.
         Must be a subclass of `ABoxBaseParser` or `TBoxBaseParser`.
         """
@@ -92,10 +93,10 @@ class AnyBoxBaseParser(BaseParser):
         """Class method for loading data file"""
 
     @property
-    def graph(cls) -> "Graph":
+    def graph(self) -> "Graph":
         """Return RDF Graph from the parsed data."""
-        graph = Graph(identifier=cls.config.graph_identifier)
-        graph.parse(data=json.dumps(cls.json_ld), format="json-ld")
+        graph = Graph(identifier=self.config.graph_identifier)
+        graph.parse(data=json.dumps(self.json_ld), format="json-ld")
         return graph
 
     @model_validator(mode="after")
@@ -170,8 +171,8 @@ class ABoxBaseParser(AnyBoxBaseParser):
     """Basic Parser for ABox mode"""
 
     _general_metadata: Any = PrivateAttr()
-    _time_series_metadata: Any = PrivateAttr()
-    _time_series: Any = PrivateAttr()
+    _dataframe_metadata: Any = PrivateAttr()
+    _dataframe: Any = PrivateAttr()
 
     @property
     def general_metadata(self) -> "List[BasicConceptMapping]":
@@ -179,25 +180,66 @@ class ABoxBaseParser(AnyBoxBaseParser):
         return self._general_metadata
 
     @property
-    def time_series_metadata(self) -> "List[BasicConceptMapping]":
+    def dataframe_metadata(self) -> "List[BasicConceptMapping]":
         """Return list object with general metadata"""
-        return self._time_series_metadata
+        return self._dataframe_metadata
 
     @property
-    def time_series(self) -> "pd.DataFrame":
+    def dataframe(self) -> "pd.DataFrame":
         """Return times series found in the data as pd.DataFrame"""
-        return self._time_series
+        return self._dataframe
 
     @property
-    def plain_metadata(self) -> "Dict[str, Any]":
-        """Metadata as flat json - without units and iris.
-        Useful e.g. for the custom properties of the DSMS."""
-        return {
-            str(metadatum.iri).split(self.config.separator)[
-                -1
-            ]: metadatum.value
-            for metadatum in self.general_metadata
-        }
+    def plain_metadata(self) -> List[Dict[str, Any]]:
+        message = """
+        `plain_metadata` is deprecated and will be removed in a future version.
+        Use the `to_dict()` instead."""
+        warnings.warn(message, DeprecationWarning)
+        return self.to_dict()
+
+    def to_dict(
+        self, schema: Callable = None
+    ) -> "Union[Dict[str, Any], List[Dict[str, Any]]]":
+        """
+        Return general metadata as a list of dictionaries.
+
+        The list contains dictionaries, where the key is the label of the metadata,
+        and the value is a dictionary with the keys 'label' and 'value'. If the
+        metadata has a measurement unit associated with it, the dictionary will
+        also contain the key 'measurement_unit' with the value of the measurement
+        unit.
+
+        If the schema parameter is provided, it will be used to transform the
+        metadata list. The schema should be a callable which takes the list of
+        metadata dictionaries and returns the transformed metadata.
+
+        If no schema is provided, the function will return a dictionary where the
+        keys are the labels of the metadata, and the values are the dictionaries
+        from the list.
+
+        :param schema: A callable which takes a list of dictionaries and returns
+            the transformed metadata.
+        :return: A dictionary or list of dictionaries with the metadata.
+        """
+        metadata = []
+        for metadatum in self.general_metadata:
+            prop = {
+                "label": metadatum.suffix,
+                "value": metadatum.value,
+                "relation_mapping": {
+                    "class_iri": str(metadatum.iri),
+                },
+            }
+            if hasattr(metadatum, "measurement_unit"):
+                prop[
+                    "measurement_unit"
+                ] = metadatum.measurement_unit.model_dump(exclude={"config"})
+            metadata.append(prop)
+        if not isinstance(schema, type(None)):
+            metadata = schema(metadata)
+        else:
+            metadata = {datum.get("label"): datum for datum in metadata}
+        return metadata
 
 
 class BaseFileParser(BaseParser):
@@ -271,44 +313,53 @@ class BaseFileParser(BaseParser):
         return self
 
     @property
-    def plain_metadata(cls) -> Dict[str, Any]:
+    def plain_metadata(self) -> Dict[str, Any]:
         """Metadata as flat json - without units and iris.
         Useful e.g. for the custom properties of the DSMS."""
-        if cls.mode == PipelineMode.ABOX:
-            return cls.abox.plain_metadata
+        if self.mode == PipelineMode.ABOX:
+            return self.abox.plain_metadata
         else:
             raise NotImplementedError(
                 "`plain_metadata` is not available in `tbox`-mode."
             )
 
+    def to_dict(self, schema: Callable = None) -> "List[Dict[str, Any]]":
+        """Return list of general metadata as DSMS custom properties"""
+        if self.mode == PipelineMode.ABOX:
+            return self.abox.to_dict(schema=schema)
+        else:
+            raise NotImplementedError(
+                "`to_dict()` is not available in `tbox`-mode."
+            )
+
     @property
-    def general_metadata(cls) -> "List[BasicConceptMapping]":
+    def general_metadata(self) -> "List[BasicConceptMapping]":
         """Return list object with general metadata"""
-        if cls.mode == PipelineMode.ABOX:
-            return cls.abox.general_metadata
+        if self.mode == PipelineMode.ABOX:
+            return self.abox.general_metadata
         else:
             raise NotImplementedError(
                 "`general_metadata` is not available in `tbox`-mode."
             )
 
     @property
-    def time_series_metadata(cls) -> "List[BasicConceptMapping]":
+    def dataframe_metadata(self) -> "List[BasicConceptMapping]":
         """Return time series metadata"""
-        if cls.mode == PipelineMode.ABOX:
-            return cls.abox.time_series_metadata
+        if self.mode == PipelineMode.ABOX:
+            return self.abox.dataframe_metadata
         else:
             raise NotImplementedError(
-                "`time_series_metadata` is not available in `tbox`-mode."
+                "`dataframe_metadata` is not available in `tbox`-mode."
             )
 
     @property
-    def time_series(cls) -> "Dict[str, Any]":
+    def dataframe(self) -> "Dict[str, Any]":
         """Return time series"""
-        if cls.mode == PipelineMode.ABOX:
-            return cls.abox.time_series
+        if self.mode == PipelineMode.ABOX:
+            return self.abox.dataframe
         else:
             raise NotImplementedError(
-                "`time_series` is not available in `tbox`-mode."
+                "`dataframe` is not available in `tbox`-mode."
             )
 
     @property

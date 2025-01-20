@@ -10,8 +10,8 @@ from pydantic import (
     BaseModel,
     ConfigDict,
     Field,
-    ValidationInfo,
     field_validator,
+    model_validator,
 )
 from rdflib import Graph
 
@@ -71,14 +71,14 @@ class BasicGraphModel(BasicConceptMapping):
 
     @property
     @abstractmethod
-    def json_ld(cls) -> Dict[str, Any]:
+    def json_ld(self) -> Dict[str, Any]:
         """Return dict for json-ld of graph"""
 
     @property
-    def graph(cls) -> Graph:
+    def graph(self) -> Graph:
         """Return graph object based on json-ld"""
-        graph = Graph(identifier=cls.config.graph_identifier)
-        graph.parse(data=json.dumps(cls.json_ld), format="json-ld")
+        graph = Graph(identifier=self.config.graph_identifier)
+        graph.parse(data=json.dumps(self.json_ld), format="json-ld")
         return graph
 
 
@@ -106,16 +106,18 @@ class BasicSuffixModel(BaseConfigModel):
             value = [AnyUrl(str(iterable).strip()) for iterable in value]
         return value
 
-    @field_validator("suffix")
+    @model_validator(mode="after")
     @classmethod
     def validate_suffix(
-        cls, value: Optional[str], info: ValidationInfo
-    ) -> str:
+        cls,
+        self: "BasicSuffixModel",
+    ) -> "BasicSuffixModel":
         """Return suffix for individal"""
 
-        iri = info.data["iri"]
-        config = info.data["config"]
-        if isinstance(iri, list) and value is None:
+        if isinstance(self.iri, list) and self.suffix is None:
             raise TypeError("If the iri is a list, the suffix must be set ")
 
-        return value or str(iri).split(config.separator)[-1]
+        self.suffix = (
+            self.suffix or str(self.iri).split(self.config.separator)[-1]
+        )
+        return self

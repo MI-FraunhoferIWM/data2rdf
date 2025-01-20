@@ -1,4 +1,4 @@
-key;iri;value_location;unit_location;worksheet;time_series_start;unit;annotation
+key;iri;value_location;unit_location;worksheet;dataframe_start;unit;annotation
 Projekt;https://w3id.org/steel/ProcessOntology/ProjectNumber;F6;;Protokoll;;;
 Datum;https://w3id.org/steel/ProcessOntology/TimeStamp;AD6;;Protokoll;;;
 Prüfmaschine;https://w3id.org/steel/ProcessOntology/MachineData;I8;;Protokoll;;;
