@@ -46,7 +46,7 @@ class BaseParser(BaseModel):
 
     dropna: bool = Field(
         False,
-        description="Drop all rows where ONLY NaN and None occur in the time series.",
+        description="Drop all rows where ONLY NaN and None occur in the dataframe.",
     )
 
     config: Config = Field(
@@ -344,7 +344,7 @@ class BaseFileParser(BaseParser):
 
     @property
     def dataframe_metadata(self) -> "List[BasicConceptMapping]":
-        """Return time series metadata"""
+        """Return dataframe metadata"""
         if self.mode == PipelineMode.ABOX:
             return self.abox.dataframe_metadata
         else:
@@ -354,7 +354,7 @@ class BaseFileParser(BaseParser):
 
     @property
     def dataframe(self) -> "Dict[str, Any]":
-        """Return time series"""
+        """Return dataframe"""
         if self.mode == PipelineMode.ABOX:
             return self.abox.dataframe
         else:

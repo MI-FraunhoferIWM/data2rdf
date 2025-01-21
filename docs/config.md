@@ -11,7 +11,7 @@ The configuration of the package is crucial for the correct parsing and transfor
 | prefix_name | str | Prefix used referencing the base_iri in the context of the graph | fileid | No |
 | separator | str | Separator between base IRI and suffix | / | No |
 | encoding | str | Encoding used while parsing | utf-8 | No |
-| data_download_uri | AnyUrl | General base iri for downloading the time series after uploading | https://www.example.org/download | No |
+| data_download_uri | AnyUrl | General base iri for downloading the dataframe after uploading | https://www.example.org/download | No |
 | graph_identifier | Optional[str, AnyUrl] | Identifier of the graph to be produced | None | No |
 | namespace_placeholder | Union[str, AnyUrl] | Placeholder of the extra triples to be replaced with the base_iri during the pipeline run | http://abox-namespace-placeholder.org/ | No |
 | remove_from_unit | List[str] | Characters which should be removed from the input value for the unit | ["[", "]", '"', " "] | No |

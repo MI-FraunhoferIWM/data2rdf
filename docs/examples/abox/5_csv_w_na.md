@@ -6,7 +6,7 @@ Please follow [this link here](https://github.com/MI-FraunhoferIWM/data2rdf/blob
 
 ## General understanding
 
-In comparision to the [previous example of the csv file without metadata](1.4_csv_wo_metadata.md), we are using the similar data again, but now we have some missing values in the time series. Again, there will be no metadata in this case.
+In comparision to the [previous example of the csv file without metadata](1.4_csv_wo_metadata.md), we are using the similar data again, but now we have some missing values in the dataframe. Again, there will be no metadata in this case.
 
 ## The inputs
 
@@ -14,7 +14,7 @@ For this example, we will consider the following inputs:
 
 * the csv file produced to be parsed
 * the mapping for describing the data in RDF
-* the parser arguments telling the pipeline that we do not have any metadata in the file and that we have missing values in the time series.
+* the parser arguments telling the pipeline that we do not have any metadata in the file and that we have missing values in the dataframe.
 
 
 ### The raw data
@@ -56,7 +56,7 @@ Temperature[°C];Coefficient of thermal exapansion[1/K];Specific heat[J/kgK];You
 1200;2.80E-05;1.34E+03;3.80E+09;0.494;2;
 ```
 
-As you may have noticed, this csv file here strictly speaking does not feature any time series, but a data frame of different samples with multiple properties like Young's modulus, specific heat capacity, etc.
+As you may have noticed, this csv file here strictly speaking does not feature any dataframe, but a data frame of different samples with multiple properties like Young's modulus, specific heat capacity, etc.
 Since the data frame here is vertically oriented, we are considering not to transform the data values into RDF again.
 
 Additionally, there are some missing values, which are marked with `;;` in the csv file. These locations need to be properly handled in the pipeline, since we do not want to drop these rows while parsing.
@@ -65,9 +65,9 @@ Additionally, there are some missing values, which are marked with `;;` in the c
 
 According to the condition of the csv parser, we need to take the following parser arguments into account:
 
-* `dataframe_sep`: the separator for the time series. In this case, it is a  `;`.
+* `dataframe_sep`: the separator for the dataframe. In this case, it is a  `;`.
 * `metadata_length`: the length of the metadata in the csv file. In this case, it is 0, since we do not have any metadata.
-* `dataframe_header_length`: the length of the header of the time series in the csv file. In this case, it is 1, since the time series start at the second row.
+* `dataframe_header_length`: the length of the header of the dataframe in the csv file. In this case, it is 1, since the dataframe start at the second row.
 * `drop_na`: whether to drop the rows with missing values. In this case, it is `False`.
 
 The according Python dict for the parser arguments would look like this:
@@ -269,7 +269,7 @@ fileid:ThermalExpansionCoefficient a <https://w3id.org/steel/ProcessOntology/The
 
 fileid:tableGroup a csvw:TableGroup ;
     csvw:table [ a csvw:Table ;
-            rdfs:label "Time series data" ;
+            rdfs:label "dataframe data" ;
             csvw:tableSchema [ a csvw:Schema ;
                     csvw:column [ a csvw:Column ;
                             qudt:quantity fileid:ThermalConductivity ;

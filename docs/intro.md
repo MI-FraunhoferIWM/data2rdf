@@ -9,11 +9,11 @@ Breaking this package down to the basic functionalities, one can describe it wit
 * express information available as:
 
     * metadata (key-value-pairs)
-    * metadata of time series (tabular data)
+    * metadata of dataframe (tabular data)
 
     ... from a data source (file or Python-`dict`) into **OWL/RDF**.
 
-* parse the metadata and time series of this data source and make it available to other 3rd party software for further data storage and processing.
+* parse the metadata and dataframe of this data source and make it available to other 3rd party software for further data storage and processing.
 
 * express the SI-units of certain quantities through the **QUDT** ontology.
 
@@ -33,7 +33,7 @@ Breaking this package down to the basic functionalities, one can describe it wit
 
 * a curated ontology or vocabulary with OWL/RDFS classes describing the concepts in our metadata source
 
-* need a 1:1 mapping of value locations (metadata and/or time series) for the creation of the _data graph_ (explained above).
+* need a 1:1 mapping of value locations (metadata and/or dataframe) for the creation of the _data graph_ (explained above).
 
 * optionally a mapping for the SI-Units of the individually mapped concepts, either coming from a certain location in the file or by leaving a statement of a IRI (e.g. **qudt**)
 

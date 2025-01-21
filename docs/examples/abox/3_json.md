@@ -1,4 +1,4 @@
-# JSON file or Python-dict with metadata and time series
+# JSON file or Python-dict with metadata and dataframe
 
 ```{note}
 Please follow [this link here](https://github.com/MI-FraunhoferIWM/data2rdf/blob/main/examples/3_json.ipynb) in order to access the related jupyter notebook.
@@ -6,7 +6,7 @@ Please follow [this link here](https://github.com/MI-FraunhoferIWM/data2rdf/blob
 
 
 ```{note}
-This example is building up on the very first one about the [CSV file with metadata and time series](1_csv.md).
+This example is building up on the very first one about the [CSV file with metadata and dataframe](1_csv.md).
 Please start from this chapter in order to fully understand the content of this example.
 ```
 
@@ -14,7 +14,7 @@ Please start from this chapter in order to fully understand the content of this 
 
 Typically, data can also be provided in the serialization of a json file, which ulimately can be parsed in to a dict object in Python.
 
-In this section, we would like to showcase how to write a mapping for a json file with metadata and time series. The content of the json can be nested into an arbitrary depth.
+In this section, we would like to showcase how to write a mapping for a json file with metadata and dataframe. The content of the json can be nested into an arbitrary depth.
 
 ## The inputs
 
@@ -56,7 +56,7 @@ raw_data = {
 }
 ```
 
-As you may notice, concepts like `Breitenänderung` and `Dehnung` both are time series with slighly different key-patters: `Standardkraft` is a dictionary/object with an additional subelement called `array` for the values and `unit` for the unit, whereas the `Dehnung` key directly has a list of values and no reference for the unit.
+As you may notice, concepts like `Breitenänderung` and `Dehnung` both are dataframe with slighly different key-patters: `Standardkraft` is a dictionary/object with an additional subelement called `array` for the values and `unit` for the unit, whereas the `Dehnung` key directly has a list of values and no reference for the unit.
 
 ### The mapping
 

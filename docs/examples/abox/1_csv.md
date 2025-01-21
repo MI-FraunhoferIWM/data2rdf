@@ -1,4 +1,4 @@
-# CSV file with metadata and time series
+# CSV file with metadata and dataframe
 
 ```{note}
 Please follow [this link here](https://github.com/MI-FraunhoferIWM/data2rdf/blob/main/examples/1_csv.ipynb) in order to access the related jupyter notebook.
@@ -8,10 +8,10 @@ Please follow [this link here](https://github.com/MI-FraunhoferIWM/data2rdf/blob
 
 In this example, we want to transfor a csv file which encorporates stress/strain of the measurement and some metadata about the experiment into an RDF repesentation.
 
-For this purpose, we are describing the **general metadata** of the experiment as well as the **metadata of the time series**.
+For this purpose, we are describing the **general metadata** of the experiment as well as the **metadata of the dataframe**.
 
 ```{note}
-We do not target to transform the time series itself into RDF, since it usually includes several thousands of datums per column. Hence we would give a reference in the form of an URI which is is pointing to the location of the file (e.g. a route in a web API or a local system path).
+We do not target to transform the dataframe itself into RDF, since it usually includes several thousands of datums per column. Hence we would give a reference in the form of an URI which is is pointing to the location of the file (e.g. a route in a web API or a local system path).
 ```
 
 ## The inputs
@@ -29,19 +29,19 @@ The csv file produced by the tensile test machine looks like this:
 
 ![details](../../assets/img/docu/CSV-Parser.png)
 
-The original file can be accessed [here](https://github.com/MI-FraunhoferIWM/data2rdf/raw/bbde50919c50f3428eec179f94f29315f31165fe/tests/abox/csv_pipeline_test/input/data/DX56_D_FZ2_WR00_43.TXT). Due to clarify reasons, we truncated the time series in this document here.
+The original file can be accessed [here](https://github.com/MI-FraunhoferIWM/data2rdf/raw/bbde50919c50f3428eec179f94f29315f31165fe/tests/abox/csv_pipeline_test/input/data/DX56_D_FZ2_WR00_43.TXT). Due to clarify reasons, we truncated the dataframe in this document here.
 
 ```{note}
-We are strictly assuming that metadata is on top of the time series and has a the key-value-unit pattern. Therefore the metadata up to now needs to have a width of 2 to 3 columns. In the future, we may support extending the default width of the metadata, in case if we need to have a width of 4 or more columns, e.g. if there are be more concepts than just value and unit.
+We are strictly assuming that metadata is on top of the dataframe and has a the key-value-unit pattern. Therefore the metadata up to now needs to have a width of 2 to 3 columns. In the future, we may support extending the default width of the metadata, in case if we need to have a width of 4 or more columns, e.g. if there are be more concepts than just value and unit.
 
 We generally assume that the **direction of the metadata is horizontally oriented**, which means that the firs key in each row is the index (or primary key) of the metadata. **All of the values in this metadata shall be represented in an RDF graph**.
 
-Accordingly the **direction of the time series is vertically oriented**, which means that the first key in the header of each column will be the index (or primary key) of the time series. **In contrast to the metadata, we only want to describe the metadata of the time series in RDF and do not want to include each datum of each in the time series into the RDF**.
+Accordingly the **direction of the dataframe is vertically oriented**, which means that the first key in the header of each column will be the index (or primary key) of the dataframe. **In contrast to the metadata, we only want to describe the metadata of the dataframe in RDF and do not want to include each datum of each in the dataframe into the RDF**.
 ```
 
 As you may see, the metadata of file _has a length of 22 rows_. The metadata itself is tab-separated, has the name of a concept in the first column (e.g.  `"Vorkraft"`=Preload), the value related to this metadatum in the second column (e.g. `"22"`) and optionally a unit in the third column (e.g. `"MPa"`).
 
-Subsequently, there is the time series with a header which has a length of rows: one with a the concept name (e.g. `"Prüfzeit"`=Test time) columns and one with the respective unit again (e.g. `"s"`).
+Subsequently, there is the dataframe with a header which has a length of rows: one with a the concept name (e.g. `"Prüfzeit"`=Test time) columns and one with the respective unit again (e.g. `"s"`).
 
 ### The parser arguments
 
@@ -49,8 +49,8 @@ Since we are assuming to have a csv file, we can assume the following parser arg
 
 * `"metadata_sep"`: The separator of the metadata
     In this example, we assume that the metadata is tab-separated. Hence the argument is `"\t"`.
-* `"dataframe_sep"`: The separator of the time series
-    In this example, we assume that the time series is tab-separated. Hence the argument is `"\t"`.
+* `"dataframe_sep"`: The separator of the dataframe
+    In this example, we assume that the dataframe is tab-separated. Hence the argument is `"\t"`.
 * `"metadata_length"`: The length of the metadata
     In this example, we assume that the metadata has 22 rows.
     Hence the argument is `22`.
@@ -65,15 +65,15 @@ Since we are assuming to have a csv file, we can assume the following parser arg
     "Temperatur"	22	"°C"
     "Bemerkung"	""
     ```
-* `dataframe_header_length`: The length of the header of the time series.
-    In this example, we assume that the time series has 2 rows, which is the name of the concept in the first row and the corresponding unit in the second row:
+* `dataframe_header_length`: The length of the header of the dataframe.
+    In this example, we assume that the dataframe has 2 rows, which is the name of the concept in the first row and the corresponding unit in the second row:
     ```
     "Standardweg"	"Breitenänderung"	"Dehnung"
     "s"	"N"	"mm"	"mm"	"mm"	"mm" Hence the argument is `2`
     ```
 
 * `"fillna"`: The value to fill NaN values in the parsed dataframe.
-    In this example, we assume that the NaN values in the dataframe are filled with `""`. Hence the argument is `""`. This is in particular of importance when the time series is parsed from the csv file. Since we are using pandas to parse the csv file, we need to make sure that gaps in the time series are filled with `""`, instead of the default `np.nan` values in the dataframe. If not applied here, this might lead to problems in the data2rdf pipeline.
+    In this example, we assume that the NaN values in the dataframe are filled with `""`. Hence the argument is `""`. This is in particular of importance when the dataframe is parsed from the csv file. Since we are using pandas to parse the csv file, we need to make sure that gaps in the dataframe are filled with `""`, instead of the default `np.nan` values in the dataframe. If not applied here, this might lead to problems in the data2rdf pipeline.
 
 The according parser args hence will look like this:
 
@@ -225,7 +225,7 @@ You may see that we simply need to deliver a list of dictionaries with the keys 
 
 Let us take the following concept for the example: the key of the concept is `"Vorkraft"` and the IRI is `"https://w3id.org/steel/ProcessOntology/Preload"`, which has been defined in the introduced ontology above. Of course, you **may also choose any ontological IRI from any ontology** which matches your concept from the data file.
 
-Please also note that we are defining the mappings of the metadata and the time series in the same dictionary. The **units of the metadata** is assumed to be read from the **third column of the metadata-section** whereas the **unit of the time series columns** is assumed to be read from the **second row of the time series header**.
+Please also note that we are defining the mappings of the metadata and the dataframe in the same dictionary. The **units of the metadata** is assumed to be read from the **third column of the metadata-section** whereas the **unit of the dataframe columns** is assumed to be read from the **second row of the dataframe header**.
 
 During the pipeline run, the units extracted from the metadata and timeseries will be mapped to ontological concepts of the [QUDT ontology](https://www.qudt.org/pages/QUDToverviewPage.html), describing a large set of SI units and off-system units.
 
@@ -527,8 +527,8 @@ The pipeline will deliver you the following outputs:
 
 * `graph`: the generated RDF graph
 * `plain_metadata`: the plain values of the metadata of the experiment
-* `dataframe`: the plain time series of the experiment
-* `dataframe_metadata`: the metadata of the time series
+* `dataframe`: the plain dataframe of the experiment
+* `dataframe_metadata`: the metadata of the dataframe
 
 ### The RDF graph
 
@@ -711,7 +711,7 @@ fileid:tableGroup a csvw:TableGroup ;
                     csvw:rownum 16 ;
                     csvw:titles "Prüfgeschwindigkeit"^^xsd:string ] ],
         [ a csvw:Table ;
-            rdfs:label "Time series data" ;
+            rdfs:label "dataframe data" ;
             csvw:tableSchema [ a csvw:Schema ;
                     csvw:column [ a csvw:Column ;
                             qudt:quantity fileid:Elongation ;
@@ -878,7 +878,7 @@ fileid:TensileTestSpecimen a prov:Agent,
 You can see that the graph consist now out of several subgraphs:
 
 * the data graph
-    * graph describing the metadata of the experiment and the metadata of the time series.
+    * graph describing the metadata of the experiment and the metadata of the dataframe.
     * the graph describing the structure of the csv file
 * the additional triples
 
@@ -887,7 +887,7 @@ Please see the following sections for more details.
 
 #### Data graph
 
-The part of the graph describing the metadata of the experiment and the metadata of the time series may look like this:
+The part of the graph describing the metadata of the experiment and the metadata of the dataframe may look like this:
 
 ```
 [...]
@@ -939,7 +939,7 @@ fileid:tableGroup a csvw:TableGroup ;
 
 
         [ a csvw:Table ;
-            rdfs:label "Time series data" ;
+            rdfs:label "dataframe data" ;
             csvw:tableSchema [ a csvw:Schema ;
                     csvw:column [ a csvw:Column ;
                             qudt:quantity fileid:AbsoluteCrossheadTravel ;
@@ -964,9 +964,9 @@ fileid:tableGroup a csvw:TableGroup ;
 </Details>
 </blockquote>
 
-You may note here that the two kinds of metadata are described through two tables groups in the output graph: one with an `rdfs:label "Metadata" ` and one with an `rdfs:label "Time series data"`. Both table groups are either describing the rows (e.g. for `fileid:Material` and `fileid:OriginalGaugeLength`) or the columns (e.g. `fileid:AbsoluteCrossheadTravel` and `fileid:Extension`) of the respective metadata and are pointing to the definition of the individuals datum (see snippet above).
+You may note here that the two kinds of metadata are described through two tables groups in the output graph: one with an `rdfs:label "Metadata" ` and one with an `rdfs:label "dataframe data"`. Both table groups are either describing the rows (e.g. for `fileid:Material` and `fileid:OriginalGaugeLength`) or the columns (e.g. `fileid:AbsoluteCrossheadTravel` and `fileid:Extension`) of the respective metadata and are pointing to the definition of the individuals datum (see snippet above).
 
-Please note here that the concepts for the individuals `fileid:AbloluteCrossheadTravel` and `fileid:Extension` describing the time series data only make a reference to an access url described by `https://www.example.org/download/column-2` and `https://www.example.org/download/column-3`, which may be the routes in a web server or an access url in a database. The base of this access url is `https://www.example.org/download` and can be adjusted in the config of the pipeline by setting `config = {"data_download_uri": "https://www.example.org/download/dataset-123"}`.
+Please note here that the concepts for the individuals `fileid:AbloluteCrossheadTravel` and `fileid:Extension` describing the dataframe data only make a reference to an access url described by `https://www.example.org/download/column-2` and `https://www.example.org/download/column-3`, which may be the routes in a web server or an access url in a database. The base of this access url is `https://www.example.org/download` and can be adjusted in the config of the pipeline by setting `config = {"data_download_uri": "https://www.example.org/download/dataset-123"}`.
 
 By setting `config = {"suppress_file_description": True}` this file description of the table groups will be neglected in the output graph.
 
@@ -1448,9 +1448,9 @@ You will notice that this `plain_metadata` is a shorthand for a code snippet lik
 print({obj.suffix: obj.value for obj in pipeline.general_metadata})
 ```
 
-### The time series metadata
+### The dataframe metadata
 
-In case of the need of further processing the time series metadata (header of the time series) resulting from the pipeline after parsing, the `dataframe_metadata` property can be accessed as follows:
+In case of the need of further processing the dataframe metadata (header of the dataframe) resulting from the pipeline after parsing, the `dataframe_metadata` property can be accessed as follows:
 
 ```
 print(pipeline.dataframe_metadata)
@@ -1509,12 +1509,12 @@ The result should look like this:
 	value_relation=qudt:value)]
 ```
 
-The result is a list of `QuantityGraph` which (or `PropertyGraph` in case of non-quantative columns) which result from the pipeline. Each object contains information about the time series metadata of a single quantity, such as the key, the unit and the value.
+The result is a list of `QuantityGraph` which (or `PropertyGraph` in case of non-quantative columns) which result from the pipeline. Each object contains information about the dataframe metadata of a single quantity, such as the key, the unit and the value.
 
 
-### The time series data
+### The dataframe data
 
-In case of the need of further processing the time series data (tabular data) resulting from the pipeline after parsing, the `dataframe` property can be accessed as follows:
+In case of the need of further processing the dataframe data (tabular data) resulting from the pipeline after parsing, the `dataframe` property can be accessed as follows:
 
 ```
 print(pipeline.dataframe)

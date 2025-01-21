@@ -39,7 +39,7 @@ class Config(BaseSettings):
 
     data_download_uri: Union[str, AnyUrl] = Field(
         "https://www.example.org/download",
-        description="General base iri for downloading the time series after uploading",
+        description="General base iri for downloading the dataframe after uploading",
     )
 
     graph_identifier: Optional[Union[str, AnyUrl]] = Field(

@@ -146,7 +146,7 @@ class MeasurementUnit(BaseConfigModel):
 class QuantityGraph(BasicGraphModel, BasicSuffixModel):
     """Quantity with or without a discrete value and a unit
     E.g. a quantity with a single value and unit _or_
-    a quantity describing a column of a time series or table with a unit."""
+    a quantity describing a column of a dataframe or table with a unit."""
 
     unit: Optional[Union[str, AnyUrl]] = Field(
         None, description="QUDT Symbol or any other IRI for the unit mapping"
@@ -273,7 +273,7 @@ class PropertyGraph(BasicGraphModel, BasicSuffixModel):
     """Mapping for an individual with arbitrary property. E.g. the
     name of a tester or a testing facility. The value must not have a
     discrete value but can also be a reference to a column in a table or
-    time series."""
+    dataframe."""
 
     value: Optional[
         Union[str, int, float, bool, AnyUrl, "PropertyGraph", "QuantityGraph"]

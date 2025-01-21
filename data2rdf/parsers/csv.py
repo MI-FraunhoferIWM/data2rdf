@@ -121,12 +121,12 @@ class CSVABoxParser(ABoxBaseParser):
     metadata_length: int = Field(..., description="Length of the metadata")
     dataframe_sep: Optional[str] = Field(
         None,
-        description="Column separator of the time series header",
+        description="Column separator of the dataframe header",
         alias=AliasChoices("dataframe_sep", "time_series_sep"),
     )
     dataframe_header_length: int = Field(
         2,
-        description="Length of header of the time series",
+        description="Length of header of the dataframe",
         alias=AliasChoices(
             "dataframe_header_length", "time_series_header_length"
         ),
@@ -154,7 +154,7 @@ class CSVABoxParser(ABoxBaseParser):
         Returns a JSON-LD representation of the CSV data in ABox mode.
 
         This method generates a JSON-LD object that describes the CSV data,
-        including its metadata, time series data, and relationships between them.
+        including its metadata, dataframe data, and relationships between them.
 
         The returned JSON-LD object is in the format of a csvw:TableGroup,
         which contains one or more csvw:Table objects. Each csvw:Table object
@@ -218,7 +218,7 @@ class CSVABoxParser(ABoxBaseParser):
                 tables += [
                     {
                         "@type": "csvw:Table",
-                        "rdfs:label": "Time series data",
+                        "rdfs:label": "Dataframe",
                         "csvw:tableSchema": column_schema,
                     }
                 ]
@@ -308,7 +308,7 @@ class CSVABoxParser(ABoxBaseParser):
         mapping: "List[ABoxBaseMapping]",
     ) -> None:
         """
-        This function is responsible for parsing metadata, time series metadata, and time series data from a CSV file.
+        This function is responsible for parsing metadata, dataframe metadata, and dataframe data from a CSV file.
 
         It takes in three parameters:
         - `self`: The CSVParser instance.
@@ -317,8 +317,8 @@ class CSVABoxParser(ABoxBaseParser):
 
         The function returns None, but it populates the following instance variables:
         - `self._general_metadata`: A list of PropertyGraph or QuantityGraph instances representing the general metadata.
-        - `self._dataframe_metadata`: A list of QuantityGraph instances representing the time series metadata.
-        - `self._dataframe`: A pandas DataFrame containing the time series data.
+        - `self._dataframe_metadata`: A list of QuantityGraph instances representing the dataframe metadata.
+        - `self._dataframe`: A pandas DataFrame containing the dataframe data.
 
         The function also raises ValueError if the `metadata_length` is greater than 0 but `metadata_sep` is not set.
         It raises TypeError if the unit for a key is not a string.
@@ -404,7 +404,7 @@ class CSVABoxParser(ABoxBaseParser):
                         MappingMissmatchWarning,
                     )
 
-        # parse time series data and meta data
+        # parse dataframe data and meta data
         self._dataframe_metadata = []
         self._dataframe = {}
 
@@ -447,7 +447,7 @@ class CSVABoxParser(ABoxBaseParser):
                 # append model
                 self.dataframe_metadata.append(model)
 
-                # assign time series data
+                # assign dataframe data
                 self._dataframe[model.suffix] = dataframe[key][
                     self.dataframe_header_length - 1 :
                 ].to_list()
@@ -457,7 +457,7 @@ class CSVABoxParser(ABoxBaseParser):
                     f"No match found in mapping for key `{key}`",
                     MappingMissmatchWarning,
                 )
-        # set time series as pd dataframe
+        # set dataframe as pd dataframe
         self._dataframe = pd.DataFrame.from_dict(
             self._dataframe, orient="index"
         ).transpose()
@@ -491,7 +491,7 @@ class CSVABoxParser(ABoxBaseParser):
             ]
         else:
             warnings.warn(
-                "`dataframe_sep` is not set. Any potential time series in the data file will be skipped.",
+                "`dataframe_sep` is not set. Any potential dataframe in the data file will be skipped.",
                 ParserWarning,
             )
             response = []
