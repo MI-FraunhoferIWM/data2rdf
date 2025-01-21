@@ -8,7 +8,7 @@ from urllib.parse import urljoin
 
 import numpy as np
 import pandas as pd
-from pydantic import Field
+from pydantic import AliasChoices, Field
 
 from data2rdf.models.graph import PropertyGraph, QuantityGraph
 from data2rdf.utils import make_prefix
@@ -120,10 +120,16 @@ class CSVABoxParser(ABoxBaseParser):
     )
     metadata_length: int = Field(..., description="Length of the metadata")
     dataframe_sep: Optional[str] = Field(
-        None, description="Column separator of the time series header"
+        None,
+        description="Column separator of the time series header",
+        alias=AliasChoices("dataframe_sep", "time_series_sep"),
     )
     dataframe_header_length: int = Field(
-        2, description="Length of header of the time series"
+        2,
+        description="Length of header of the time series",
+        alias=AliasChoices(
+            "dataframe_header_length", "time_series_header_length"
+        ),
     )
     fillna: Optional[Any] = Field(
         "", description="Value to fill NaN values in the parsed dataframe."

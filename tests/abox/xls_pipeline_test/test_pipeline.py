@@ -500,3 +500,62 @@ def test_excel_pipeline_suffix() -> None:
     )
 
     assert sorted(list(pipeline.dataframe.columns)) == sorted(columns_suffix)
+
+
+def test_excel_pipeline_test_alias() -> None:
+    from rdflib import Graph
+
+    from data2rdf.warnings import MappingMissmatchWarning
+
+    from data2rdf import (  # isort:skip
+        Data2RDF,
+        Parser,
+        PropertyGraph,
+        QuantityGraph,
+    )
+
+    with open(raw_data, "rb") as file:
+        input_obj = file.read()
+
+    with pytest.warns(
+        MappingMissmatchWarning, match="Concept with key"
+    ) as warnings:
+        pipeline = Data2RDF(
+            raw_data=input_obj,
+            mapping=os.path.join(
+                mapping_folder, "tensile_test_mapping_alias.json"
+            ),
+            parser=Parser.excel,
+            additional_triples=template,
+            parser_args={"dropna": True, "unit_from_macro": True},
+        )
+
+    missmatches = [
+        warning
+        for warning in warnings
+        if warning.category == MappingMissmatchWarning
+    ]
+    assert len(missmatches) == 1
+
+    assert len(pipeline.general_metadata) == 12
+    for row in pipeline.general_metadata:
+        assert isinstance(row, QuantityGraph) or isinstance(row, PropertyGraph)
+
+    assert len(pipeline.dataframe_metadata) == 6
+    for row in pipeline.dataframe_metadata:
+        assert isinstance(row, QuantityGraph)
+
+    assert len(pipeline.dataframe.columns) == 6
+    assert sorted(list(pipeline.dataframe.columns)) == sorted(columns)
+    for name, column in pipeline.dataframe.items():
+        assert len(column) == 460
+
+    expected_graph = Graph()
+    expected_graph.parse(expected)
+
+    assert pipeline.graph.isomorphic(expected_graph)
+
+    assert remove_ids(pipeline.to_dict(schema=dsms_schema)) == sort_entries(
+        metadata
+    )
+    assert sort_entries(pipeline.to_dict()) == as_non_dsms_schema(metadata)

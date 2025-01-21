@@ -186,6 +186,7 @@ class ABoxExcelMapping(ABoxBaseMapping):
     dataframe_start: Optional[str] = Field(
         None,
         description="Cell location for the start of the time series quantity",
+        alias=AliasChoices("dataframe_start", "time_series_start"),
     )
     worksheet: Optional[str] = Field(
         None,
