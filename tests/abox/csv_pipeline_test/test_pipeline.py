@@ -407,3 +407,53 @@ def test_csv_pipeline_inputs(input_kind) -> None:
         metadata
     )
     assert sort_entries(pipeline.to_dict()) == as_non_dsms_schema(metadata)
+
+
+def test_csv_pipeline_alias() -> None:
+    from rdflib import Graph
+
+    from data2rdf import (  # isort:skip
+        Data2RDF,
+        Parser,
+        PropertyGraph,
+        QuantityGraph,
+    )
+
+    with open(raw_data, encoding="utf-8") as file:
+        input_obj = file.read()
+
+    pipeline = Data2RDF(
+        raw_data=input_obj,
+        mapping=os.path.join(mapping_folder, "tensile_test_mapping.json"),
+        parser=Parser.csv,
+        parser_args={
+            "metadata_sep": "\t",
+            "time_series_sep": "\t",
+            "metadata_length": 20,
+            "time_series_header_length": 2,
+        },
+        additional_triples=template,
+    )
+
+    assert len(pipeline.general_metadata) == 20
+    for row in pipeline.general_metadata:
+        assert isinstance(row, QuantityGraph) or isinstance(row, PropertyGraph)
+
+    assert len(pipeline.dataframe_metadata) == 6
+    for row in pipeline.dataframe_metadata:
+        assert isinstance(row, QuantityGraph)
+
+    assert len(pipeline.dataframe.columns) == 6
+    assert sorted(list(pipeline.dataframe.columns)) == sorted(columns)
+    for name, column in pipeline.dataframe.items():
+        assert len(column) == 5734
+
+    expected_graph = Graph()
+    expected_graph.parse(expected)
+
+    assert pipeline.graph.isomorphic(expected_graph)
+
+    assert remove_ids(pipeline.to_dict(schema=dsms_schema)) == sort_entries(
+        metadata
+    )
+    assert sort_entries(pipeline.to_dict()) == as_non_dsms_schema(metadata)

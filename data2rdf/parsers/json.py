@@ -139,7 +139,7 @@ class JsonABoxParser(ABoxBaseParser):
 
         This method generates the JSON-LD representation of the parser's data,
         including the context, id, type, and members. The members are generated
-        based on the general metadata and time series metadata.
+        based on the general metadata and dataframe metadata.
 
         The method returns a dictionary containing the JSON-LD representation.
 
@@ -271,8 +271,8 @@ class JsonABoxParser(ABoxBaseParser):
         mapping: "List[ABoxBaseMapping]",
     ) -> None:
         """
-        Class method for parsing metadata, time series metadata,
-        and time series from a given data file and mapping.
+        Class method for parsing metadata, dataframe metadata,
+        and dataframe from a given data file and mapping.
 
         Args:
             self: An instance of JsonABoxParser.
@@ -359,8 +359,8 @@ class JsonABoxParser(ABoxBaseParser):
 
                     # if we have a series and a unit and we are *not* expanding:
                     # * make a QuantityGraph with the unit
-                    # * add the graph to the time series metadata
-                    # * add the values of the series to the time series array
+                    # * add the graph to the dataframe metadata
+                    # * add the values of the series to the dataframe array
                     if (
                         isinstance(value, list)
                         and unit
@@ -388,8 +388,8 @@ class JsonABoxParser(ABoxBaseParser):
                             self._general_metadata.append(model)
                     # if we have a series and *no* unit and we are *not* expanding:
                     # * make a PropertyGraph
-                    # * add the graph to the time series metadata
-                    # * add the values of the series to the time series array
+                    # * add the graph to the dataframe metadata
+                    # * add the values of the series to the dataframe array
                     elif (
                         isinstance(value, list)
                         and not unit
@@ -466,7 +466,7 @@ class JsonABoxParser(ABoxBaseParser):
                             relation, subdataset, datum, suffix
                         )
 
-        # set time series as pd dataframe
+        # set dataframe as pd dataframe
         self._dataframe = pd.DataFrame.from_dict(
             self._dataframe, orient="index"
         ).transpose()

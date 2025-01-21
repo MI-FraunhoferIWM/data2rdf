@@ -1,4 +1,4 @@
-# Excel file with metadata and time series
+# Excel file with metadata and dataframe
 
 ```{note}
 Please follow [this link here](https://github.com/MI-FraunhoferIWM/data2rdf/blob/main/examples/2_excel.ipynb) in order to access the related jupyter notebook.
@@ -6,7 +6,7 @@ Please follow [this link here](https://github.com/MI-FraunhoferIWM/data2rdf/blob
 
 
 ```{note}
-This example is building up on the previous one about the [CSV file with metadata and time series](1_csv.md).
+This example is building up on the previous one about the [CSV file with metadata and dataframe](1_csv.md).
 Please start from this chapter in order to fully understand the content of this example.
 ```
 
@@ -14,7 +14,7 @@ Please start from this chapter in order to fully understand the content of this 
 
 In this example, we want to transfor an excel file which encorporates stress/strain of the measurement and some metadata about the experiment into an RDF repesentation.
 
-For this purpose, we are describing the **general metadata** of the experiment as well as the **metadata of the time series**.
+For this purpose, we are describing the **general metadata** of the experiment as well as the **metadata of the dataframe**.
 
 ## The inputs
 
@@ -36,14 +36,14 @@ The excel file produced by the tensile test machine looks like this:
 
 ![details](../../assets/img/docu/excel_parser/excel2.JPG)
 
-Again, we are facing metadata of the experiment like e.g. `Projekt`, `Prüfer`, `Werkstoff`, etc. and time series with the quantities of `Zeit`, `F`, `B`, which need to be mapped to ontological concepts.
+Again, we are facing metadata of the experiment like e.g. `Projekt`, `Prüfer`, `Werkstoff`, etc. and dataframe with the quantities of `Zeit`, `F`, `B`, which need to be mapped to ontological concepts.
 
 The original file can be accessed [here](https://github.com/MI-FraunhoferIWM/data2rdf/raw/bbde50919c50f3428eec179f94f29315f31165fe/tests/abox/xls_pipeline_test/input/data/AFZ1-Fz-S1Q.xlsm).
 
 
 ### The mapping
 
-In contrast to the previous CSV example, we have to provide more information about the location of the data in the excel file. Previously, we simply had to provide the `key` of the concept in the data file. But since we are using `openpyxl`, we need to provide the `worksheet`, `value_location` (in case of metadata), `dataframe_start` (in case of time series) and `unit_location` (in case of quantitative data) for each concept in the excel file.
+In contrast to the previous CSV example, we have to provide more information about the location of the data in the excel file. Previously, we simply had to provide the `key` of the concept in the data file. But since we are using `openpyxl`, we need to provide the `worksheet`, `value_location` (in case of metadata), `dataframe_start` (in case of dataframe) and `unit_location` (in case of quantitative data) for each concept in the excel file.
 
 A valid mapping for the example file show above may look like this:
 
@@ -193,7 +193,7 @@ Please note that a mapping for a metadatum looks like this:
 ...
 ```
 
-Whereas the mapping of a time series looks like this:
+Whereas the mapping of a dataframe looks like this:
 
 ```
 {
@@ -558,7 +558,7 @@ fileid:tableGroup a csvw:TableGroup ;
                     csvw:describes fileid:ProjectNumber ;
                     csvw:titles "Projekt"^^xsd:string ] ],
         [ a csvw:Table ;
-            rdfs:label "Time series data" ;
+            rdfs:label "dataframe data" ;
             csvw:tableSchema [ a csvw:Schema ;
                     csvw:column [ a csvw:Column ;
                             qudt:quantity fileid:WidthChange ;

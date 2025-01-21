@@ -243,7 +243,7 @@ class Data2RDF(BaseModel):
 
     @property
     def dataframe_metadata(self) -> "List[BasicConceptMapping]":
-        """Return list object with time series metadata"""
+        """Return list object with dataframe metadata"""
         if self.mode == PipelineMode.ABOX:
             return self.parser.abox.dataframe_metadata
         else:
@@ -253,7 +253,7 @@ class Data2RDF(BaseModel):
 
     @property
     def dataframe(self) -> "Dict[str, Any]":
-        """Return time series"""
+        """Return dataframe"""
         if self.mode == PipelineMode.ABOX:
             return self.parser.abox.dataframe
         else:

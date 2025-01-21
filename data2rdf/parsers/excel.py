@@ -145,8 +145,8 @@ class ExcelABoxParser(ABoxBaseParser):
         """
         Returns the JSON-LD representation of the data in ABox mode.
 
-        The JSON-LD is constructed based on the metadata and time series data.
-        If the file description is not suppressed, it includes the metadata and time series data tables.
+        The JSON-LD is constructed based on the metadata and dataframe data.
+        If the file description is not suppressed, it includes the metadata and dataframe data tables.
         Otherwise, it returns a list of JSON-LD representations of the individual models.
 
         :return: A dictionary representing the JSON-LD data.
@@ -194,7 +194,7 @@ class ExcelABoxParser(ABoxBaseParser):
                 tables += [
                     {
                         "@type": "csvw:Table",
-                        "rdfs:label": "Time series data",
+                        "rdfs:label": "Dataframe",
                         "csvw:tableSchema": column_schema,
                     }
                 ]
@@ -284,7 +284,7 @@ class ExcelABoxParser(ABoxBaseParser):
         mapping: "List[ABoxExcelMapping]",
     ) -> None:
         """
-        Parses the metadata, time series metadata, and time series from an Excel file.
+        Parses the metadata, dataframe metadata, and dataframe from an Excel file.
 
         Args:
             self (ExcelABoxParser): The instance of the ExcelABoxParser class.
@@ -326,7 +326,7 @@ class ExcelABoxParser(ABoxBaseParser):
                         are set. Only one of them must be set."""
                     )
 
-                # find data for time series
+                # find data for dataframe
                 if datum.dataframe_start:
                     column_name = datum.dataframe_start.rstrip("0123456789")
                     dataframe_end = f"{column_name}{worksheet.max_row}"
@@ -338,7 +338,7 @@ class ExcelABoxParser(ABoxBaseParser):
                         ]
                     else:
                         message = f"""Concept with key `{datum.key}`
-                                    does not have a time series from `{datum.dataframe_start}`
+                                    does not have a dataframe from `{datum.dataframe_start}`
                                     until `{dataframe_end}` .
                                     Concept will be omitted in graph.
                                     """
@@ -476,7 +476,7 @@ class ExcelABoxParser(ABoxBaseParser):
                                         """
                         warnings.warn(message, MappingMissmatchWarning)
 
-        # set time series as pd dataframe
+        # set dataframe as pd dataframe
         self._dataframe = pd.DataFrame.from_dict(
             self._dataframe, orient="index"
         ).transpose()

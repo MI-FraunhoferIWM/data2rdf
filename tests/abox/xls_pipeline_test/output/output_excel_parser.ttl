@@ -8,7 +8,7 @@
 
 fileid:tableGroup a csvw:TableGroup ;
     csvw:table [ a csvw:Table ;
-            rdfs:label "Time series data" ;
+            rdfs:label "Dataframe data" ;
             csvw:tableSchema [ a csvw:Schema ;
                     csvw:column [ a csvw:Column ;
                             qudt:quantity fileid:Extension ;

@@ -209,4 +209,4 @@ nanoindentation:Jane a chameo:Operator ;
 
 ```
 
-Again, you will be able to investigate the `general_metadata` and `plain_metadata` in the same way as stated in the [first example](1_csv). But this does take place for the `dataframe_metadata` and `dataframe` attributes, since we do not include any time series in this example here.
+Again, you will be able to investigate the `general_metadata` and `plain_metadata` in the same way as stated in the [first example](1_csv). But this does take place for the `dataframe_metadata` and `dataframe` attributes, since we do not include any dataframe in this example here.

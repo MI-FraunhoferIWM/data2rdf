@@ -6,7 +6,7 @@ Please follow [this link here](https://github.com/MI-FraunhoferIWM/data2rdf/blob
 
 ## General understanding
 
-In this example, we are looking into dummy sensor data which is provided by a csv file. However, we do not have any metadata in this case, but directly start with the time series. Additionaly, each column in this time series is of the same ontological class, but was recorded by a different sensor.
+In this example, we are looking into dummy sensor data which is provided by a csv file. However, we do not have any metadata in this case, but directly start with the dataframe. Additionaly, each column in this dataframe is of the same ontological class, but was recorded by a different sensor.
 
 ## The inputs
 
@@ -30,15 +30,15 @@ time,column_01,column_02,column_03
 7,7,7,7
 ```
 
-You may note that the first column is the time and the rest of the columns are of the same class. As already mentioned above, there is no metadata, but only time series in this case.
+You may note that the first column is the time and the rest of the columns are of the same class. As already mentioned above, there is no metadata, but only dataframe in this case.
 
 ### The parser arguments
 
 Since we are considering the csv parser again, we need to take the following parser arguments into account:
 
-* `dataframe_sep`: the separator for the time series. In this case, it is a  `,`.
+* `dataframe_sep`: the separator for the dataframe. In this case, it is a  `,`.
 * `metadata_length`: the length of the metadata in the csv file. In this case, it is 0, since we do not have any metadata.
-* `dataframe_header_length`: the length of the header of the time series in the csv file. In this case, it is 1, since the time series start at the second row.
+* `dataframe_header_length`: the length of the header of the dataframe in the csv file. In this case, it is 1, since the dataframe start at the second row.
 
 The resulting Python dictionary for the parser arguments would look like this:
 
@@ -168,7 +168,7 @@ fileid:TestTime a <https://w3id.org/steel/ProcessOntology/TestTime> .
 
 fileid:tableGroup a csvw:TableGroup ;
     csvw:table [ a csvw:Table ;
-            rdfs:label "Time series data" ;
+            rdfs:label "dataframe data" ;
             csvw:tableSchema [ a csvw:Schema ;
                     csvw:column [ a csvw:Column ;
                             qudt:quantity fileid:Sensor2 ;

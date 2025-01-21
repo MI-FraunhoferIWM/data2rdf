@@ -113,7 +113,7 @@ fileid:tableGroup a csvw:TableGroup ;
                     qudt:quantity fileid:TestingRate ;
                     csvw:titles "Prüfgeschwindigkeit"^^xsd:string ] ],
         [ a csvw:Table ;
-            rdfs:label "Time series data" ;
+            rdfs:label "Dataframe data" ;
             csvw:tableSchema [ a csvw:Schema ;
                     csvw:column [ a csvw:Column ;
                             qudt:quantity fileid:StandardForce ;
