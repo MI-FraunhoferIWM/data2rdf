@@ -32,6 +32,6 @@
   {
     "key": "Author's name",
     "relation": "http://purl.org/dc/terms/contributor",
-    "relation_type": "data_property"
+    "relation_type": "property"
   }
 ]

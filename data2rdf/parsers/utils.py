@@ -108,6 +108,7 @@ def _make_tbox_classes(
         annotations = []
         datatypes = []
         objects = []
+        properties = []
 
         for key, model in mapping.items():
             try:
@@ -126,6 +127,8 @@ def _make_tbox_classes(
                         datatypes.append(relation_mapping)
                     if model.relation_type == RelationType.OBJECT_PROPERTY:
                         objects.append(relation_mapping)
+                    if model.relation_type == RelationType.PROPERTY:
+                        properties.append(relation_mapping)
                 else:
                     warnings.warn(
                         f"Data for key `{key}` does not exist in row {n}.",
@@ -155,6 +158,7 @@ def _make_tbox_classes(
             annotation_properties=annotations,
             object_properties=objects,
             data_properties=datatypes,
+            rdfs_properties=properties,
             config=self.config,
         )
         self._classes.append(subgraph)

@@ -77,7 +77,7 @@ MAPPING_CUSTOM_RELATIONS = [
             {
                 "object_location": "Description",
                 "relation": "http://www.w3.org/2000/01/rdf-schema#comment",
-                "relation_type": "data_property",
+                "relation_type": "property",
             },
             {
                 "object_location": "Identifier",
