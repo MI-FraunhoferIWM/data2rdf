@@ -1,6 +1,7 @@
 """Data2RDF parser utilities"""
 
 import json
+import re
 import warnings
 from typing import TYPE_CHECKING
 
@@ -15,6 +16,7 @@ from data2rdf.models.mapping import (  # isort:skip
     RelationType,
 )
 
+ALLOW_PATTERN = r"[^a-zA-Z0-9\-._$[*\[\]]*"
 
 if TYPE_CHECKING:
     from typing import Any, Dict, List, Union
@@ -108,6 +110,7 @@ def _make_tbox_classes(
         annotations = []
         datatypes = []
         objects = []
+        properties = []
 
         for key, model in mapping.items():
             try:
@@ -126,6 +129,8 @@ def _make_tbox_classes(
                         datatypes.append(relation_mapping)
                     if model.relation_type == RelationType.OBJECT_PROPERTY:
                         objects.append(relation_mapping)
+                    if model.relation_type == RelationType.PROPERTY:
+                        properties.append(relation_mapping)
                 else:
                     warnings.warn(
                         f"Data for key `{key}` does not exist in row {n}.",
@@ -155,6 +160,7 @@ def _make_tbox_classes(
             annotation_properties=annotations,
             object_properties=objects,
             data_properties=datatypes,
+            rdfs_properties=properties,
             config=self.config,
         )
         self._classes.append(subgraph)
@@ -216,3 +222,29 @@ def _value_exists(value: "Any") -> bool:
         bool: True if the value exists and is valid, otherwise False.
     """
     return pd.notnull(value) and value != ""
+
+
+def _check_jsonpath(expression):
+    """
+    Adjusts the JSONPath expression for compatibility.
+
+    This function checks the provided JSONPath expression against a predefined
+    pattern and modifies it for compatibility by enclosing each segment of the
+    path in double quotes if any matches are found. This ensures that the
+    expression is properly formatted for further processing.
+
+    Args:
+        expression (str): The JSONPath expression to be checked and adjusted.
+
+    Returns:
+        str: The adjusted JSONPath expression with segments enclosed in double quotes
+             if any matches were found, otherwise returns the original expression.
+    """
+
+    matches = re.findall(ALLOW_PATTERN, expression)
+    matches = [match for match in matches if match]
+    if matches:
+        print(matches)
+        splitted = expression.split(".")
+        expression = ".".join([f'"{exp}"' for exp in splitted])
+    return expression

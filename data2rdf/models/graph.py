@@ -70,6 +70,10 @@ class ClassTypeGraph(BasicGraphModel):
         None, description="Mappings for Data Properties"
     )
 
+    rdfs_properties: Optional[List[ValueRelationMapping]] = Field(
+        None, description="Mappings for rdfs:Properties"
+    )
+
     # OVERRIDE
     @property
     def json_ld(self) -> "Dict[str, Any]":
@@ -89,6 +93,14 @@ class ClassTypeGraph(BasicGraphModel):
             )
             for model in self.data_properties
         }
+        properties = {
+            model.relation: (
+                apply_datatype(model)
+                if model.datatype
+                else detect_datatype(str(model.value))
+            )
+            for model in self.rdfs_properties
+        }
         objects = {
             model.relation: {"@id": model.value}
             for model in self.object_properties
@@ -107,6 +119,7 @@ class ClassTypeGraph(BasicGraphModel):
             **annotations,
             **datatypes,
             **objects,
+            **properties,
         }
 
 

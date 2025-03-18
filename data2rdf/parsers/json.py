@@ -29,6 +29,7 @@ from data2rdf.parsers.utils import (  # isort:skip
     _make_tbox_classes,
     _make_tbox_json_ld,
     _strip_unit,
+    _check_jsonpath,
 )
 
 from data2rdf.models.mapping import (  # isort:skip
@@ -291,7 +292,8 @@ class JsonABoxParser(ABoxBaseParser):
 
             if not datum.custom_relations:
                 suffix = self._make_suffix_from_location(datum, subdataset)
-                value_expression = parse(datum.value_location)
+                path = _check_jsonpath(datum.value_location)
+                value_expression = parse(path)
 
                 results = [
                     match.value for match in value_expression.find(subdataset)
@@ -299,8 +301,8 @@ class JsonABoxParser(ABoxBaseParser):
 
                 if len(results) == 0:
                     value = None
-                    message = f"""Concept with key `{datum.key or datum.value_location}`
-                                    does not have a value at location `{datum.value_location}`.
+                    message = f"""Concept with key `{datum.key or path}`
+                                    does not have a value at location `{path}`.
                                     Concept will be omitted in graph.
                                     """
                     warnings.warn(message, MappingMissmatchWarning)
@@ -311,7 +313,10 @@ class JsonABoxParser(ABoxBaseParser):
 
                 if isinstance(value, list) or _value_exists(value):
                     if datum.unit_location:
-                        unit_expression = parse(datum.unit_location)
+                        path_unit_location = _check_jsonpath(
+                            datum.unit_location
+                        )
+                        unit_expression = parse(path_unit_location)
 
                         results = [
                             match.value
@@ -320,16 +325,16 @@ class JsonABoxParser(ABoxBaseParser):
 
                         if len(results) == 0:
                             unit = None
-                            message = f"""Concept with key `{datum.key or datum.value_location}`
-                                            does not have a unit at location `{datum.unit_location}`.
+                            message = f"""Concept with key `{datum.key or path_unit_location}`
+                                            does not have a unit at location `{path_unit_location}`.
                                             Concept will be omitted in graph."""
                             warnings.warn(message, MappingMissmatchWarning)
                         elif len(results) == 1:
                             unit = results.pop()
                         else:
                             unit = None
-                            message = f"""Concept with key `{datum.key or datum.value_location}`
-                                        has multiple units at location `{datum.unit_location}`.
+                            message = f"""Concept with key `{datum.key or path_unit_location}`
+                                        has multiple units at location `{path_unit_location}`.
                                         Concept will be omitted in graph."""
                             warnings.warn(message, MappingMissmatchWarning)
 
@@ -477,19 +482,21 @@ class JsonABoxParser(ABoxBaseParser):
     def _get_optional_subdataset(
         self, datafile: Any, datum: ABoxBaseMapping
     ) -> Any:
+        subdataset = None
         if datum.custom_relations and datum.source:
-            value_expression = parse(datum.source)
+            path_source = _check_jsonpath(datum.source)
+            value_expression = parse(path_source)
             results = [
                 match.value for match in value_expression.find(datafile)
             ]
             if len(results) == 0:
-                message = f"""Could not properly resolve location `{datum.source}` for curstom relations."""
+                message = f"""Could not properly resolve location `{path_source}` for curstom relations."""
                 warnings.warn(message, MappingMissmatchWarning)
             else:
                 subdataset = results
         else:
             subdataset = datafile
-        return subdataset
+        return subdataset or datafile
 
     def _make_custom_relation(
         self,
@@ -498,14 +505,15 @@ class JsonABoxParser(ABoxBaseParser):
         datum: ABoxBaseMapping,
         suffix: str,
     ) -> None:
-        value_expression = parse(relation.object_location)
+        path_object_location = _check_jsonpath(relation.object_location)
+        value_expression = parse(path_object_location)
 
         results = [match.value for match in value_expression.find(subdataset)]
 
         if len(results) == 0:
             value = None
             message = f"""Concept with for iri `{datum.iri}`
-                            does not have a value at location `{relation.object_location}`.
+                            does not have a value at location `{path_object_location}`.
                             Concept will be omitted in graph.
                             """
             warnings.warn(message, MappingMissmatchWarning)
@@ -614,14 +622,15 @@ class JsonABoxParser(ABoxBaseParser):
         self, datum: ABoxBaseMapping, subdataset: Any
     ) -> str:
         if datum.suffix_from_location:
-            value_expression = parse(datum.suffix)
+            path_suffix = _check_jsonpath(datum.suffix)
+            value_expression = parse(path_suffix)
             results = [
                 match.value for match in value_expression.find(subdataset)
             ]
 
             if len(results) == 0 or len(results) > 1:
-                suffix = datum.suffix
-                message = f"""Could not properly resolve suffix location `{datum.suffix}`
+                suffix = path_suffix
+                message = f"""Could not properly resolve suffix location `{path_suffix}`
                                 Will use the location itself as suffix.
                             """
                 warnings.warn(message, MappingMissmatchWarning)

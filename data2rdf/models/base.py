@@ -24,6 +24,7 @@ class RelationType(str, Enum):
     ANNOTATION_PROPERTY = "annotation_property"
     DATA_PROPERTY = "data_property"
     OBJECT_PROPERTY = "object_property"
+    PROPERTY = "property"
 
 
 class BaseConfigModel(BaseModel):
