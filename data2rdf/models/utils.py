@@ -48,7 +48,7 @@ def detect_datatype(value) -> "Dict[str, Any]":
         dtype = "xsd:float"
         value = float(value)
     elif is_bool(value):
-        dtype = "xsd:bool"
+        dtype = "xsd:boolean"
         value = ast.literal_eval(value)
     elif is_uri(value):
         dtype = "xsd:anyURI"
@@ -71,7 +71,7 @@ def apply_datatype(value: "Any", datatype: str) -> "Dict[str, Any]":
     Args:
         value (Any): The value to be converted.
         datatype (str): The target datatype as a string. Supported datatypes
-                        are "integer", "float", "bool", "anyURI", and "string".
+                        are "integer", "float", "bool"/"boolean", "anyURI", and "string".
 
     Returns:
         Dict[str, Any]: A dictionary containing the datatype under the "@type" key
@@ -93,7 +93,7 @@ def apply_datatype(value: "Any", datatype: str) -> "Dict[str, Any]":
     else:
         raise TypeError(
             f"""Datatype of value `{value}` ({datatype}) currently not supported.
-            Supported datatypes: integer, float, bool, anyURI, string"""
+            Supported datatypes: integer, float, boolean, anyURI, string"""
         )
 
     return {"@type": f"xsd:{datatype}", "@value": value}
