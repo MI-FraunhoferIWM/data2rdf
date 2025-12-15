@@ -84,7 +84,7 @@ class Config(BaseSettings):
     @model_validator(mode="after")
     @classmethod
     def validate_config(cls, self: "Config") -> "Config":
-        for key, value in self.model_fields.items():
+        for key, value in self.__class__.model_fields.items():
             if isinstance(value, AnyUrl):
                 setattr(self, key, str(value))
         return self

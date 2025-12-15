@@ -30,7 +30,11 @@ fileid:Dictionary a ns1:Dictionary ;
         [ a ns1:KeyEntityPair ;
             ns1:pairEntity [ a ns1:Entity ;
                     dcterms:hasPart fileid:Remark ] ;
-            ns1:pairKey "Bemerkungen"^^xsd:string ] .
+            ns1:pairKey "Bemerkungen"^^xsd:string ] ,
+        [ a ns1:KeyEntityPair ;
+            ns1:pairEntity [ a ns1:Entity ;
+                    dcterms:hasPart fileid:QualityMeasurement ] ;
+            ns1:pairKey "QualityMeasurement"^^xsd:string ] .
 
 fileid:Force a <https://w3id.org/steel/ProcessOntology/Force> ;
     qudt:hasUnit "http://qudt.org/vocab/unit/KiloN"^^xsd:anyURI .
@@ -44,3 +48,7 @@ fileid:Remark a <https://w3id.org/steel/ProcessOntology/Remark> ;
 fileid:WidthChange a <https://w3id.org/steel/ProcessOntology/WidthChange> ;
     qudt:hasUnit "http://qudt.org/vocab/unit/MilliM"^^xsd:anyURI ;
     qudt:value "1.0"^^xsd:float .
+
+
+fileid:QualityMeasurement a <https://w3id.org/steel/ProcessOntology/QualityMeasurement> ;
+    rdfs:label "false"^^xsd:bool .

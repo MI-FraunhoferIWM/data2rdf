@@ -29,6 +29,13 @@ metadata = {
                     },
                 },
                 {
+                    "label": "QualityMeasurement",
+                    "value": False,
+                    "relation_mapping": {
+                        "class_iri": "https://w3id.org/steel/ProcessOntology/QualityMeasurement"
+                    },
+                },
+                {
                     "label": "WidthChange",
                     "measurement_unit": {
                         "iri": "http://qudt.org/vocab/unit/MilliM",
@@ -78,7 +85,7 @@ def test_pipeline_json(mapping_format, data_format) -> None:
         parser=Parser.json,
     )
 
-    assert len(pipeline.general_metadata) == 2
+    assert len(pipeline.general_metadata) == 3
     for row in pipeline.general_metadata:
         assert isinstance(row, QuantityGraph) or isinstance(row, PropertyGraph)
 
@@ -128,7 +135,7 @@ def test_json_pipeline_different_mapping_types(extension) -> None:
         parser=Parser.json,
     )
 
-    assert len(pipeline.general_metadata) == 2
+    assert len(pipeline.general_metadata) == 3
     for row in pipeline.general_metadata:
         assert isinstance(row, QuantityGraph) or isinstance(row, PropertyGraph)
 

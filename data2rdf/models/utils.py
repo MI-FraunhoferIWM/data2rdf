@@ -1,12 +1,10 @@
 """Data2RDF model utilities"""
 
+import ast
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from typing import Any, Dict
-
-
-import ast
 
 
 def is_integer(s):
@@ -51,7 +49,7 @@ def detect_datatype(value) -> "Dict[str, Any]":
         value = float(value)
     elif is_bool(value):
         dtype = "xsd:bool"
-        value = bool(value)
+        value = ast.literal_eval(value)
     elif is_uri(value):
         dtype = "xsd:anyURI"
         value = str(value)
@@ -87,7 +85,7 @@ def apply_datatype(value: "Any", datatype: str) -> "Dict[str, Any]":
     elif datatype == "float":
         value = float(value)
     elif datatype == "bool":
-        value = bool(value)
+        value = ast.literal_eval(value)
     elif datatype == "anyURI":
         value = str(value)
     elif datatype == "string":
