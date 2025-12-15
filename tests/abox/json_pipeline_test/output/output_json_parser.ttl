@@ -51,4 +51,4 @@ fileid:WidthChange a <https://w3id.org/steel/ProcessOntology/WidthChange> ;
 
 
 fileid:QualityMeasurement a <https://w3id.org/steel/ProcessOntology/QualityMeasurement> ;
-    rdfs:label "false"^^xsd:bool .
+    rdfs:label "false"^^xsd:boolean .
