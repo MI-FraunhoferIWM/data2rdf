@@ -21,5 +21,10 @@
     "key": "Standardkraft",
     "unit_location": "data.Standardkraft.unit",
     "value_location": "data.Standardkraft.array"
+  },
+  {
+    "iri": "https://w3id.org/steel/ProcessOntology/QualityMeasurement",
+    "key": "QualityMeasurement",
+    "value_location": "in_spec"
   }
 ]

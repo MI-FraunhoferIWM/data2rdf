@@ -28,6 +28,13 @@ metadata = {
                     },
                 },
                 {
+                    "label": "QualityMeasurement",
+                    "value": False,
+                    "relation_mapping": {
+                        "class_iri": "https://w3id.org/steel/ProcessOntology/QualityMeasurement"
+                    },
+                },
+                {
                     "label": "WidthChange",
                     "measurement_unit": {
                         "iri": "http://qudt.org/vocab/unit/MilliM",
@@ -73,7 +80,7 @@ def test_parser_json(mapping_format, data_format) -> None:
 
     parser = JsonParser(raw_data=raw_data, mapping=mapping)
 
-    assert len(parser.general_metadata) == 2
+    assert len(parser.general_metadata) == 3
     for row in parser.general_metadata:
         assert isinstance(row, QuantityGraph) or isinstance(row, PropertyGraph)
 
@@ -115,7 +122,7 @@ def test_json_parser_different_mapping_files(extension) -> None:
 
     parser = JsonParser(raw_data=raw_data_file, mapping=mapping)
 
-    assert len(parser.general_metadata) == 2
+    assert len(parser.general_metadata) == 3
     for row in parser.general_metadata:
         assert isinstance(row, QuantityGraph) or isinstance(row, PropertyGraph)
 

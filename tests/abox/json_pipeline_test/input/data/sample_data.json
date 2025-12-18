@@ -20,5 +20,6 @@
   },
   "details": {
     "Bemerkungen": "foobar"
-  }
+  },
+  "in_spec": false
 }
